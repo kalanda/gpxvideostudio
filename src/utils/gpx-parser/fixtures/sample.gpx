@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="test"
+  xmlns="http://www.topografix.com/GPX/1/1"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
+  <metadata>
+    <name>Test Ride</name>
+    <description>A test cycling route</description>
+    <author><name>Test Author</name></author>
+    <time>2024-07-15T10:00:00Z</time>
+  </metadata>
+  <trk>
+    <name>Morning Ride</name>
+    <trkseg>
+      <trkpt lat="43.3623" lon="-8.4115">
+        <ele>100.0</ele>
+        <time>2024-07-15T10:00:00Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>120</gpxtpx:hr>
+            <gpxtpx:cad>80</gpxtpx:cad>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="43.3630" lon="-8.4110">
+        <ele>105.0</ele>
+        <time>2024-07-15T10:00:10Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>125</gpxtpx:hr>
+            <gpxtpx:cad>82</gpxtpx:cad>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="43.3640" lon="-8.4100">
+        <ele>110.0</ele>
+        <time>2024-07-15T10:00:20Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>130</gpxtpx:hr>
+            <gpxtpx:cad>85</gpxtpx:cad>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="43.3650" lon="-8.4090">
+        <ele>108.0</ele>
+        <time>2024-07-15T10:00:30Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>128</gpxtpx:hr>
+            <gpxtpx:cad>83</gpxtpx:cad>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="43.3660" lon="-8.4080">
+        <ele>112.0</ele>
+        <time>2024-07-15T10:00:40Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>135</gpxtpx:hr>
+            <gpxtpx:cad>88</gpxtpx:cad>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
