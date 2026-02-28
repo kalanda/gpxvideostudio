@@ -5,7 +5,7 @@ import { calculateTelemetry } from "@/utils/calculations/calculateTelemetry";
 import { smoothSpeeds } from "@/utils/calculations/smoothSpeeds";
 import { parseGpx } from "@/utils/gpx-parser/parseGpx";
 
-const SAMPLE_GPX_URL = "/sample.gpx";
+const SAMPLE_GPX_URL = `${import.meta.env.BASE_URL}sample.gpx`;
 
 export function useGpxLoader() {
   const [gpxError, setGpxError] = useState<string | null>(null);
