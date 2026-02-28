@@ -18,11 +18,16 @@ export const AppNavbar = ({ theme, onToggleTheme }: AppNavbarProps) => {
   const isDark = theme === "dark";
 
   return (
-    <Navbar isBordered maxWidth="full" className="shrink-0">
+    <Navbar
+      isBordered
+      maxWidth="full"
+      classNames={{
+        brand: "font-bold text-foreground",
+        base: "py-0 h-12",
+      }}
+    >
       <NavbarContent justify="start">
-        <NavbarBrand>
-          <span className="font-bold text-foreground">GPX Video</span>
-        </NavbarBrand>
+        <NavbarBrand>GPX Video Studio</NavbarBrand>
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>

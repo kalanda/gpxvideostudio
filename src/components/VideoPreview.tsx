@@ -44,16 +44,20 @@ export const VideoPreview: FC = () => {
         title={previewTitle}
         titleIcon={<MonitorPlay size={16} className="shrink-0" />}
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {telemetryPoints && <WidgetAppearanceDropdown />}
             <Button
               size="sm"
               variant="flat"
-              aria-label="Video settings"
+              aria-label={`Resolution: ${width}x${height} @ ${fps} FPS`}
+              title={`Resolution: ${width}x${height} @ ${fps} FPS`}
               onPress={onVideoSettingsModalOpen}
               startContent={<Settings size={16} />}
             >
-              {`Resolution: ${width}x${height} @ ${fps} FPS`}
+              <span className="hidden sm:inline">
+                {`Resolution: ${width}x${height} @ ${fps} FPS`}
+              </span>
+              <span className="sm:hidden">{`${width}×${height}`}</span>
             </Button>
             {telemetryPoints && (
               <Button
