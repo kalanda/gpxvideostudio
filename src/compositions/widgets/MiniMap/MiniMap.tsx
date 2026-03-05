@@ -10,8 +10,10 @@ import type {
 } from "@/types/telemetry";
 
 type MiniMapProps = {
-  /** Telemetry points for the route (already trimmed by trim config; no filtering here). */
+  /** Full telemetry points for the entire route (drawn as the track line). */
   points: TelemetryFeatureCollection;
+  /** Optional: points used only for viewport bounds. When set (e.g. trimmed segment), the map zooms to show this segment so the full "recorrido recortado" is visible. */
+  boundsPoints?: TelemetryFeatureCollection | null;
   currentPoint: Feature<Point, TelemetryFrame>;
 };
 
@@ -20,11 +22,10 @@ const { viewBoxSize, pad, routeStrokeWidth } = MINIMAP;
 const ARROW_R = 5;
 
 export const MiniMap: FC<MiniMapProps> = (props) => {
-  const { points, currentPoint } = props;
+  const { points, boundsPoints, currentPoint } = props;
   const { primaryColor, accentColor } = useWidgetAppearanceStore();
 
-  const featuresForRoute =
-    points.features.length >= 2 ? points.features : [];
+  const featuresForRoute = points.features.length >= 2 ? points.features : [];
 
   const route =
     featuresForRoute.length > 0
@@ -37,14 +38,24 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
       : null;
 
   const [cxLon, cxLat] = currentPoint.geometry.coordinates;
-  const bounds =
-    route != null
-      ? bbox(
-          lineString([
-            ...(route.geometry.coordinates as [number, number][]),
-            [cxLon, cxLat],
-          ]),
+  // Use boundsPoints (e.g. trimmed segment) for viewport so the map zooms to the export segment; fallback to full route.
+  const pointsForBounds =
+    boundsPoints && boundsPoints.features.length >= 2
+      ? boundsPoints.features
+      : route != null
+        ? (route.geometry.coordinates as [number, number][])
+        : [];
+  const coordsForBounds: [number, number][] =
+    pointsForBounds.length > 0
+      ? pointsForBounds.map((p) =>
+          Array.isArray(p)
+            ? (p as [number, number])
+            : [p.geometry.coordinates[0], p.geometry.coordinates[1]],
         )
+      : [];
+  const bounds =
+    coordsForBounds.length > 0
+      ? bbox(lineString([...coordsForBounds, [cxLon, cxLat]]))
       : null;
   const [minLon, minLat, maxLon, maxLat] = bounds ?? [0, 0, 0, 0];
   const empty =

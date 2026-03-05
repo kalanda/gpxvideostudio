@@ -46,7 +46,8 @@ export const TelemetryOverlayLayout: FC = () => {
         </div>
         <div className="absolute top-0 right-0 w-96 h-96">
           <MiniMap
-            points={trimmedPoints ?? telemetryPoints}
+            points={telemetryPoints}
+            boundsPoints={trimmedPoints}
             currentPoint={data}
           />
         </div>
