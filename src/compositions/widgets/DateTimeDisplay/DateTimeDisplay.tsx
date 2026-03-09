@@ -11,5 +11,7 @@ type DateTimeDisplayProps = {
 
 export const DateTimeDisplay: FC<DateTimeDisplayProps> = (props) => {
   const { date } = props;
-  return <DataItem label={formatDateLocal(date)} value={formatTimeLocal(date)} />;
+  return (
+    <DataItem label={formatDateLocal(date)} value={formatTimeLocal(date)} />
+  );
 };

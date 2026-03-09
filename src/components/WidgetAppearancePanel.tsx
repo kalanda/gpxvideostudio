@@ -61,7 +61,11 @@ export const WidgetAppearancePanel = () => {
             />
             {accentColorPickerOpen && (
               <>
-                <div className="fixed inset-0 z-10" aria-hidden onClick={closeAccent} />
+                <div
+                  className="fixed inset-0 z-10"
+                  aria-hidden
+                  onClick={closeAccent}
+                />
                 <div className="absolute left-0 top-full z-20 mt-1">
                   <CompactPicker
                     color={accentColor}
@@ -84,7 +88,11 @@ export const WidgetAppearancePanel = () => {
             />
             {primaryColorPickerOpen && (
               <>
-                <div className="fixed inset-0 z-10" aria-hidden onClick={closePrimary} />
+                <div
+                  className="fixed inset-0 z-10"
+                  aria-hidden
+                  onClick={closePrimary}
+                />
                 <div className="absolute left-0 top-full z-20 mt-1">
                   <CompactPicker
                     color={primaryColor}

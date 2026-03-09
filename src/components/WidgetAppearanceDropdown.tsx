@@ -77,7 +77,9 @@ export const WidgetAppearanceDropdown = () => {
           <div className="flex flex-col gap-1">
             <Autocomplete
               label="Fuente"
-              placeholder={showAllFonts ? "Buscar en todas las fuentes…" : "Elegir fuente"}
+              placeholder={
+                showAllFonts ? "Buscar en todas las fuentes…" : "Elegir fuente"
+              }
               selectedKey={fontFamily}
               onSelectionChange={onSelectionChange}
               size="sm"
@@ -97,8 +99,20 @@ export const WidgetAppearanceDropdown = () => {
               {showAllFonts ? "Ver solo recomendadas" : "Mostrar todas"}
             </Button>
           </div>
-          {colorPickerSection("Primary color", primaryColor, setPrimaryColor, primaryColorPickerOpen, setPrimaryColorPickerOpen)}
-          {colorPickerSection("Accent color", accentColor, setAccentColor, accentColorPickerOpen, setAccentColorPickerOpen)}
+          {colorPickerSection(
+            "Primary color",
+            primaryColor,
+            setPrimaryColor,
+            primaryColorPickerOpen,
+            setPrimaryColorPickerOpen,
+          )}
+          {colorPickerSection(
+            "Accent color",
+            accentColor,
+            setAccentColor,
+            accentColorPickerOpen,
+            setAccentColorPickerOpen,
+          )}
         </div>
       </PopoverContent>
     </Popover>

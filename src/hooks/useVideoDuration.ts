@@ -6,8 +6,9 @@ import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
  * Call from a component that has backgroundVideoUrl available.
  */
 export function useVideoDuration(videoUrl: string | null): void {
-  const setBackgroundVideoDuration =
-    useBackgroundVideoStore((s) => s.setBackgroundVideoDuration);
+  const setBackgroundVideoDuration = useBackgroundVideoStore(
+    (s) => s.setBackgroundVideoDuration,
+  );
 
   useEffect(() => {
     if (!videoUrl) {

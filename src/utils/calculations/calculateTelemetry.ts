@@ -55,10 +55,7 @@ export function calculateTelemetry(
     let bearingDeg = 0;
 
     if (prev) {
-      bearingDeg = bearing(
-        point(coords[i - 1]),
-        point(coords[i]),
-      );
+      bearingDeg = bearing(point(coords[i - 1]), point(coords[i]));
       segmentDistance = distance(point(coords[i - 1]), point(coords[i]), {
         units: "meters",
       });

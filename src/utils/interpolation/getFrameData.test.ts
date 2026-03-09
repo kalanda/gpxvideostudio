@@ -1,6 +1,6 @@
-import { describe, expect, test } from "vitest";
 import { featureCollection, point } from "@turf/helpers";
 import type { Point } from "geojson";
+import { describe, expect, test } from "vitest";
 import type {
   TelemetryFeatureCollection,
   TelemetryPoint,

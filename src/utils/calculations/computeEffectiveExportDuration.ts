@@ -30,7 +30,7 @@ export function computeEffectiveExportDuration({
     videoDurationSeconds > 0 &&
     videoTrimEndSeconds > 0
       ? Math.min(videoTrimEndSeconds, videoDurationSeconds)
-      : videoDurationSeconds ?? 0;
+      : (videoDurationSeconds ?? 0);
   const maxFromVideo =
     videoDurationSeconds != null && videoDurationSeconds > 0
       ? Math.max(0, videoSegmentEnd - videoTrimStartSeconds)

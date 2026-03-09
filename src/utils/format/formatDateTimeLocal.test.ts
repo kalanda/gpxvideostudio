@@ -1,8 +1,5 @@
 import { describe, expect, test } from "vitest";
-import {
-  formatDateLocal,
-  formatTimeLocal,
-} from "./formatDateTimeLocal";
+import { formatDateLocal, formatTimeLocal } from "./formatDateTimeLocal";
 
 describe("formatDateLocal", () => {
   test("formats date in local timezone (structure: day month year)", () => {

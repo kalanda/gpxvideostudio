@@ -10,7 +10,9 @@ type WidgetAppearanceState = {
 type WidgetAppearanceActions = {
   setFontFamily: (fontFamily: WidgetAppearanceState["fontFamily"]) => void;
   setAccentColor: (accentColor: WidgetAppearanceState["accentColor"]) => void;
-  setPrimaryColor: (primaryColor: WidgetAppearanceState["primaryColor"]) => void;
+  setPrimaryColor: (
+    primaryColor: WidgetAppearanceState["primaryColor"],
+  ) => void;
 };
 
 const initialState: WidgetAppearanceState = {

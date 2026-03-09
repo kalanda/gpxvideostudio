@@ -18,16 +18,11 @@ export function useTrimmedTelemetryPoints(): TelemetryFeatureCollection | null {
   const { effectiveDurationSeconds } = useEffectiveExportDuration();
 
   return useMemo(() => {
-    if (!telemetryPoints || telemetryPoints.features.length === 0)
-      return null;
+    if (!telemetryPoints || telemetryPoints.features.length === 0) return null;
 
     const start = gpxTrimStartSeconds;
     const end = gpxTrimStartSeconds + effectiveDurationSeconds;
 
     return sliceTelemetryByElapsed(telemetryPoints, start, end);
-  }, [
-    telemetryPoints,
-    gpxTrimStartSeconds,
-    effectiveDurationSeconds,
-  ]);
+  }, [telemetryPoints, gpxTrimStartSeconds, effectiveDurationSeconds]);
 }

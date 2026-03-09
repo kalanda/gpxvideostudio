@@ -5,10 +5,7 @@ import { describe, expect, test } from "vitest";
 import { parseGpx } from "./parseGpx";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const sampleGpx = readFileSync(
-  join(__dirname, "fixtures/sample.gpx"),
-  "utf-8",
-);
+const sampleGpx = readFileSync(join(__dirname, "fixtures/sample.gpx"), "utf-8");
 
 describe("parseGpx", () => {
   test("parses metadata correctly", () => {
