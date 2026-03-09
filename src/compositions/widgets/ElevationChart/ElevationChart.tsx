@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { ELEVATION_CHART } from "@/constants/defaults";
+import { ELEVATION_CHART, SVG_PATH_PRECISION } from "@/constants/defaults";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 
 type ElevationChartProps = {
@@ -37,7 +37,10 @@ export const ElevationChart: FC<ElevationChartProps> = (props) => {
   };
 
   const pathD = elevations
-    .map((e, i) => `${i === 0 ? "M" : "L"} ${toX(i)} ${toY(e)}`)
+    .map(
+      (e, i) =>
+        `${i === 0 ? "M" : "L"} ${toX(i).toFixed(SVG_PATH_PRECISION)} ${toY(e).toFixed(SVG_PATH_PRECISION)}`,
+    )
     .join(" ");
 
   const cursorX = pad + progress * innerW;
@@ -64,10 +67,10 @@ export const ElevationChart: FC<ElevationChartProps> = (props) => {
         />
         {/* Cursor line */}
         <line
-          x1={cursorX}
-          y1={pad}
-          x2={cursorX}
-          y2={pad + innerH}
+          x1={cursorX.toFixed(SVG_PATH_PRECISION)}
+          y1={pad.toFixed(SVG_PATH_PRECISION)}
+          x2={cursorX.toFixed(SVG_PATH_PRECISION)}
+          y2={(pad + innerH).toFixed(SVG_PATH_PRECISION)}
           stroke={primaryColor}
           strokeOpacity={0.5}
           strokeWidth={cursorLineStrokeWidth}
@@ -75,7 +78,7 @@ export const ElevationChart: FC<ElevationChartProps> = (props) => {
         {/* Cursor dot on the line */}
         {elevations.length > 0 && (
           <circle
-            cx={cursorX}
+            cx={cursorX.toFixed(SVG_PATH_PRECISION)}
             cy={toY(
               elevations[
                 Math.min(
@@ -83,7 +86,7 @@ export const ElevationChart: FC<ElevationChartProps> = (props) => {
                   elevations.length - 1,
                 )
               ],
-            )}
+            ).toFixed(SVG_PATH_PRECISION)}
             r={cursorDotRadius}
             fill={accentColor}
           />

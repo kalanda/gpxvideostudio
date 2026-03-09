@@ -2,7 +2,7 @@ import bbox from "@turf/bbox";
 import { lineString } from "@turf/helpers";
 import type { Feature, Point } from "geojson";
 import type { FC } from "react";
-import { MINIMAP } from "@/constants/defaults";
+import { MINIMAP, SVG_PATH_PRECISION } from "@/constants/defaults";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 import type {
   TelemetryFeatureCollection,
@@ -91,7 +91,8 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
   const coords = route?.geometry.coordinates ?? [];
   const pathD = coords
     .map(
-      (coord, i) => `${i === 0 ? "M" : "L"} ${toX(coord[0])} ${toY(coord[1])}`,
+      (coord, i) =>
+        `${i === 0 ? "M" : "L"} ${toX(coord[0]).toFixed(SVG_PATH_PRECISION)} ${toY(coord[1]).toFixed(SVG_PATH_PRECISION)}`,
     )
     .join(" ");
 
@@ -151,21 +152,21 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
       {startCx !== null && startCy !== null && (
         <use
           href="#minimap-start-circle"
-          transform={`translate(${startCx} ${startCy})`}
+          transform={`translate(${startCx.toFixed(SVG_PATH_PRECISION)} ${startCy.toFixed(SVG_PATH_PRECISION)})`}
           fill={primaryColor}
         />
       )}
       {endCx !== null && endCy !== null && (
         <use
           href="#minimap-end-circle"
-          transform={`translate(${endCx} ${endCy})`}
+          transform={`translate(${endCx.toFixed(SVG_PATH_PRECISION)} ${endCy.toFixed(SVG_PATH_PRECISION)})`}
           fill={primaryColor}
         />
       )}
       <use
         href="#minimap-arrow"
         fill={accentColor}
-        transform={`translate(${cx} ${cy}) rotate(${rotation})`}
+        transform={`translate(${cx.toFixed(SVG_PATH_PRECISION)} ${cy.toFixed(SVG_PATH_PRECISION)}) rotate(${rotation.toFixed(SVG_PATH_PRECISION)})`}
         aria-hidden
       />
     </svg>

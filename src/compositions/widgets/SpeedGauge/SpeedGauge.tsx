@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 import { formatSpeed } from "@/utils/format/formatSpeed";
+import { SVG_PATH_PRECISION } from "@/constants/defaults";
 import { DataItem } from "../DataItem";
 
 type SpeedGaugeProps = {
@@ -36,7 +37,7 @@ export const SpeedGauge: FC<SpeedGaugeProps> = (props) => {
   const x2 = cx + trackR * Math.cos(endAngle);
   const y2 = cy + trackR * Math.sin(endAngle);
   const largeArc = 1;
-  const arcD = `M ${x1} ${y1} A ${trackR} ${trackR} 0 ${largeArc} 1 ${x2} ${y2}`;
+  const arcD = `M ${x1.toFixed(SVG_PATH_PRECISION)} ${y1.toFixed(SVG_PATH_PRECISION)} A ${trackR.toFixed(SVG_PATH_PRECISION)} ${trackR.toFixed(SVG_PATH_PRECISION)} 0 ${largeArc} 1 ${x2.toFixed(SVG_PATH_PRECISION)} ${y2.toFixed(SVG_PATH_PRECISION)}`;
   const arcLength =
     (trackR * (NEEDLE_ANGLE_MAX - NEEDLE_ANGLE_MIN) * Math.PI) / 180;
 
@@ -77,16 +78,21 @@ export const SpeedGauge: FC<SpeedGaugeProps> = (props) => {
           />
           {/* Needle */}
           <line
-            x1={cx}
-            y1={cy}
-            x2={needleEndX}
-            y2={needleEndY}
+            x1={cx.toFixed(SVG_PATH_PRECISION)}
+            y1={cy.toFixed(SVG_PATH_PRECISION)}
+            x2={needleEndX.toFixed(SVG_PATH_PRECISION)}
+            y2={needleEndY.toFixed(SVG_PATH_PRECISION)}
             stroke={primaryColor}
             strokeWidth={3}
             strokeLinecap="round"
           />
           {/* Center dot */}
-          <circle cx={cx} cy={cy} r={4} fill={primaryColor} />
+          <circle
+            cx={cx.toFixed(SVG_PATH_PRECISION)}
+            cy={cy.toFixed(SVG_PATH_PRECISION)}
+            r={4}
+            fill={primaryColor}
+          />
         </svg>
       </div>
       <DataItem value={formatSpeed(speed)} unit="km/h" />

@@ -82,3 +82,6 @@ export const MINIMAP = {
   pad: 8,
   routeStrokeWidth: 1,
 } as const;
+
+/** Number of decimals for SVG paths to optimize rendering */
+export const SVG_PATH_PRECISION = 2;
