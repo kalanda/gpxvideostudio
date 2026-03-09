@@ -63,7 +63,7 @@ export const TelemetryOverlayLayout: FC = () => {
               )}
               progress={progressInSegment}
             />
-            <div className="flex flex-col items-center justify-center gap-8 shrink-0">
+            <div className="flex flex-col items-center justify-center gap-8 shrink-0 w-64">
               <DataPanel
                 distance={data.properties.distance}
                 elapsed={data.properties.elapsed}

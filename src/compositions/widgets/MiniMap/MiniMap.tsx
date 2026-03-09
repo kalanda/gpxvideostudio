@@ -18,8 +18,6 @@ type MiniMapProps = {
 };
 
 const { viewBoxSize, pad, routeStrokeWidth } = MINIMAP;
-/** Arrow size (tip to base in viewBox units) */
-const ARROW_R = 5;
 
 export const MiniMap: FC<MiniMapProps> = (props) => {
   const { points, boundsPoints, currentPoint } = props;
@@ -103,7 +101,17 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
   const bearingDeg = currentPoint.properties.bearing ?? 0;
   // Bearing is unwrapped (may be outside -180..180). Normalize to [0, 360) for SVG rotate.
   const rotation = ((bearingDeg % 360) + 360) % 360;
-  const arrowPath = `M ${cx} ${cy - ARROW_R} L ${cx - ARROW_R * 0.7} ${cy + ARROW_R * 0.6} L ${cx} ${cy + ARROW_R * 0.25} L ${cx + ARROW_R * 0.7} ${cy + ARROW_R * 0.6} Z`;
+
+  const startPoint = featuresForRoute.length > 0 ? featuresForRoute[0] : null;
+  const endPoint =
+    featuresForRoute.length > 0
+      ? featuresForRoute[featuresForRoute.length - 1]
+      : null;
+
+  const startCx = startPoint ? toX(startPoint.geometry.coordinates[0]) : null;
+  const startCy = startPoint ? toY(startPoint.geometry.coordinates[1]) : null;
+  const endCx = endPoint ? toX(endPoint.geometry.coordinates[0]) : null;
+  const endCy = endPoint ? toY(endPoint.geometry.coordinates[1]) : null;
 
   return (
     <svg
@@ -114,6 +122,24 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
       role="img"
       aria-label="Route map with current position"
     >
+      <defs>
+        <path
+          id="minimap-arrow"
+          d="M 0 -2.80 L -2.44 2.80 L 0 1.575 L 2.44 2.80 Z"
+        />
+        <circle
+          id="minimap-start-circle"
+          cx={0}
+          cy={0}
+          r={routeStrokeWidth * 1.5}
+        />
+        <circle
+          id="minimap-end-circle"
+          cx={0}
+          cy={0}
+          r={routeStrokeWidth * 1.5}
+        />
+      </defs>
       <path
         d={pathD}
         fill="none"
@@ -122,11 +148,24 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path
-        d={arrowPath}
+      {startCx !== null && startCy !== null && (
+        <use
+          href="#minimap-start-circle"
+          transform={`translate(${startCx} ${startCy})`}
+          fill={primaryColor}
+        />
+      )}
+      {endCx !== null && endCy !== null && (
+        <use
+          href="#minimap-end-circle"
+          transform={`translate(${endCx} ${endCy})`}
+          fill={primaryColor}
+        />
+      )}
+      <use
+        href="#minimap-arrow"
         fill={accentColor}
-        strokeWidth={1}
-        transform={`rotate(${rotation} ${cx} ${cy})`}
+        transform={`translate(${cx} ${cy}) rotate(${rotation})`}
         aria-hidden
       />
     </svg>
