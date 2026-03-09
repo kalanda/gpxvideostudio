@@ -63,13 +63,27 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
 
   const inner = viewBoxSize - pad * 2;
 
+  const centerLat = (minLat + maxLat) / 2;
+  // Factor de corrección para la longitud (proyección de Mercator aproximada)
+  const lonCorrection = Math.cos((centerLat * Math.PI) / 180);
+
+  const widthDeg = (maxLon - minLon) * lonCorrection;
+  const heightDeg = maxLat - minLat;
+
+  // Escalar de forma uniforme para mantener la proporción geométrica ("contain")
+  const scale = inner / (Math.max(widthDeg, heightDeg) || 1);
+
+  // Centrar el mapa dentro del recuadro
+  const xOffset = pad + (inner - widthDeg * scale) / 2;
+  const yOffset = pad + (inner - heightDeg * scale) / 2;
+
   const toX = (longitude: number) => {
-    if (empty || maxLon === minLon) return pad + inner / 2;
-    return pad + ((longitude - minLon) / (maxLon - minLon)) * inner;
+    if (empty) return pad + inner / 2;
+    return xOffset + (longitude - minLon) * lonCorrection * scale;
   };
   const toY = (latitude: number) => {
-    if (empty || maxLat === minLat) return pad + inner / 2;
-    return pad + ((maxLat - latitude) / (maxLat - minLat)) * inner;
+    if (empty) return pad + inner / 2;
+    return yOffset + (maxLat - latitude) * scale;
   };
 
   const coords = route?.geometry.coordinates ?? [];
