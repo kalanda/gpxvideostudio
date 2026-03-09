@@ -25,7 +25,11 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
   const { points, boundsPoints, currentPoint } = props;
   const { primaryColor, accentColor } = useWidgetAppearanceStore();
 
-  const featuresForRoute = points.features.length >= 2 ? points.features : [];
+  const activePoints =
+    boundsPoints && boundsPoints.features.length >= 2 ? boundsPoints : points;
+
+  const featuresForRoute =
+    activePoints.features.length >= 2 ? activePoints.features : [];
 
   const route =
     featuresForRoute.length > 0
