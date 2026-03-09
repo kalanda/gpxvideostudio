@@ -15,6 +15,8 @@ const {
   pathStrokeWidth,
   cursorLineStrokeWidth,
   cursorDotRadius,
+  minElevationRange,
+  paddingFactor,
 } = ELEVATION_CHART;
 
 export const ElevationChart: FC<ElevationChartProps> = (props) => {
@@ -23,9 +25,26 @@ export const ElevationChart: FC<ElevationChartProps> = (props) => {
 
   const validElevations = elevations.filter((e): e is number => e !== null);
 
-  const minEle = elevations.length > 0 ? Math.min(...validElevations) : 0;
-  const maxEle = elevations.length > 0 ? Math.max(...validElevations) : 100;
-  const range = maxEle - minEle || 1;
+  const actualMinEle =
+    validElevations.length > 0 ? Math.min(...validElevations) : 0;
+  const actualMaxEle =
+    validElevations.length > 0 ? Math.max(...validElevations) : 100;
+  const actualRange = actualMaxEle - actualMinEle;
+
+  let displayMinEle = actualMinEle;
+  let displayMaxEle = actualMaxEle;
+
+  if (actualRange < minElevationRange) {
+    const center = (actualMaxEle + actualMinEle) / 2;
+    displayMinEle = center - minElevationRange / 2;
+    displayMaxEle = center + minElevationRange / 2;
+  } else {
+    const padding = actualRange * paddingFactor;
+    displayMinEle -= padding;
+    displayMaxEle += padding;
+  }
+
+  const range = displayMaxEle - displayMinEle || 1;
   const innerW = viewBoxWidth - pad * 2;
   const innerH = viewBoxHeight - pad * 2;
 
@@ -33,7 +52,7 @@ export const ElevationChart: FC<ElevationChartProps> = (props) => {
     pad + (i / Math.max(1, elevations.length - 1)) * innerW;
   const toY = (ele: number | null) => {
     if (ele === null) return pad + innerH / 2;
-    return pad + innerH - ((ele - minEle) / range) * innerH;
+    return pad + innerH - ((ele - displayMinEle) / range) * innerH;
   };
 
   const pathD = elevations
