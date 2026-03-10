@@ -60,10 +60,43 @@ export const PRESET_FONT_FAMILIES = [
   "Work Sans",
 ] as const;
 
+/** Map base layer theme (MiniMap). */
+export enum MapTheme {
+  None = "none",
+  Light = "light",
+  Dark = "dark",
+  Colored = "colored",
+}
+
+/** MiniMap: north-up vs rotate with route direction. */
+export enum MapBearingMode {
+  Fixed = "fixed",
+  Dynamic = "dynamic",
+}
+
+/** MiniMap: show full route in frame vs follow current point. */
+export enum MapViewportMode {
+  FullRoute = "full-route",
+  FollowPoint = "follow-point",
+}
+
+/** MiniMap: camera tilt in degrees. */
+export enum MapPitch {
+  TopDown = 0,
+  Tilted = 60,
+}
+
+/** Valores numéricos de MapPitch para iterar (Object.values incluye las claves en enums numéricos). */
+export const MAP_PITCH_VALUES: MapPitch[] = [MapPitch.TopDown, MapPitch.Tilted];
+
 export const DEFAULT_WIDGET_APPEARANCE = {
   fontFamily: "Roboto",
   primaryColor: "#ffffff",
   accentColor: "#B0BC00",
+  mapTheme: MapTheme.Dark,
+  mapBearingMode: MapBearingMode.Fixed,
+  mapViewportMode: MapViewportMode.FollowPoint,
+  mapPitch: MapPitch.Tilted,
 } as const;
 
 /** ElevationChart SVG: viewBox, strokes and cursor in viewBox units. */
@@ -78,11 +111,25 @@ export const ELEVATION_CHART = {
   paddingFactor: 0.1, // Add 10% padding top and bottom so the path doesn't touch the SVG edges
 } as const;
 
-/** MiniMap SVG: viewBox, padding and path stroke in viewBox units. */
+export const MAP_THEMES_BASEMAP_URLS: Record<MapTheme, string | null> = {
+  [MapTheme.None]: null,
+  [MapTheme.Light]:
+    "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+  [MapTheme.Dark]:
+    "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+  [MapTheme.Colored]:
+    "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
+} as const;
+
+/** MiniMap: viewBox, padding and path stroke in viewBox units. */
 export const MINIMAP = {
   viewBoxSize: 100,
   pad: 8,
   routeStrokeWidth: 1,
+  defaultMapTheme: MapTheme.Dark,
+  defaultMapBearingMode: MapBearingMode.Fixed,
+  defaultMapViewportMode: MapViewportMode.FollowPoint,
+  defaultMapPitch: MapPitch.Tilted,
 } as const;
 
 /** Number of decimals for SVG paths to optimize rendering */

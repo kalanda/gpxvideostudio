@@ -2,7 +2,7 @@ import type { FC } from "react";
 import { SVG_PATH_PRECISION } from "@/constants/defaults";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 import { formatSpeed } from "@/utils/format/formatSpeed";
-import { DataItem } from "../DataItem";
+import { DataItem } from "./DataItem";
 
 type SpeedGaugeProps = {
   /** Speed in m/s */

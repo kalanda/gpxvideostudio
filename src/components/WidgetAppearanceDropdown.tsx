@@ -1,15 +1,47 @@
 import {
   Autocomplete,
   Button,
+  Divider,
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Select,
+  SelectItem,
 } from "@heroui/react";
 import { Palette } from "lucide-react";
 import { useState } from "react";
 import { CompactPicker } from "react-color";
+import {
+  MAP_PITCH_VALUES,
+  MapBearingMode,
+  MapPitch,
+  MapTheme,
+  MapViewportMode,
+} from "@/constants/defaults";
 import { useFontSelector } from "@/hooks/useFontSelector";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
+
+const MAP_THEME_LABELS: Record<MapTheme, string> = {
+  [MapTheme.None]: "None",
+  [MapTheme.Light]: "Ligth",
+  [MapTheme.Dark]: "Dark",
+  [MapTheme.Colored]: "Colored",
+};
+
+const BEARING_MODE_LABELS: Record<MapBearingMode, string> = {
+  [MapBearingMode.Fixed]: "Fixed",
+  [MapBearingMode.Dynamic]: "Dynamic",
+};
+
+const VIEWPORT_MODE_LABELS: Record<MapViewportMode, string> = {
+  [MapViewportMode.FullRoute]: "Full Route",
+  [MapViewportMode.FollowPoint]: "Follow Point",
+};
+
+const PITCH_LABELS: Record<MapPitch, string> = {
+  [MapPitch.TopDown]: "Top Down",
+  [MapPitch.Tilted]: "Tilted",
+};
 
 export const WidgetAppearanceDropdown = () => {
   const {
@@ -19,8 +51,20 @@ export const WidgetAppearanceDropdown = () => {
     showAllFonts,
     setShowAllFonts,
   } = useFontSelector();
-  const { accentColor, setAccentColor, primaryColor, setPrimaryColor } =
-    useWidgetAppearanceStore();
+  const {
+    accentColor,
+    setAccentColor,
+    primaryColor,
+    setPrimaryColor,
+    mapTheme,
+    setMapTheme,
+    mapBearingMode,
+    setMapBearingMode,
+    mapViewportMode,
+    setMapViewportMode,
+    mapPitch,
+    setMapPitch,
+  } = useWidgetAppearanceStore();
   const [accentColorPickerOpen, setAccentColorPickerOpen] = useState(false);
   const [primaryColorPickerOpen, setPrimaryColorPickerOpen] = useState(false);
 
@@ -76,10 +120,8 @@ export const WidgetAppearanceDropdown = () => {
         <div className="flex flex-col gap-3 px-1 py-2">
           <div className="flex flex-col gap-1">
             <Autocomplete
-              label="Fuente"
-              placeholder={
-                showAllFonts ? "Buscar en todas las fuentes…" : "Elegir fuente"
-              }
+              label="Font"
+              placeholder={showAllFonts ? "Search all fonts…" : "Select font"}
               selectedKey={fontFamily}
               onSelectionChange={onSelectionChange}
               size="sm"
@@ -96,7 +138,7 @@ export const WidgetAppearanceDropdown = () => {
               className="w-full justify-start text-foreground-500"
               onPress={() => setShowAllFonts((v) => !v)}
             >
-              {showAllFonts ? "Ver solo recomendadas" : "Mostrar todas"}
+              {showAllFonts ? "Show only recommended fonts" : "Show all fonts"}
             </Button>
           </div>
           {colorPickerSection(
@@ -113,6 +155,73 @@ export const WidgetAppearanceDropdown = () => {
             accentColorPickerOpen,
             setAccentColorPickerOpen,
           )}
+          <Divider />
+          <div className="flex flex-col gap-2">
+            <span className="text-xs font-medium text-foreground-500">
+              Map appearance
+            </span>
+            <Select
+              label="Theme"
+              selectedKeys={[mapTheme]}
+              onSelectionChange={(keys) => {
+                const v = Array.from(keys)[0] as MapTheme | undefined;
+                if (v != null && Object.values(MapTheme).includes(v))
+                  setMapTheme(v);
+              }}
+              size="sm"
+              classNames={{ base: "w-full" }}
+            >
+              {Object.values(MapTheme).map((t) => (
+                <SelectItem key={t}>{MAP_THEME_LABELS[t]}</SelectItem>
+              ))}
+            </Select>
+            <Select
+              label="Viewport"
+              selectedKeys={[mapViewportMode]}
+              onSelectionChange={(keys) => {
+                const v = Array.from(keys)[0] as MapViewportMode | undefined;
+                if (v != null && Object.values(MapViewportMode).includes(v))
+                  setMapViewportMode(v);
+              }}
+              size="sm"
+              classNames={{ base: "w-full" }}
+            >
+              {Object.values(MapViewportMode).map((m) => (
+                <SelectItem key={m}>{VIEWPORT_MODE_LABELS[m]}</SelectItem>
+              ))}
+            </Select>
+            <Select
+              label="Camera"
+              selectedKeys={[String(mapPitch)]}
+              onSelectionChange={(keys) => {
+                const v = Array.from(keys)[0];
+                const n = v ? Number(v) : undefined;
+                if (n !== undefined && MAP_PITCH_VALUES.includes(n as MapPitch))
+                  setMapPitch(n as MapPitch);
+              }}
+              size="sm"
+              classNames={{ base: "w-full" }}
+            >
+              {MAP_PITCH_VALUES.map((p) => (
+                <SelectItem key={String(p)}>{PITCH_LABELS[p]}</SelectItem>
+              ))}
+            </Select>
+            <Select
+              label="Bearing"
+              selectedKeys={[mapBearingMode]}
+              onSelectionChange={(keys) => {
+                const v = Array.from(keys)[0] as MapBearingMode | undefined;
+                if (v != null && Object.values(MapBearingMode).includes(v))
+                  setMapBearingMode(v);
+              }}
+              size="sm"
+              classNames={{ base: "w-full" }}
+            >
+              {Object.values(MapBearingMode).map((b) => (
+                <SelectItem key={b}>{BEARING_MODE_LABELS[b]}</SelectItem>
+              ))}
+            </Select>
+          </div>
         </div>
       </PopoverContent>
     </Popover>
