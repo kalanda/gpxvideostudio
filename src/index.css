@@ -6,4 +6,11 @@ html,
 body,
 #root {
   height: 100%;
+  user-select: none;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+  user-select: text;
 }
