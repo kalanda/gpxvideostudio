@@ -1,4 +1,5 @@
 import { Alert, Button, useDisclosure } from "@heroui/react";
+import type { PlayerRef } from "@remotion/player";
 import { Player } from "@remotion/player";
 import { Download, MonitorPlay, Settings } from "lucide-react";
 import type { FC } from "react";
@@ -12,11 +13,13 @@ import { useVideoSettingsStore } from "@/stores/videoSettingsStore";
 import { formatTime } from "@/utils/format/formatTime";
 import { ExportVideoModal } from "./ExportVideoModal";
 import { MiniCard } from "./MiniCard";
+import { VideoMonitorControls } from "./VideoMonitorControls";
 import { VideoSettingsModal } from "./VideoSettingsModal";
 import { WidgetAppearanceDropdown } from "./WidgetAppearanceDropdown";
 
 export const VideoMonitor: FC = () => {
   const gpxInputRef = useRef<HTMLInputElement>(null);
+  const playerRef = useRef<PlayerRef>(null);
   const { fps, width, height } = useVideoSettingsStore();
   const { telemetryPoints } = useTelemetryStore();
   const { durationInFrames, effectiveDurationSeconds } =
@@ -76,64 +79,73 @@ export const VideoMonitor: FC = () => {
         {telemetryPoints && error && (
           <Alert color="danger" variant="flat" description={error} />
         )}
-        <div
-          className="relative flex w-full items-center justify-center overflow-hidden rounded-small bg-background-800"
-          style={{
-            aspectRatio: `${width}/${height}`,
-            maxHeight: "min(50vh, 700px)",
-          }}
-        >
-          {!telemetryPoints && (
-            <div className="absolute inset-0 z-10 flex w-full flex-col items-center justify-center">
-              <input
-                ref={gpxInputRef}
-                type="file"
-                accept=".gpx"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  e.target.value = "";
-                  if (file) void loadFromFile(file);
-                }}
-                className="hidden"
-                aria-hidden
-              />
-              <Button onPress={() => gpxInputRef.current?.click()}>
-                Load a GPX to add the telemetry track
-              </Button>
-            </div>
-          )}
-          {/* Wrapper sized to fit inside 16:9 box while keeping video aspect ratio */}
+        <div className="flex w-full flex-col">
           <div
-            className="shrink-0"
+            className="relative flex w-full items-center justify-center overflow-hidden rounded-small bg-background-800"
             style={{
-              aspectRatio: `${width} / ${height}`,
-              // Video wider than 16/9: limit by height. Video taller: limit by width.
-              maxWidth: "100%",
-              maxHeight: "100%",
-              width: width / height >= 16 / 9 ? "100%" : undefined,
-              height: width / height < 16 / 9 ? "100%" : undefined,
+              aspectRatio: `${width}/${height}`,
+              maxHeight: "min(50vh, 700px)",
             }}
           >
-            <Player
-              key={`${width}x${height}-${fps}`}
-              component={MainComposition}
-              durationInFrames={durationInFrames}
-              fps={fps}
-              compositionWidth={width}
-              compositionHeight={height}
+            {!telemetryPoints && (
+              <div className="absolute inset-0 z-10 flex w-full flex-col items-center justify-center">
+                <input
+                  ref={gpxInputRef}
+                  type="file"
+                  accept=".gpx"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    e.target.value = "";
+                    if (file) void loadFromFile(file);
+                  }}
+                  className="hidden"
+                  aria-hidden
+                />
+                <Button onPress={() => gpxInputRef.current?.click()}>
+                  Load a GPX to add the telemetry track
+                </Button>
+              </div>
+            )}
+            {/* Wrapper sized to fit inside 16:9 box while keeping video aspect ratio */}
+            <div
+              className="relative shrink-0"
               style={{
-                display: "block",
-                width: "100%",
-                height: "100%",
-                backgroundColor: "black",
+                aspectRatio: `${width} / ${height}`,
+                // Video wider than 16/9: limit by height. Video taller: limit by width.
+                maxWidth: "100%",
+                maxHeight: "100%",
+                width: width / height >= 16 / 9 ? "100%" : undefined,
+                height: width / height < 16 / 9 ? "100%" : undefined,
               }}
-              controls
-              hideControlsWhenPointerDoesntMove
-              autoPlay={false}
-              loop
-              acknowledgeRemotionLicense
-            />
+            >
+              <Player
+                ref={playerRef}
+                key={`${width}x${height}-${fps}`}
+                component={MainComposition}
+                durationInFrames={durationInFrames}
+                fps={fps}
+                compositionWidth={width}
+                compositionHeight={height}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "black",
+                }}
+                controls={false}
+                autoPlay={false}
+                loop
+                acknowledgeRemotionLicense
+              />
+            </div>
           </div>
+          {telemetryPoints && (
+            <VideoMonitorControls
+              playerRef={playerRef}
+              fps={fps}
+              durationInFrames={durationInFrames}
+            />
+          )}
         </div>
       </MiniCard>
 
