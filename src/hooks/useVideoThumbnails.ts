@@ -108,7 +108,7 @@ export function useVideoThumbnails(
           const dataUrl = canvas.toDataURL("image/jpeg", THUMB_QUALITY);
           results.push(dataUrl);
         } catch {
-          // CORS o canvas tainted
+          // CORS or canvas tainted
         }
         if (cancelled) return;
         captureNext(index + 1);

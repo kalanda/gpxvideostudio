@@ -1,6 +1,6 @@
 import { AutocompleteItem } from "@heroui/react";
 import type { Key } from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 import {
   getFontsToShow,
@@ -20,31 +20,20 @@ export function useFontSelector() {
     PRESET_FONT_FAMILIES.forEach((name) => void loadFontByFamily(name));
   }, []);
 
-  const onSelectionChange = useCallback(
-    async (key: Key | null) => {
-      if (key == null || typeof key !== "string") return;
-      setFontFamily(key);
-      await loadFontByFamily(key);
-    },
-    [setFontFamily],
-  );
+  async function onSelectionChange(key: Key | null) {
+    if (key == null || typeof key !== "string") return;
+    setFontFamily(key);
+    await loadFontByFamily(key);
+  }
 
-  const fontsToShow = useMemo(
-    () => getFontsToShow(showAllFonts, fontFamily),
-    [showAllFonts, fontFamily],
-  );
-
-  const fontItems = useMemo(
-    () =>
-      fontsToShow.map((f) => (
-        <AutocompleteItem key={f.fontFamily} textValue={f.fontFamily}>
-          <span style={{ fontFamily: `${f.fontFamily}, sans-serif` }}>
-            {f.fontFamily}
-          </span>
-        </AutocompleteItem>
-      )),
-    [fontsToShow],
-  );
+  const fontsToShow = getFontsToShow(showAllFonts, fontFamily);
+  const fontItems = fontsToShow.map((f) => (
+    <AutocompleteItem key={f.fontFamily} textValue={f.fontFamily}>
+      <span style={{ fontFamily: `${f.fontFamily}, sans-serif` }}>
+        {f.fontFamily}
+      </span>
+    </AutocompleteItem>
+  ));
 
   return {
     fontFamily,

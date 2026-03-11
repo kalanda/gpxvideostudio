@@ -46,7 +46,7 @@ export const DEFAULT_OVERLAY_LAYOUT = {
 
 export const DEFAULT_EXPORT_FILENAME_PREFIX = "telemetry-overlay";
 
-/** Subset of Google Fonts shown by default (legible, versatile). Use "Mostrar todas" to search the full catalog. */
+/** Subset of Google Fonts shown by default (legible, versatile). Use the "Show all" option to search the full catalog. */
 export const PRESET_FONT_FAMILIES = [
   "Roboto",
   "Open Sans",
@@ -86,7 +86,7 @@ export enum MapPitch {
   Tilted = 60,
 }
 
-/** Valores numéricos de MapPitch para iterar (Object.values incluye las claves en enums numéricos). */
+/** Numeric values of MapPitch for iteration (Object.values includes keys in numeric enums). */
 export const MAP_PITCH_VALUES: MapPitch[] = [MapPitch.TopDown, MapPitch.Tilted];
 
 export const DEFAULT_WIDGET_APPEARANCE = {

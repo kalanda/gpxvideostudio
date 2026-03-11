@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { calculateTelemetry } from "@/utils/calculations/calculateTelemetry";
@@ -13,60 +13,49 @@ export function useGpxLoader() {
     useBackgroundVideoStore();
   const { setTelemetryPoints, setGpxFileName } = useTelemetryStore();
 
-  const processGpxString = useCallback(
-    (gpxText: string, fileName: string | undefined) => {
-      const gpx = parseGpx(gpxText);
-      if (gpx.tracks.length === 0) {
-        setGpxError("No tracks found in the GPX file");
-        return;
-      }
-      const points = gpx.tracks[0].points;
-      if (points.length < 2) {
-        setGpxError("The track needs at least 2 points");
-        return;
-      }
-      const hasTime = points.some((p) => p.time !== null);
-      if (!hasTime) {
-        setGpxError("The track must have timestamps");
-        return;
-      }
-      const nextTelemetryPoints = smoothSpeeds(calculateTelemetry(points), 5);
-      setTelemetryPoints(nextTelemetryPoints);
-      if (fileName != null) setGpxFileName(fileName);
-      setGpxTrimStartSeconds(0);
-      setGpxTrimEndSeconds(0);
-      setGpxError(null);
-    },
-    [
-      setTelemetryPoints,
-      setGpxFileName,
-      setGpxTrimStartSeconds,
-      setGpxTrimEndSeconds,
-    ],
-  );
+  function processGpxString(gpxText: string, fileName: string | undefined) {
+    const gpx = parseGpx(gpxText);
+    if (gpx.tracks.length === 0) {
+      setGpxError("No tracks found in the GPX file");
+      return;
+    }
+    const points = gpx.tracks[0].points;
+    if (points.length < 2) {
+      setGpxError("The track needs at least 2 points");
+      return;
+    }
+    const hasTime = points.some((p) => p.time !== null);
+    if (!hasTime) {
+      setGpxError("The track must have timestamps");
+      return;
+    }
+    const nextTelemetryPoints = smoothSpeeds(calculateTelemetry(points), 5);
+    setTelemetryPoints(nextTelemetryPoints);
+    if (fileName != null) setGpxFileName(fileName);
+    setGpxTrimStartSeconds(0);
+    setGpxTrimEndSeconds(0);
+    setGpxError(null);
+  }
 
-  const loadFromFile = useCallback(
-    (file: File) => {
-      if (!file.name.toLowerCase().endsWith(".gpx")) {
-        setGpxError("Select a .gpx file");
+  function loadFromFile(file: File) {
+    if (!file.name.toLowerCase().endsWith(".gpx")) {
+      setGpxError("Select a .gpx file");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = reader.result;
+      if (typeof text !== "string") {
+        setGpxError("Could not read the file");
         return;
       }
-      const reader = new FileReader();
-      reader.onload = () => {
-        const text = reader.result;
-        if (typeof text !== "string") {
-          setGpxError("Could not read the file");
-          return;
-        }
-        processGpxString(text, file.name);
-      };
-      reader.onerror = () => setGpxError("Could not read the file");
-      reader.readAsText(file, "UTF-8");
-    },
-    [processGpxString],
-  );
+      processGpxString(text, file.name);
+    };
+    reader.onerror = () => setGpxError("Could not read the file");
+    reader.readAsText(file, "UTF-8");
+  }
 
-  const loadSample = useCallback(async () => {
+  async function loadSample() {
     setGpxError(null);
     try {
       const res = await fetch(SAMPLE_GPX_URL);
@@ -80,9 +69,11 @@ export function useGpxLoader() {
           : "Error loading the sample GPX file",
       );
     }
-  }, [processGpxString]);
+  }
 
-  const clearError = useCallback(() => setGpxError(null), []);
+  function clearError() {
+    setGpxError(null);
+  }
 
   return {
     gpxError,

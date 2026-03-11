@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import type { TelemetryFeatureCollection } from "@/types/telemetry";
@@ -17,12 +16,10 @@ export function useTrimmedTelemetryPoints(): TelemetryFeatureCollection | null {
   );
   const { effectiveDurationSeconds } = useEffectiveExportDuration();
 
-  return useMemo(() => {
-    if (!telemetryPoints || telemetryPoints.features.length === 0) return null;
+  if (!telemetryPoints || telemetryPoints.features.length === 0) return null;
 
-    const start = gpxTrimStartSeconds;
-    const end = gpxTrimStartSeconds + effectiveDurationSeconds;
+  const start = gpxTrimStartSeconds;
+  const end = gpxTrimStartSeconds + effectiveDurationSeconds;
 
-    return sliceTelemetryByElapsed(telemetryPoints, start, end);
-  }, [telemetryPoints, gpxTrimStartSeconds, effectiveDurationSeconds]);
+  return sliceTelemetryByElapsed(telemetryPoints, start, end);
 }

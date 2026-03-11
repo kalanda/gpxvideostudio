@@ -26,7 +26,7 @@ import maplibregl from "maplibre-gl";
 type MiniMapProps = {
   /** Full telemetry points for the entire route (drawn as the track line). */
   points: TelemetryFeatureCollection;
-  /** Optional: points used only for viewport bounds. When set (e.g. trimmed segment), the map zooms to show this segment so the full "recorrido recortado" is visible. */
+  /** Optional: points used only for viewport bounds. When set (e.g. trimmed segment), the map zooms to show this segment so the full trimmed route is visible. */
   boundsPoints?: TelemetryFeatureCollection | null;
   currentPoint: Feature<Point, TelemetryFrame>;
 };
@@ -264,13 +264,13 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
     }
   }, [frame]);
 
-  const onMapLoad = useCallback(() => {
+  function onMapLoad() {
     setMapLoaded(true);
-  }, []);
+  }
 
   // When DeckGL finishes a render pass AND the base map is ready, wait two
   // animation frames (GPU flush) before telling Remotion to capture.
-  const onDeckAfterRender = useCallback(() => {
+  function onDeckAfterRender() {
     if (delayHandleRef.current !== null && mapLoaded) {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -278,7 +278,7 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
         });
       });
     }
-  }, [mapLoaded, releaseFrame]);
+  }
 
   // After the base map loads for the first time, give DeckGL a moment to
   // composite its layers, then release.
