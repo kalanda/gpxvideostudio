@@ -23,7 +23,7 @@ import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 
 const MAP_THEME_LABELS: Record<MapTheme, string> = {
   [MapTheme.None]: "None",
-  [MapTheme.Light]: "Ligth",
+  [MapTheme.Light]: "Light",
   [MapTheme.Dark]: "Dark",
   [MapTheme.Colored]: "Colored",
 };
@@ -126,7 +126,7 @@ export const WidgetAppearanceDropdown = () => {
               onSelectionChange={onSelectionChange}
               size="sm"
               classNames={{ base: "w-full" }}
-              listboxProps={{ emptyContent: "Sin resultados" }}
+              listboxProps={{ emptyContent: "No results" }}
               isVirtualized={showAllFonts}
               scrollShadowProps={{ isEnabled: false }}
             >

@@ -28,23 +28,10 @@ import {
   videoSettingsFormSchema,
 } from "@/schemas/videoSettingsSchema";
 import { useVideoSettingsStore } from "@/stores/videoSettingsStore";
-
-const PRESET_OPTION_CUSTOM = "custom";
-
-function getMatchingPresetKey(
-  width: number,
-  height: number,
-): ResolutionPresetKey | typeof PRESET_OPTION_CUSTOM {
-  for (const [key, preset] of Object.entries(RESOLUTION_PRESETS)) {
-    if (
-      (width === preset.width && height === preset.height) ||
-      (width === preset.height && height === preset.width)
-    ) {
-      return key as ResolutionPresetKey;
-    }
-  }
-  return PRESET_OPTION_CUSTOM;
-}
+import {
+  CUSTOM_PRESET_KEY,
+  getMatchingPresetKey,
+} from "@/utils/video/getMatchingPresetKey";
 
 const PRESET_LABELS: Record<ResolutionPresetKey, string> = {
   "4k": "4K",
@@ -98,6 +85,7 @@ export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
   const currentPresetKey = getMatchingPresetKey(
     Number(watchedWidth),
     Number(watchedHeight),
+    RESOLUTION_PRESETS,
   );
 
   const applyPreset = (key: ResolutionPresetKey) => {
@@ -127,13 +115,13 @@ export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
             selectedKeys={[currentPresetKey]}
             onSelectionChange={(keys) => {
               const key = Array.from(keys)[0];
-              if (key && key !== PRESET_OPTION_CUSTOM) {
+              if (key && key !== CUSTOM_PRESET_KEY) {
                 applyPreset(key as ResolutionPresetKey);
               }
             }}
             aria-label="Resolution preset"
           >
-            <SelectItem key={PRESET_OPTION_CUSTOM} textValue="Custom">
+            <SelectItem key={CUSTOM_PRESET_KEY} textValue="Custom">
               Custom
             </SelectItem>
             <SelectItem key="4k" textValue={PRESET_LABELS["4k"]}>

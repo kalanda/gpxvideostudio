@@ -7,10 +7,7 @@ import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useGpxLoader } from "@/hooks/useGpxLoader";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
-import {
-  formatDateLocal,
-  formatTimeLocal,
-} from "@/utils/format/formatDateTimeLocal";
+import { formatElapsedAsDateTimeLocal } from "@/utils/format/formatElapsedAsDateTimeLocal";
 
 export const TelemetryTrack: FC = () => {
   const gpxInputRef = useRef<HTMLInputElement>(null);
@@ -109,52 +106,48 @@ export const TelemetryTrack: FC = () => {
       actions={actions}
     >
       {gpxError && <Alert color="danger" variant="flat" title={gpxError} />}
-      {telemetryPoints &&
-        (() => {
-          const gpxStartTime = telemetryPoints.features[0].properties.time;
-          const formatElapsedAsDateTime = (elapsedSeconds: number) => {
-            const date = new Date(
-              gpxStartTime.getTime() + elapsedSeconds * 1000,
-            );
-            return `${formatDateLocal(date)} ${formatTimeLocal(date)}`;
-          };
-          return (
-            <Slider
-              size="sm"
-              label="Trim"
-              step={1}
-              minValue={0}
-              maxValue={Math.max(1, Math.floor(gpxDurationSeconds))}
-              value={[
-                gpxTrimStartSeconds,
-                gpxTrimEndSeconds > 0 ? gpxTrimEndSeconds : gpxDurationSeconds,
-              ]}
-              onChange={(v: number | number[]) => {
-                const arr = Array.isArray(v) ? v : [v, v];
-                const max = Math.max(1, Math.floor(gpxDurationSeconds));
-                let start = Math.min(arr[0], arr[1]);
-                let end = Math.max(arr[0], arr[1]);
-                if (end <= start) end = Math.min(start + 1, max);
-                start = Math.min(start, end - 1);
-                setGpxTrimStartSeconds(start);
-                setGpxTrimEndSeconds(end);
-              }}
-              getValue={(v) =>
-                Array.isArray(v)
-                  ? `${formatElapsedAsDateTime(v[0])} – ${formatElapsedAsDateTime(v[1])}`
-                  : formatElapsedAsDateTime(v)
-              }
-              getTooltipValue={(v, index) =>
-                formatElapsedAsDateTime(Array.isArray(v) ? v[index ?? 0] : v)
-              }
-              showTooltip
-              classNames={{
-                value: "text-xs text-foreground/80",
-                label: "text-foreground/80",
-              }}
-            />
-          );
-        })()}
+      {telemetryPoints && (() => {
+        const gpxStartTime = telemetryPoints.features[0].properties.time;
+        return (
+          <Slider
+            size="sm"
+            label="Trim"
+            step={1}
+            minValue={0}
+            maxValue={Math.max(1, Math.floor(gpxDurationSeconds))}
+            value={[
+              gpxTrimStartSeconds,
+              gpxTrimEndSeconds > 0 ? gpxTrimEndSeconds : gpxDurationSeconds,
+            ]}
+            onChange={(v: number | number[]) => {
+              const arr = Array.isArray(v) ? v : [v, v];
+              const max = Math.max(1, Math.floor(gpxDurationSeconds));
+              let start = Math.min(arr[0], arr[1]);
+              let end = Math.max(arr[0], arr[1]);
+              if (end <= start) end = Math.min(start + 1, max);
+              start = Math.min(start, end - 1);
+              setGpxTrimStartSeconds(start);
+              setGpxTrimEndSeconds(end);
+            }}
+            getValue={(v) =>
+              Array.isArray(v)
+                ? `${formatElapsedAsDateTimeLocal(v[0], gpxStartTime)} – ${formatElapsedAsDateTimeLocal(v[1], gpxStartTime)}`
+                : formatElapsedAsDateTimeLocal(v, gpxStartTime)
+            }
+            getTooltipValue={(v, index) =>
+              formatElapsedAsDateTimeLocal(
+                Array.isArray(v) ? v[index ?? 0] : v,
+                gpxStartTime,
+              )
+            }
+            showTooltip
+            classNames={{
+              value: "text-xs text-foreground/80",
+              label: "text-foreground/80",
+            }}
+          />
+        );
+      })()}
     </MiniCard>
   );
 };

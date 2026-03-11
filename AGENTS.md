@@ -41,3 +41,7 @@ The project uses **commitlint** with **@commitlint/config-conventional**. Every 
 Prefer removing manual memoization first and reintroducing it only when the linter flags it or profiling shows it is necessary.
 
 This keeps the code simpler and avoids redundant memoization that the compiler already provides.
+
+## Utils: one function per file
+
+In `src/utils/`, each exported function lives in its **own file**. Do not group several functions in a single module (e.g. one file with `formatDateLocal`, `formatTimeLocal` and `formatElapsedAsDateTimeLocal`). If a function needs another util, import it from its dedicated file. Tests follow the same layout: one test file per util file (e.g. `formatDateLocal.test.ts` for `formatDateLocal.ts`).

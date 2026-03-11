@@ -1,9 +1,7 @@
 import type { FC } from "react";
 import { DataItem } from "@/compositions/widgets/DataItem";
-import {
-  formatDateLocal,
-  formatTimeLocal,
-} from "@/utils/format/formatDateTimeLocal";
+import { formatDateLocal } from "@/utils/format/formatDateLocal";
+import { formatTimeLocal } from "@/utils/format/formatTimeLocal";
 
 type DateTimeDisplayProps = {
   date: Date;
