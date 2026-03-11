@@ -15,7 +15,7 @@ import { MiniCard } from "./MiniCard";
 import { VideoSettingsModal } from "./VideoSettingsModal";
 import { WidgetAppearanceDropdown } from "./WidgetAppearanceDropdown";
 
-export const VideoPreview: FC = () => {
+export const VideoMonitor: FC = () => {
   const gpxInputRef = useRef<HTMLInputElement>(null);
   const { fps, width, height } = useVideoSettingsStore();
   const { telemetryPoints } = useTelemetryStore();
