@@ -45,3 +45,7 @@ This keeps the code simpler and avoids redundant memoization that the compiler a
 ## Utils: one function per file
 
 In `src/utils/`, each exported function lives in its **own file**. Do not group several functions in a single module (e.g. one file with `formatDateLocal`, `formatTimeLocal` and `formatElapsedAsDateTimeLocal`). If a function needs another util, import it from its dedicated file. Tests follow the same layout: one test file per util file (e.g. `formatDateLocal.test.ts` for `formatDateLocal.ts`).
+
+## Imports format
+
+Always use the `import { whatever } from "@/.../ItemToImport"` format except for the unit tests. At unit test use `import { whatever } from "./itemToTest"`
