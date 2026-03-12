@@ -13,6 +13,7 @@ import { useVideoPlayer } from "@/contexts/VideoPlayerContext";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useExporter } from "@/hooks/useExporter";
 import { useGpxLoader } from "@/hooks/useGpxLoader";
+import { useVideoPlayerControls } from "@/hooks/useVideoPlayerControls";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { useVideoSettingsStore } from "@/stores/videoSettingsStore";
 import { formatTime } from "@/utils/format/formatTime";
@@ -20,6 +21,7 @@ import { formatTime } from "@/utils/format/formatTime";
 export const VideoMonitor: FC = () => {
   const gpxInputRef = useRef<HTMLInputElement>(null);
   const { playerRef } = useVideoPlayer();
+  const { togglePlay } = useVideoPlayerControls();
   const { fps, width, height } = useVideoSettingsStore();
   const { telemetryPoints } = useTelemetryStore();
   const { durationInFrames, effectiveDurationSeconds } =
@@ -107,8 +109,10 @@ export const VideoMonitor: FC = () => {
               </div>
             )}
             {/* Wrapper sized to fit inside 16:9 box while keeping video aspect ratio */}
+            {/* biome-ignore lint/a11y/noStaticElementInteractions: spacebar handled globally; keyboard users can use the play button below */}
+            {/* biome-ignore lint/a11y/useKeyWithClickEvents: same as above */}
             <div
-              className="relative shrink-0"
+              className="relative shrink-0 cursor-pointer"
               style={{
                 aspectRatio: `${width} / ${height}`,
                 // Video wider than 16/9: limit by height. Video taller: limit by width.
@@ -117,6 +121,7 @@ export const VideoMonitor: FC = () => {
                 width: width / height >= 16 / 9 ? "100%" : undefined,
                 height: width / height < 16 / 9 ? "100%" : undefined,
               }}
+              onClick={togglePlay}
             >
               <Player
                 ref={playerRef}
