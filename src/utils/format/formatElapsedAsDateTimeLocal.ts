@@ -1,5 +1,5 @@
-import { formatDateLocal } from "./formatDateLocal";
-import { formatTimeLocal } from "./formatTimeLocal";
+import { formatDateLocal } from "@/utils/format/formatDateLocal";
+import { formatTimeLocal } from "@/utils/format/formatTimeLocal";
 
 /**
  * Format elapsed seconds from a start time as local date + time (e.g. "15 Jul 2024 10:30:45").

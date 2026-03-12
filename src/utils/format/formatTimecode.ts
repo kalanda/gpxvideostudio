@@ -1,4 +1,4 @@
-import { secondsToHMS } from "./secondsToHMS";
+import { secondsToHMS } from "@/utils/format/secondsToHMS";
 
 /** Format frame number as SMPTE-style timecode HH:MM:SS:FF */
 export function formatTimecode(frame: number, fps: number): string {

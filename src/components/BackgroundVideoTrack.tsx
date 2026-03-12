@@ -6,7 +6,7 @@ import { MiniCard } from "@/components/MiniCard";
 import { useVideoDuration } from "@/hooks/useVideoDuration";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { formatTime } from "@/utils/format/formatTime";
-import { BackgroundVideoThumbnails } from "./BackgroundVideoThumbnails";
+import { BackgroundVideoThumbnails } from "@/components/BackgroundVideoThumbnails";
 
 export const BackgroundVideoTrack: FC = () => {
   const videoInputRef = useRef<HTMLInputElement>(null);

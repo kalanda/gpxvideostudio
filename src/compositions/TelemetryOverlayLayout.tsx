@@ -1,5 +1,6 @@
 import type { FC } from "react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
+import { LayoutWrapper } from "@/compositions/LayoutWrapper";
 import { DataPanel } from "@/compositions/widgets/DataPanel";
 import { DateTimeDisplay } from "@/compositions/widgets/DateTimeDisplay";
 import { ElevationChart } from "@/compositions/widgets/ElevationChart";
@@ -11,7 +12,6 @@ import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { calculateSummary } from "@/utils/calculations/calculateSummary";
 import { getFrameData } from "@/utils/interpolation/getFrameData";
-import { LayoutWrapper } from "./LayoutWrapper";
 
 export const TelemetryOverlayLayout: FC = () => {
   const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);

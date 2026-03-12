@@ -4,7 +4,7 @@ import type {
   GpxTrack,
   GpxTrackPoint,
 } from "@/types/gpx";
-import { parseXml } from "./parseXml";
+import { parseXml } from "@/utils/gpx-parser/parseXml";
 
 /**
  * Parse a GPX XML string into a structured GpxFile object.

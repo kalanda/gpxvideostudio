@@ -1,4 +1,4 @@
-import { secondsToHMS } from "./secondsToHMS";
+import { secondsToHMS } from "@/utils/format/secondsToHMS";
 
 /** Format elapsed seconds as HH:MM:SS or MM:SS */
 export function formatTime(seconds: number): string {

@@ -1,4 +1,4 @@
-import { msToKmh } from "./msToKmh";
+import { msToKmh } from "@/utils/format/msToKmh";
 
 /** Format speed as km/h string */
 export function formatSpeed(ms: number): string {

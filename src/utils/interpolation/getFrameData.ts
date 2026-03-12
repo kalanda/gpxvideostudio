@@ -2,7 +2,7 @@ import type {
   TelemetryFeatureCollection,
   TelemetryFrameFeature,
 } from "@/types/telemetry";
-import { interpolateAtTime } from "./interpolateAtTime";
+import { interpolateAtTime } from "@/utils/interpolation/interpolateAtTime";
 
 /**
  * Get the interpolated telemetry for a single frame as a GeoJSON Feature.

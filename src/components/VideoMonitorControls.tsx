@@ -1,5 +1,4 @@
 import { Button, Slider } from "@heroui/react";
-import type { PlayerRef } from "@remotion/player";
 import {
   Maximize,
   Minimize,
@@ -8,8 +7,8 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-import type { FC, RefObject } from "react";
-import { useCallback, useEffect, useState } from "react";
+import type { FC } from "react";
+import { useVideoPlayerControls } from "@/hooks/useVideoPlayerControls";
 import { secondsToHMS } from "@/utils/format/secondsToHMS";
 
 /** Format seconds as HH:MM:SS for playback display (always 3 segments) */
@@ -22,97 +21,33 @@ function formatPlaybackTime(seconds: number): string {
 }
 
 export type VideoMonitorControlsProps = {
-  playerRef: RefObject<PlayerRef | null>;
   fps: number;
   durationInFrames: number;
 };
 
 export const VideoMonitorControls: FC<VideoMonitorControlsProps> = ({
-  playerRef,
   fps,
   durationInFrames,
 }) => {
-  const [currentFrame, setCurrentFrame] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [supportsFullscreen, setSupportsFullscreen] = useState(false);
+  const {
+    currentFrame,
+    isPlaying,
+    isMuted,
+    isFullscreen,
+    supportsFullscreen,
+    togglePlay,
+    toggleMute,
+    toggleFullscreen,
+    seekTo,
+  } = useVideoPlayerControls();
 
   const durationSeconds = durationInFrames / fps;
   const currentSeconds = currentFrame / fps;
 
-  useEffect(() => {
-    const current = playerRef.current;
-    if (!current) return;
-
-    setCurrentFrame(current.getCurrentFrame());
-    setIsPlaying(current.isPlaying());
-    setIsMuted(current.isMuted());
-
-    const onFrameUpdate = () => setCurrentFrame(current.getCurrentFrame());
-    const onPlay = () => setIsPlaying(true);
-    const onPause = () => setIsPlaying(false);
-    const onMuteChange = () => setIsMuted(current.isMuted());
-    const onFullscreenChange = () =>
-      setIsFullscreen(document.fullscreenElement !== null);
-
-    current.addEventListener("frameupdate", onFrameUpdate);
-    current.addEventListener("play", onPlay);
-    current.addEventListener("pause", onPause);
-    current.addEventListener("mutechange", onMuteChange);
-    current.addEventListener("fullscreenchange", onFullscreenChange);
-
-    return () => {
-      current.removeEventListener("frameupdate", onFrameUpdate);
-      current.removeEventListener("play", onPlay);
-      current.removeEventListener("pause", onPause);
-      current.removeEventListener("mutechange", onMuteChange);
-      current.removeEventListener("fullscreenchange", onFullscreenChange);
-    };
-  }, [playerRef]);
-
-  useEffect(() => {
-    setSupportsFullscreen(
-      typeof document !== "undefined" &&
-        (document.fullscreenEnabled ||
-          Boolean(
-            (document as Document & { webkitFullscreenEnabled?: boolean })
-              .webkitFullscreenEnabled,
-          )),
-    );
-  }, []);
-
-  const onTogglePlay = useCallback(() => {
-    playerRef.current?.toggle();
-  }, [playerRef]);
-
-  const onToggleMute = useCallback(() => {
-    const current = playerRef.current;
-    if (!current) return;
-    if (current.isMuted()) {
-      current.unmute();
-    } else {
-      current.mute();
-    }
-  }, [playerRef]);
-
-  const onToggleFullscreen = useCallback(() => {
-    const current = playerRef.current;
-    if (!current) return;
-    if (document.fullscreenElement) {
-      current.exitFullscreen();
-    } else {
-      current.requestFullscreen();
-    }
-  }, [playerRef]);
-
-  const onSeek = useCallback(
-    (value: number | number[]) => {
-      const frame = typeof value === "number" ? value : (value[0] ?? 0);
-      playerRef.current?.seekTo(Math.round(frame));
-    },
-    [playerRef],
-  );
+  const onSeek = (value: number | number[]) => {
+    const frame = typeof value === "number" ? value : (value[0] ?? 0);
+    seekTo(frame);
+  };
 
   return (
     <div className="flex flex-col gap-1.5 rounded-b-small bg-default-100 px-2 py-1.5">
@@ -131,7 +66,7 @@ export const VideoMonitorControls: FC<VideoMonitorControlsProps> = ({
           size="sm"
           variant="light"
           aria-label={isPlaying ? "Pause" : "Play"}
-          onPress={onTogglePlay}
+          onPress={togglePlay}
           className="min-w-8"
         >
           {isPlaying ? <Pause size={18} /> : <Play size={18} />}
@@ -152,7 +87,7 @@ export const VideoMonitorControls: FC<VideoMonitorControlsProps> = ({
           size="sm"
           variant="light"
           aria-label={isMuted ? "Unmute" : "Mute"}
-          onPress={onToggleMute}
+          onPress={toggleMute}
           className="min-w-8"
         >
           {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
@@ -164,7 +99,7 @@ export const VideoMonitorControls: FC<VideoMonitorControlsProps> = ({
             size="sm"
             variant="light"
             aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
-            onPress={onToggleFullscreen}
+            onPress={toggleFullscreen}
             className="ml-auto min-w-8 text-white hover:bg-white/20"
           >
             {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}

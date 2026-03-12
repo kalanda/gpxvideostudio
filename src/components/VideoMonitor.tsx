@@ -1,25 +1,25 @@
 import { Alert, Button, useDisclosure } from "@heroui/react";
-import type { PlayerRef } from "@remotion/player";
 import { Player } from "@remotion/player";
 import { Download, MonitorPlay, Settings } from "lucide-react";
 import type { FC } from "react";
 import { useRef } from "react";
+import { ExportVideoModal } from "@/components/ExportVideoModal";
+import { MiniCard } from "@/components/MiniCard";
+import { VideoMonitorControls } from "@/components/VideoMonitorControls";
+import { VideoSettingsModal } from "@/components/VideoSettingsModal";
+import { WidgetAppearanceDropdown } from "@/components/WidgetAppearanceDropdown";
 import { MainComposition } from "@/compositions/MainComposition";
+import { useVideoPlayer } from "@/contexts/VideoPlayerContext";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useExporter } from "@/hooks/useExporter";
 import { useGpxLoader } from "@/hooks/useGpxLoader";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { useVideoSettingsStore } from "@/stores/videoSettingsStore";
 import { formatTime } from "@/utils/format/formatTime";
-import { ExportVideoModal } from "./ExportVideoModal";
-import { MiniCard } from "./MiniCard";
-import { VideoMonitorControls } from "./VideoMonitorControls";
-import { VideoSettingsModal } from "./VideoSettingsModal";
-import { WidgetAppearanceDropdown } from "./WidgetAppearanceDropdown";
 
 export const VideoMonitor: FC = () => {
   const gpxInputRef = useRef<HTMLInputElement>(null);
-  const playerRef = useRef<PlayerRef>(null);
+  const { playerRef } = useVideoPlayer();
   const { fps, width, height } = useVideoSettingsStore();
   const { telemetryPoints } = useTelemetryStore();
   const { durationInFrames, effectiveDurationSeconds } =
@@ -141,7 +141,6 @@ export const VideoMonitor: FC = () => {
           </div>
           {telemetryPoints && (
             <VideoMonitorControls
-              playerRef={playerRef}
               fps={fps}
               durationInFrames={durationInFrames}
             />

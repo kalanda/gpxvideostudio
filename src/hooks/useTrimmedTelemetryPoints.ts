@@ -1,8 +1,8 @@
+import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import type { TelemetryFeatureCollection } from "@/types/telemetry";
 import { sliceTelemetryByElapsed } from "@/utils/calculations/sliceTelemetryByElapsed";
-import { useEffectiveExportDuration } from "./useEffectiveExportDuration";
 
 /**
  * Returns the telemetry points trimmed to the current export segment.
