@@ -43,18 +43,11 @@ export const ExportVideoModal: FC<ExportVideoModalProps> = ({
   onClose,
 }) => {
   const { backgroundVideoUrl } = useBackgroundVideoStore();
-  const { fps, width, height } = useVideoSettingsStore();
+  const { fps, width, height, container, videoBitrate, setContainer, setVideoBitrate } =
+    useVideoSettingsStore();
   const { effectiveDurationSeconds } = useEffectiveExportDuration();
-  const {
-    isExporting,
-    exportProgress,
-    startExport,
-    cancelExport,
-    container,
-    videoBitrate,
-    setContainer,
-    setVideoBitrate,
-  } = useExporter();
+  const { isExporting, exportProgress, startExport, cancelExport } =
+    useExporter();
 
   const pngEstimatedMemoryUse = calculatePngMemoryUse(
     fps,

@@ -3,12 +3,7 @@ import { format } from "date-fns";
 import JSZip from "jszip";
 import { useRef, useState } from "react";
 import { MainComposition } from "@/compositions/MainComposition";
-import {
-  DEFAULT_EXPORT_FILENAME_PREFIX,
-  DEFAULT_VIDEO_SETTINGS,
-  type VideoBitratePresetKey,
-  type VideoContainer,
-} from "@/constants/defaults";
+import { DEFAULT_EXPORT_FILENAME_PREFIX } from "@/constants/defaults";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { useVideoSettingsStore } from "@/stores/videoSettingsStore";
@@ -17,17 +12,10 @@ import { downloadBlob } from "@/utils/browser/downloadBlob";
 export function useExporter() {
   // Stores
   const { telemetryPoints } = useTelemetryStore();
-  const { fps, width, height } = useVideoSettingsStore();
+  const { fps, width, height, container, videoBitrate } =
+    useVideoSettingsStore();
   const { durationInFrames: effectiveDurationInFrames } =
     useEffectiveExportDuration();
-
-  // Export options (state inside hook, setters exposed)
-  const [container, setContainer] = useState<VideoContainer>(
-    () => DEFAULT_VIDEO_SETTINGS.container,
-  );
-  const [videoBitrate, setVideoBitrate] = useState<VideoBitratePresetKey>(
-    () => DEFAULT_VIDEO_SETTINGS.videoBitrate,
-  );
 
   // States
   const [error, setError] = useState<string | null>(null);
@@ -232,9 +220,5 @@ export function useExporter() {
     exportProgress,
     startExport,
     cancelExport,
-    container,
-    videoBitrate,
-    setContainer,
-    setVideoBitrate,
   };
 }

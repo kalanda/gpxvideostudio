@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { calculateTelemetry } from "@/utils/calculations/calculateTelemetry";
 import { smoothSpeeds } from "@/utils/calculations/smoothSpeeds";
@@ -9,8 +8,7 @@ const SAMPLE_GPX_URL = `${import.meta.env.BASE_URL}sample.gpx`;
 
 export function useGpxLoader() {
   const [gpxError, setGpxError] = useState<string | null>(null);
-  const { setGpxTrimStartSeconds, setGpxTrimEndSeconds } =
-    useBackgroundVideoStore();
+  const { setGpxTrimStartSeconds, setGpxTrimEndSeconds } = useTelemetryStore();
   const { setTelemetryPoints, setGpxFileName } = useTelemetryStore();
 
   function processGpxString(gpxText: string, fileName: string | undefined) {
