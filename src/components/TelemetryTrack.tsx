@@ -5,25 +5,26 @@ import { useEffect, useRef } from "react";
 import { MiniCard } from "@/components/MiniCard";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useGpxLoader } from "@/hooks/useGpxLoader";
-import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { formatElapsedAsDateTimeLocal } from "@/utils/format/formatElapsedAsDateTimeLocal";
 
 export const TelemetryTrack: FC = () => {
   const gpxInputRef = useRef<HTMLInputElement>(null);
   const {
+    telemetryPoints,
+    gpxFileName,
+    clearTelemetry,
     gpxTrimStartSeconds,
     setGpxTrimStartSeconds,
     gpxTrimEndSeconds,
     setGpxTrimEndSeconds,
-  } = useBackgroundVideoStore();
-  const { telemetryPoints, gpxFileName, clearTelemetry } = useTelemetryStore();
+  } = useTelemetryStore();
   const { gpxDurationSeconds } = useEffectiveExportDuration();
   const { gpxError, loadFromFile, loadSample } = useGpxLoader();
 
   useEffect(() => {
     if (gpxDurationSeconds <= 0) return;
-    const current = useBackgroundVideoStore.getState().gpxTrimEndSeconds;
+    const current = useTelemetryStore.getState().gpxTrimEndSeconds;
     setGpxTrimEndSeconds(
       current === 0
         ? gpxDurationSeconds

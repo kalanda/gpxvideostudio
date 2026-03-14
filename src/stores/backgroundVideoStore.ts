@@ -6,8 +6,6 @@ type BackgroundVideoState = {
   backgroundVideoDurationSeconds: number | null;
   videoTrimStartSeconds: number;
   videoTrimEndSeconds: number;
-  gpxTrimStartSeconds: number;
-  gpxTrimEndSeconds: number;
 };
 
 type BackgroundVideoActions = {
@@ -16,8 +14,6 @@ type BackgroundVideoActions = {
   setBackgroundVideoDuration: (seconds: number | null) => void;
   setVideoTrimStartSeconds: (seconds: number) => void;
   setVideoTrimEndSeconds: (seconds: number) => void;
-  setGpxTrimStartSeconds: (seconds: number) => void;
-  setGpxTrimEndSeconds: (seconds: number) => void;
   clearBackgroundVideo: () => void;
 };
 
@@ -27,8 +23,6 @@ const initialState: BackgroundVideoState = {
   backgroundVideoDurationSeconds: null,
   videoTrimStartSeconds: 0,
   videoTrimEndSeconds: 0,
-  gpxTrimStartSeconds: 0,
-  gpxTrimEndSeconds: 0,
 };
 
 export const useBackgroundVideoStore = create<
@@ -47,10 +41,6 @@ export const useBackgroundVideoStore = create<
     set({ videoTrimStartSeconds: Math.max(0, seconds) }),
   setVideoTrimEndSeconds: (seconds) =>
     set({ videoTrimEndSeconds: Math.max(0, seconds) }),
-  setGpxTrimStartSeconds: (seconds) =>
-    set({ gpxTrimStartSeconds: Math.max(0, seconds) }),
-  setGpxTrimEndSeconds: (seconds) =>
-    set({ gpxTrimEndSeconds: Math.max(0, seconds) }),
   clearBackgroundVideo: () =>
     set({
       backgroundVideoUrl: null,

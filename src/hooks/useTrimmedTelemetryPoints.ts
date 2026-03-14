@@ -1,5 +1,4 @@
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
-import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import type { TelemetryFeatureCollection } from "@/types/telemetry";
 import { sliceTelemetryByElapsed } from "@/utils/calculations/sliceTelemetryByElapsed";
@@ -11,9 +10,7 @@ import { sliceTelemetryByElapsed } from "@/utils/calculations/sliceTelemetryByEl
  */
 export function useTrimmedTelemetryPoints(): TelemetryFeatureCollection | null {
   const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
-  const gpxTrimStartSeconds = useBackgroundVideoStore(
-    (s) => s.gpxTrimStartSeconds,
-  );
+  const gpxTrimStartSeconds = useTelemetryStore((s) => s.gpxTrimStartSeconds);
   const { effectiveDurationSeconds } = useEffectiveExportDuration();
 
   if (!telemetryPoints || telemetryPoints.features.length === 0) return null;

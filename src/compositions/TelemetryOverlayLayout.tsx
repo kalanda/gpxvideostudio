@@ -8,7 +8,6 @@ import { MiniMap } from "@/compositions/widgets/MiniMap";
 import { SpeedGauge } from "@/compositions/widgets/SpeedGauge";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useTrimmedTelemetryPoints } from "@/hooks/useTrimmedTelemetryPoints";
-import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { calculateSummary } from "@/utils/calculations/calculateSummary";
 import { getFrameData } from "@/utils/interpolation/getFrameData";
@@ -16,7 +15,7 @@ import { getFrameData } from "@/utils/interpolation/getFrameData";
 export const TelemetryOverlayLayout: FC = () => {
   const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
   const trimmedPoints = useTrimmedTelemetryPoints();
-  const { gpxTrimStartSeconds } = useBackgroundVideoStore();
+  const gpxTrimStartSeconds = useTelemetryStore((s) => s.gpxTrimStartSeconds);
   const { fps } = useVideoConfig();
   const frame = useCurrentFrame();
   const { effectiveDurationSeconds } = useEffectiveExportDuration();

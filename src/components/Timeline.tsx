@@ -2,6 +2,7 @@ import { Button } from "@heroui/react";
 import { Minus, Plus } from "lucide-react";
 import type { FC } from "react";
 import { useState } from "react";
+import { TimelinePlaybackCursor } from "@/components/TimelinePlaybackCursor";
 import { TimelineRuler } from "@/components/TimelineRuler";
 import { useVideoPlayer } from "@/contexts/VideoPlayerContext";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
@@ -26,15 +27,12 @@ export const Timeline: FC = () => {
   const [zoomLevel, setZoomLevel] = useState(1);
 
   const totalFrames = Math.max(1, durationInFrames);
-  const contentWidthPx = totalFrames * PIXELS_PER_FRAME_BASE * zoomLevel;
+  const pixelsPerFrame = PIXELS_PER_FRAME_BASE * zoomLevel;
+  const contentWidthPx = totalFrames * pixelsPerFrame;
   const durationSeconds = totalFrames / fps;
   // px/s: how many pixels represent one second at the current zoom
-  const pixelsPerSecond = fps * PIXELS_PER_FRAME_BASE * zoomLevel;
-  const currentTimeSeconds = currentFrame / fps;
-  const cursorLeftPercent =
-    durationSeconds > 0
-      ? Math.min(100, (currentTimeSeconds / durationSeconds) * 100)
-      : 0;
+  const pixelsPerSecond = fps * pixelsPerFrame;
+  const cursorLeftPx = Math.min(currentFrame * pixelsPerFrame, contentWidthPx);
 
   const handleZoomIn = () => {
     setZoomLevel((z) => Math.min(MAX_ZOOM, z + ZOOM_STEP));
@@ -96,14 +94,7 @@ export const Timeline: FC = () => {
           />
 
           {/* Playback position cursor, synced with video preview */}
-          <div
-            className="pointer-events-none absolute top-0 bottom-0 z-10 w-0.5 min-w-[2px] bg-primary shadow-sm"
-            style={{
-              left: `${cursorLeftPercent}%`,
-              transform: cursorLeftPercent <= 0 ? "none" : "translateX(-50%)",
-            }}
-            aria-hidden
-          />
+          <TimelinePlaybackCursor leftPx={cursorLeftPx} />
         </div>
       </div>
     </section>

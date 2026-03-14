@@ -19,9 +19,8 @@ export function useEffectiveExportDuration(): {
     backgroundVideoDurationSeconds: videoDurationSeconds,
     videoTrimStartSeconds,
     videoTrimEndSeconds,
-    gpxTrimStartSeconds,
-    gpxTrimEndSeconds,
   } = useBackgroundVideoStore();
+  const { gpxTrimStartSeconds, gpxTrimEndSeconds } = useTelemetryStore();
 
   const gpxDurationSeconds = telemetryPoints
     ? telemetryPoints.features[telemetryPoints.features.length - 1].properties
