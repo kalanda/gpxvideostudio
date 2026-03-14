@@ -6,6 +6,8 @@ type BackgroundVideoState = {
   backgroundVideoDurationSeconds: number | null;
   videoTrimStartSeconds: number;
   videoTrimEndSeconds: number;
+  flipHorizontal: boolean;
+  flipVertical: boolean;
 };
 
 type BackgroundVideoActions = {
@@ -14,6 +16,8 @@ type BackgroundVideoActions = {
   setBackgroundVideoDuration: (seconds: number | null) => void;
   setVideoTrimStartSeconds: (seconds: number) => void;
   setVideoTrimEndSeconds: (seconds: number) => void;
+  setFlipHorizontal: (value: boolean) => void;
+  setFlipVertical: (value: boolean) => void;
   clearBackgroundVideo: () => void;
 };
 
@@ -23,6 +27,8 @@ const initialState: BackgroundVideoState = {
   backgroundVideoDurationSeconds: null,
   videoTrimStartSeconds: 0,
   videoTrimEndSeconds: 0,
+  flipHorizontal: false,
+  flipVertical: false,
 };
 
 export const useBackgroundVideoStore = create<
@@ -41,10 +47,14 @@ export const useBackgroundVideoStore = create<
     set({ videoTrimStartSeconds: Math.max(0, seconds) }),
   setVideoTrimEndSeconds: (seconds) =>
     set({ videoTrimEndSeconds: Math.max(0, seconds) }),
+  setFlipHorizontal: (value) => set({ flipHorizontal: value }),
+  setFlipVertical: (value) => set({ flipVertical: value }),
   clearBackgroundVideo: () =>
     set({
       backgroundVideoUrl: null,
       backgroundVideoFileName: null,
       backgroundVideoDurationSeconds: null,
+      flipHorizontal: false,
+      flipVertical: false,
     }),
 }));

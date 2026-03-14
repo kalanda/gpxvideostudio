@@ -15,6 +15,8 @@ export const BackgroundVideoLayer: FC<BackgroundVideoLayerProps> = (props) => {
     backgroundVideoDurationSeconds,
     videoTrimStartSeconds,
     videoTrimEndSeconds,
+    flipHorizontal,
+    flipVertical,
   } = useBackgroundVideoStore();
   const { fps } = useVideoConfig();
 
@@ -33,11 +35,18 @@ export const BackgroundVideoLayer: FC<BackgroundVideoLayerProps> = (props) => {
       ? trimAfterFramesRaw
       : undefined;
 
+  const transformParts = [
+    flipHorizontal ? "scaleX(-1)" : "",
+    flipVertical ? "scaleY(-1)" : "",
+  ].filter(Boolean);
+  const transform = transformParts.length > 0 ? transformParts.join(" ") : undefined;
+
   return (
     <AbsoluteFill>
       <Video
         src={backgroundVideoUrl}
         className="h-full w-full object-cover"
+        style={transform != null ? { transform } : undefined}
         loop={false}
         trimBefore={trimBeforeFrames}
         {...(trimAfterFrames != null && { trimAfter: trimAfterFrames })}

@@ -54,8 +54,12 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { backgroundVideoUrl, videoTrimStartSeconds } =
-    useBackgroundVideoStore();
+  const {
+    backgroundVideoUrl,
+    videoTrimStartSeconds,
+    flipHorizontal,
+    flipVertical,
+  } = useBackgroundVideoStore();
   const { fps } = useProjectVideoSettingsStore();
   const { telemetryPoints, setGpxTrimStartSeconds } = useTelemetryStore();
 
@@ -224,6 +228,14 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
                     ref={videoRef}
                     src={backgroundVideoUrl}
                     className="max-h-full max-w-full object-contain"
+                    style={{
+                      transform: [
+                        flipHorizontal ? "scaleX(-1)" : "",
+                        flipVertical ? "scaleY(-1)" : "",
+                      ]
+                        .filter(Boolean)
+                        .join(" ") || undefined,
+                    }}
                     onTimeUpdate={handleTimeUpdate}
                     onLoadedMetadata={handleLoadedMetadata}
                     onEnded={handleVideoEnded}

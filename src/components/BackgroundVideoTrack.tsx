@@ -1,5 +1,5 @@
 import { Button, Slider, useDisclosure } from "@heroui/react";
-import { Link2, Trash2, Video } from "lucide-react";
+import { FlipHorizontal2, FlipVertical2, Link2, Trash2, Video } from "lucide-react";
 import type { FC } from "react";
 import { useEffect, useRef } from "react";
 import { BackgroundVideoThumbnails } from "@/components/BackgroundVideoThumbnails";
@@ -28,6 +28,10 @@ export const BackgroundVideoTrack: FC = () => {
     setVideoTrimStartSeconds,
     videoTrimEndSeconds,
     setVideoTrimEndSeconds,
+    flipHorizontal,
+    setFlipHorizontal,
+    flipVertical,
+    setFlipVertical,
   } = useBackgroundVideoStore();
   const { telemetryPoints } = useTelemetryStore();
   useVideoDuration(backgroundVideoUrl);
@@ -86,6 +90,22 @@ export const BackgroundVideoTrack: FC = () => {
               Sync video with telemetry
             </Button>
           )}
+          <Button
+            size="sm"
+            variant={flipHorizontal ? "solid" : "flat"}
+            onPress={() => setFlipHorizontal(!flipHorizontal)}
+            startContent={<FlipHorizontal2 size={16} />}
+          >
+            Flip H
+          </Button>
+          <Button
+            size="sm"
+            variant={flipVertical ? "solid" : "flat"}
+            onPress={() => setFlipVertical(!flipVertical)}
+            startContent={<FlipVertical2 size={16} />}
+          >
+            Flip V
+          </Button>
           <Button
             size="sm"
             variant="flat"
