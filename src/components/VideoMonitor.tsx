@@ -5,7 +5,6 @@ import type { FC } from "react";
 import { useRef } from "react";
 import { ExportVideoModal } from "@/components/ExportVideoModal";
 import { MiniCard } from "@/components/MiniCard";
-import { VideoMonitorControls } from "@/components/VideoMonitorControls";
 import { VideoSettingsModal } from "@/components/VideoSettingsModal";
 import { WidgetAppearanceDropdown } from "@/components/WidgetAppearanceDropdown";
 import { MainComposition } from "@/compositions/MainComposition";
@@ -13,19 +12,15 @@ import { useVideoPlayer } from "@/contexts/VideoPlayerContext";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useExporter } from "@/hooks/useExporter";
 import { useGpxLoader } from "@/hooks/useGpxLoader";
-import { useVideoPlayerControls } from "@/hooks/useVideoPlayerControls";
+import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
-import { useVideoSettingsStore } from "@/stores/videoSettingsStore";
-import { formatTime } from "@/utils/format/formatTime";
 
 export const VideoMonitor: FC = () => {
   const gpxInputRef = useRef<HTMLInputElement>(null);
   const { playerRef } = useVideoPlayer();
-  const { togglePlay } = useVideoPlayerControls();
-  const { fps, width, height } = useVideoSettingsStore();
+  const { fps, width, height } = useProjectVideoSettingsStore();
   const { telemetryPoints } = useTelemetryStore();
-  const { durationInFrames, effectiveDurationSeconds } =
-    useEffectiveExportDuration();
+  const { durationInFrames } = useEffectiveExportDuration();
   const { loadFromFile } = useGpxLoader();
   const { error, canExport } = useExporter();
   const {
@@ -39,14 +34,10 @@ export const VideoMonitor: FC = () => {
     onClose: onExportModalClose,
   } = useDisclosure();
 
-  const previewTitle = telemetryPoints
-    ? `Preview (${formatTime(effectiveDurationSeconds)})`
-    : "Preview";
-
   return (
     <>
       <MiniCard
-        title={previewTitle}
+        title="Preview"
         titleIcon={<MonitorPlay size={16} className="shrink-0" />}
         actions={
           <div className="flex flex-wrap items-center gap-2">
@@ -109,8 +100,6 @@ export const VideoMonitor: FC = () => {
               </div>
             )}
             {/* Wrapper sized to fit inside 16:9 box while keeping video aspect ratio */}
-            {/* biome-ignore lint/a11y/noStaticElementInteractions: spacebar handled globally; keyboard users can use the play button below */}
-            {/* biome-ignore lint/a11y/useKeyWithClickEvents: same as above */}
             <div
               className="relative shrink-0 cursor-pointer"
               style={{
@@ -121,7 +110,6 @@ export const VideoMonitor: FC = () => {
                 width: width / height >= 16 / 9 ? "100%" : undefined,
                 height: width / height < 16 / 9 ? "100%" : undefined,
               }}
-              onClick={togglePlay}
             >
               <Player
                 ref={playerRef}
@@ -131,25 +119,19 @@ export const VideoMonitor: FC = () => {
                 fps={fps}
                 compositionWidth={width}
                 compositionHeight={height}
+                controls={true}
+                autoPlay={false}
+                loop={false}
+                acknowledgeRemotionLicense
                 style={{
                   display: "block",
                   width: "100%",
                   height: "100%",
                   backgroundColor: "black",
                 }}
-                controls={false}
-                autoPlay={false}
-                loop
-                acknowledgeRemotionLicense
               />
             </div>
           </div>
-          {telemetryPoints && (
-            <VideoMonitorControls
-              fps={fps}
-              durationInFrames={durationInFrames}
-            />
-          )}
         </div>
       </MiniCard>
 

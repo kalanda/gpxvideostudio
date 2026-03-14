@@ -18,37 +18,37 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import {
   FPS_MAX,
   FPS_MIN,
-  RESOLUTION_PRESETS,
-  type ResolutionPresetKey,
   WIDTH_HEIGHT_MAX,
   WIDTH_HEIGHT_MIN,
-} from "@/constants/defaults";
+} from "@/constants/config";
+import { RESOLUTION_PRESETS } from "@/constants/presets";
 import {
   type VideoSettingsFormValues,
   videoSettingsFormSchema,
 } from "@/schemas/videoSettingsSchema";
-import { useVideoSettingsStore } from "@/stores/videoSettingsStore";
+import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import {
   CUSTOM_PRESET_KEY,
   getMatchingPresetKey,
 } from "@/utils/video/getMatchingPresetKey";
-
-const PRESET_LABELS: Record<ResolutionPresetKey, string> = {
-  "4k": "4K",
-  "2k": "2K",
-  "1080p": "1080p",
-  "720p": "720p",
-};
 
 export type VideoSettingsModalProps = {
   isOpen: boolean;
   onFinish: () => void;
 };
 
+// TODO: move to i18n
+const PRESET_LABELS: Record<keyof typeof RESOLUTION_PRESETS, string> = {
+  "4k": "4K",
+  "2k": "2K",
+  "1080p": "1080p",
+  "720p": "720p",
+};
+
 export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
   const { isOpen, onFinish } = props;
   const { width, height, fps, setWidth, setHeight, setFps } =
-    useVideoSettingsStore();
+    useProjectVideoSettingsStore();
 
   const {
     control,
@@ -88,7 +88,7 @@ export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
     RESOLUTION_PRESETS,
   );
 
-  const applyPreset = (key: ResolutionPresetKey) => {
+  const applyPreset = (key: keyof typeof RESOLUTION_PRESETS) => {
     const preset = RESOLUTION_PRESETS[key];
     setValue("width", preset.width);
     setValue("height", preset.height);
@@ -116,7 +116,7 @@ export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
             onSelectionChange={(keys) => {
               const key = Array.from(keys)[0];
               if (key && key !== CUSTOM_PRESET_KEY) {
-                applyPreset(key as ResolutionPresetKey);
+                applyPreset(key as keyof typeof RESOLUTION_PRESETS);
               }
             }}
             aria-label="Resolution preset"

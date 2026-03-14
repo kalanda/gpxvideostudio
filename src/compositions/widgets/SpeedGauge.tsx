@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { DataItem } from "@/compositions/widgets/DataItem";
-import { SVG_PATH_PRECISION } from "@/constants/defaults";
+import { SVG_PATH_PRECISION } from "@/constants/config";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 import { formatSpeed } from "@/utils/format/formatSpeed";
 

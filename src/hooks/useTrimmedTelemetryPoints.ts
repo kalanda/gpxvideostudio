@@ -1,7 +1,11 @@
+import { featureCollection } from "@turf/helpers";
+import type { Point } from "geojson";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useTelemetryStore } from "@/stores/telemetryStore";
-import type { TelemetryFeatureCollection } from "@/types/telemetry";
-import { sliceTelemetryByElapsed } from "@/utils/calculations/sliceTelemetryByElapsed";
+import type {
+  TelemetryFeatureCollection,
+  TelemetryPoint,
+} from "@/types/telemetry";
 
 /**
  * Returns the telemetry points trimmed to the current export segment.
@@ -18,5 +22,10 @@ export function useTrimmedTelemetryPoints(): TelemetryFeatureCollection | null {
   const start = gpxTrimStartSeconds;
   const end = gpxTrimStartSeconds + effectiveDurationSeconds;
 
-  return sliceTelemetryByElapsed(telemetryPoints, start, end);
+  const features = telemetryPoints.features.filter((f) => {
+    const e = f.properties.elapsed;
+    return e >= start && e <= end;
+  });
+
+  return featureCollection<Point, TelemetryPoint>(features);
 }

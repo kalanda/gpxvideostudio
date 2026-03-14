@@ -12,25 +12,23 @@ import {
 } from "@heroui/react";
 import { FileOutput, Loader2 } from "lucide-react";
 import type { FC } from "react";
-import {
-  VIDEO_BITRATE_PRESETS,
-  type VideoBitratePresetKey,
-  type VideoContainer,
-} from "@/constants/defaults";
+import { VIDEO_BITRATE_PRESETS } from "@/constants/presets";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useExporter } from "@/hooks/useExporter";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
-import { useVideoSettingsStore } from "@/stores/videoSettingsStore";
+import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
+import { VideoBitrate, type VideoContainer } from "@/types/video";
 import { calculatePngMemoryUse } from "@/utils/calculations/calculatePngMemoryUse";
 import { formatFileWeight } from "@/utils/format/formatFileWeight";
 import { formatTime } from "@/utils/format/formatTime";
 
-const VIDEO_BITRATE_LABELS: Record<VideoBitratePresetKey, string> = {
-  "very-low": "Very low",
-  low: "Low",
-  medium: "Medium",
-  high: "High",
-  "very-high": "Very high",
+// TODO: move to i18n
+const VIDEO_BITRATE_LABELS: Record<VideoBitrate, string> = {
+  [VideoBitrate.VeryLow]: "Very low",
+  [VideoBitrate.Low]: "Low",
+  [VideoBitrate.Medium]: "Medium",
+  [VideoBitrate.High]: "High",
+  [VideoBitrate.VeryHigh]: "Very high",
 };
 
 export type ExportVideoModalProps = {
@@ -43,8 +41,8 @@ export const ExportVideoModal: FC<ExportVideoModalProps> = ({
   onClose,
 }) => {
   const { backgroundVideoUrl } = useBackgroundVideoStore();
-  const { fps, width, height, container, videoBitrate, setContainer, setVideoBitrate } =
-    useVideoSettingsStore();
+  const { fps, width, height, container, bitrate, setContainer, setBitrate } =
+    useProjectVideoSettingsStore();
   const { effectiveDurationSeconds } = useEffectiveExportDuration();
   const { isExporting, exportProgress, startExport, cancelExport } =
     useExporter();
@@ -107,11 +105,11 @@ export const ExportVideoModal: FC<ExportVideoModalProps> = ({
 
             {container === "mp4" && (
               <Select
-                label="Video bitrate"
-                selectedKeys={[videoBitrate]}
+                label="Bitrate"
+                selectedKeys={[bitrate]}
                 onSelectionChange={(keys) => {
                   const key = Array.from(keys)[0];
-                  if (key) setVideoBitrate(key as VideoBitratePresetKey);
+                  if (key) setBitrate(key as VideoBitrate);
                 }}
               >
                 {VIDEO_BITRATE_PRESETS.map((key) => (

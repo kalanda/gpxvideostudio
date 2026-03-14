@@ -6,14 +6,13 @@ import Color from "colorjs.io";
 import { type FC, useCallback, useEffect, useRef, useState } from "react";
 import { Map as MapboxMap } from "react-map-gl/maplibre";
 import { continueRender, delayRender, useCurrentFrame } from "remotion";
+import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 import {
-  DEFAULT_WIDGET_APPEARANCE,
-  MAP_THEMES_BASEMAP_URLS,
   MapBearingMode,
+  MapPitch,
   MapTheme,
   MapViewportMode,
-} from "@/constants/defaults";
-import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
+} from "@/types/map";
 import type {
   TelemetryFeatureCollection,
   TelemetryFrame,
@@ -22,6 +21,10 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import clsx from "clsx";
 import type { Feature, Point } from "geojson";
 import maplibregl from "maplibre-gl";
+import {
+  DEFAULT_WIDGET_APPEARANCE,
+  MAP_THEMES_BASEMAP_URLS,
+} from "@/constants/defaults";
 
 type MiniMapProps = {
   /** Full telemetry points for the entire route (drawn as the track line). */
@@ -236,7 +239,12 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
     longitude: computedLon,
     latitude: computedLat,
     zoom: computedZoom,
-    pitch: mapPitch,
+    pitch:
+      mapPitch === MapPitch.TopDown
+        ? 0
+        : mapPitch === MapPitch.Tilted
+          ? 60
+          : undefined,
     bearing: computedBearing,
   };
 

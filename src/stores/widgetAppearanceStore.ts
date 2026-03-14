@@ -1,11 +1,11 @@
 import { create } from "zustand";
-import {
-  DEFAULT_WIDGET_APPEARANCE,
-  type MapBearingMode,
-  type MapPitch,
-  type MapTheme,
-  type MapViewportMode,
-} from "@/constants/defaults";
+import { DEFAULT_WIDGET_APPEARANCE } from "@/constants/defaults";
+import type {
+  MapBearingMode,
+  MapPitch,
+  MapTheme,
+  MapViewportMode,
+} from "@/types/map";
 
 type WidgetAppearanceState = {
   fontFamily: string;

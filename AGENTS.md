@@ -49,3 +49,9 @@ In `src/utils/`, each exported function lives in its **own file**. Do not group 
 ## Imports format
 
 Always use the `import { whatever } from "@/.../ItemToImport"` format except for the unit tests. At unit test use `import { whatever } from "./itemToTest"`
+
+## UI Framework
+
+Use HeroUI as main UI framework. If there is one component to create, check beforehand if HeroUI has one already. 
+
+For modals, use the HeroUI hook `useDisclosure()` always.

@@ -4,7 +4,7 @@ import {
   FPS_MIN,
   WIDTH_HEIGHT_MAX,
   WIDTH_HEIGHT_MIN,
-} from "@/constants/defaults";
+} from "@/constants/config";
 
 export const videoSettingsFormSchema = z.object({
   width: z.number().int().min(WIDTH_HEIGHT_MIN).max(WIDTH_HEIGHT_MAX),

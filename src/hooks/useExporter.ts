@@ -5,15 +5,15 @@ import { useRef, useState } from "react";
 import { MainComposition } from "@/compositions/MainComposition";
 import { DEFAULT_EXPORT_FILENAME_PREFIX } from "@/constants/defaults";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
+import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
-import { useVideoSettingsStore } from "@/stores/videoSettingsStore";
 import { downloadBlob } from "@/utils/browser/downloadBlob";
 
 export function useExporter() {
   // Stores
   const { telemetryPoints } = useTelemetryStore();
-  const { fps, width, height, container, videoBitrate } =
-    useVideoSettingsStore();
+  const { fps, width, height, container, bitrate } =
+    useProjectVideoSettingsStore();
   const { durationInFrames: effectiveDurationInFrames } =
     useEffectiveExportDuration();
 
@@ -58,7 +58,7 @@ export function useExporter() {
       inputProps: { hideBackgroundVideo: false },
       container: videoContainer,
       transparent: false,
-      videoBitrate,
+      videoBitrate: bitrate,
       onProgress: (p) => {
         const progress = (100 * p.renderedFrames) / totalFrames;
         const start = exportStartTimeRef.current ?? Date.now();

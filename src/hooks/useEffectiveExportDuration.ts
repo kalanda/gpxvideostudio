@@ -1,6 +1,6 @@
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
+import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
-import { useVideoSettingsStore } from "@/stores/videoSettingsStore";
 import { computeEffectiveExportDuration } from "@/utils/calculations/computeEffectiveExportDuration";
 
 /**
@@ -13,7 +13,7 @@ export function useEffectiveExportDuration(): {
   durationInFrames: number;
   videoDurationSeconds: number | null;
 } {
-  const fps = useVideoSettingsStore((s) => s.fps);
+  const fps = useProjectVideoSettingsStore((s) => s.fps);
   const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
   const {
     backgroundVideoDurationSeconds: videoDurationSeconds,

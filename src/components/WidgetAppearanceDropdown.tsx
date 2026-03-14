@@ -11,15 +11,14 @@ import {
 import { Palette } from "lucide-react";
 import { useState } from "react";
 import { CompactPicker } from "react-color";
+import { useFontSelector } from "@/hooks/useFontSelector";
+import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 import {
-  MAP_PITCH_VALUES,
   MapBearingMode,
   MapPitch,
   MapTheme,
   MapViewportMode,
-} from "@/constants/defaults";
-import { useFontSelector } from "@/hooks/useFontSelector";
-import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
+} from "@/types/map";
 
 const MAP_THEME_LABELS: Record<MapTheme, string> = {
   [MapTheme.None]: "None",
@@ -195,14 +194,12 @@ export const WidgetAppearanceDropdown = () => {
               selectedKeys={[String(mapPitch)]}
               onSelectionChange={(keys) => {
                 const v = Array.from(keys)[0];
-                const n = v ? Number(v) : undefined;
-                if (n !== undefined && MAP_PITCH_VALUES.includes(n as MapPitch))
-                  setMapPitch(n as MapPitch);
+                setMapPitch(v as MapPitch);
               }}
               size="sm"
               classNames={{ base: "w-full" }}
             >
-              {MAP_PITCH_VALUES.map((p) => (
+              {Object.values(MapPitch).map((p) => (
                 <SelectItem key={String(p)}>{PITCH_LABELS[p]}</SelectItem>
               ))}
             </Select>

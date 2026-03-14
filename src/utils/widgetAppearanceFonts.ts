@@ -1,5 +1,5 @@
 import { getAvailableFonts } from "@remotion/google-fonts";
-import { PRESET_FONT_FAMILIES } from "@/constants/defaults";
+import { PRESET_FONT_FAMILIES } from "@/constants/presets";
 
 const allFonts = getAvailableFonts();
 
@@ -30,9 +30,9 @@ export function getFontsToShow(
 ): GoogleFontItem[] {
   if (showAllFonts) return allFonts;
   const byFamily = new Map(allFonts.map((f) => [f.fontFamily, f]));
-  const preset = PRESET_FONT_FAMILIES.map((name) => byFamily.get(name)).filter(
-    (f): f is GoogleFontItem => f != null,
-  );
+  const preset = PRESET_FONT_FAMILIES.map((name: string) =>
+    byFamily.get(name),
+  ).filter((f): f is GoogleFontItem => f != null);
   if (PRESET_SET.has(currentFontFamily)) return preset;
   const currentFont = byFamily.get(currentFontFamily);
   if (!currentFont) return preset;

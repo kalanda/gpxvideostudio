@@ -1,5 +1,6 @@
 import type { FC } from "react";
-import { ELEVATION_CHART, SVG_PATH_PRECISION } from "@/constants/defaults";
+import { SVG_PATH_PRECISION } from "@/constants/config";
+import { ELEVATION_CHART } from "@/constants/defaults";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 
 type ElevationChartProps = {

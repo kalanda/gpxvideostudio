@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TELEMETRY_SMOOTHING_FACTOR } from "@/constants/config";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { calculateTelemetry } from "@/utils/calculations/calculateTelemetry";
 import { smoothSpeeds } from "@/utils/calculations/smoothSpeeds";
@@ -27,7 +28,10 @@ export function useGpxLoader() {
       setGpxError("The track must have timestamps");
       return;
     }
-    const nextTelemetryPoints = smoothSpeeds(calculateTelemetry(points), 5);
+    const nextTelemetryPoints = smoothSpeeds(
+      calculateTelemetry(points),
+      TELEMETRY_SMOOTHING_FACTOR,
+    );
     setTelemetryPoints(nextTelemetryPoints);
     if (fileName != null) setGpxFileName(fileName);
     setGpxTrimStartSeconds(0);

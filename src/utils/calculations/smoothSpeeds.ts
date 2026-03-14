@@ -1,5 +1,6 @@
 import { featureCollection, point } from "@turf/helpers";
 import type { Feature, Point } from "geojson";
+import { TELEMETRY_SMOOTHING_FACTOR } from "@/constants/config";
 import type {
   TelemetryFeatureCollection,
   TelemetryPoint,
@@ -14,7 +15,7 @@ import type {
  */
 export function smoothSpeeds(
   points: TelemetryFeatureCollection,
-  windowSize = 5,
+  windowSize = TELEMETRY_SMOOTHING_FACTOR,
 ): TelemetryFeatureCollection {
   if (points.features.length < windowSize) {
     return points;

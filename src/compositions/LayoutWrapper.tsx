@@ -3,7 +3,7 @@ import { useVideoConfig } from "remotion";
 import {
   OVERLAY_REFERENCE_HEIGHT,
   OVERLAY_REFERENCE_WIDTH,
-} from "@/constants/defaults";
+} from "@/constants/config";
 import { useOverlayLayoutStore } from "@/stores/overlayLayoutStore";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 
