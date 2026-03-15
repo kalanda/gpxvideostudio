@@ -214,10 +214,15 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
     routeCenterLon = (minLon + maxLon) / 2;
     routeCenterLat = (minLat + maxLat) / 2;
 
-    // A simple zoom approximation based on the bounding box size
+    // Zoom approximation based on the bounding box size.
+    // Latitude degrees occupy more pixels than longitude degrees in Mercator
+    // (by a factor of 1/cos(lat)), so we convert latDiff to Mercator-equivalent
+    // longitude degrees before picking the larger axis.
     const lonDiff = maxLon - minLon;
     const latDiff = maxLat - minLat;
-    const maxDiff = Math.max(lonDiff, latDiff);
+    const cosLat = Math.cos(routeCenterLat * (Math.PI / 180));
+    const mercatorLatDiff = latDiff / Math.max(cosLat, 0.001);
+    const maxDiff = Math.max(lonDiff, mercatorLatDiff);
     if (maxDiff > 0) {
       // 360 degrees of longitude fits in zoom level 0. -0.5 for padding.
       routeZoom = Math.min(16, Math.max(0, Math.log2(360 / maxDiff) - 0.5));
