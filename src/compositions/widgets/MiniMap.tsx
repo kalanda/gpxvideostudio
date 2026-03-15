@@ -1,3 +1,4 @@
+import bbox from "@turf/bbox";
 import { MapView } from "@deck.gl/core";
 import { TripsLayer } from "@deck.gl/geo-layers";
 import { PathLayer, ScatterplotLayer } from "@deck.gl/layers";
@@ -204,12 +205,7 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
   let routeCenterLat = cxLat;
 
   if (activePoints.features.length > 0) {
-    const lons = activePoints.features.map((f) => f.geometry.coordinates[0]);
-    const lats = activePoints.features.map((f) => f.geometry.coordinates[1]);
-    const minLon = Math.min(...lons);
-    const maxLon = Math.max(...lons);
-    const minLat = Math.min(...lats);
-    const maxLat = Math.max(...lats);
+    const [minLon, minLat, maxLon, maxLat] = bbox(activePoints);
 
     routeCenterLon = (minLon + maxLon) / 2;
     routeCenterLat = (minLat + maxLat) / 2;
