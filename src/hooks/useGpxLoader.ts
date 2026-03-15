@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { TELEMETRY_SMOOTHING_FACTOR } from "@/constants/config";
+import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { calculateTelemetry } from "@/utils/calculations/calculateTelemetry";
 import { smoothSpeeds } from "@/utils/calculations/smoothSpeeds";
@@ -10,12 +11,11 @@ const SAMPLE_GPX_URL = `${import.meta.env.BASE_URL}sample.gpx`;
 
 export function useGpxLoader() {
   const [gpxError, setGpxError] = useState<string | null>(null);
-  const { setTelemetryPoints, setGpxFileName, setGpxTrimStartSeconds, setGpxTrimEndSeconds } =
+  const { setTelemetryPoints, setGpxFileName, setGpxTrimEndSeconds } =
     useTelemetryStore(
       useShallow((s) => ({
         setTelemetryPoints: s.setTelemetryPoints,
         setGpxFileName: s.setGpxFileName,
-        setGpxTrimStartSeconds: s.setGpxTrimStartSeconds,
         setGpxTrimEndSeconds: s.setGpxTrimEndSeconds,
       })),
     );
@@ -42,8 +42,9 @@ export function useGpxLoader() {
     );
     setTelemetryPoints(nextTelemetryPoints);
     if (fileName != null) setGpxFileName(fileName);
-    setGpxTrimStartSeconds(0);
     setGpxTrimEndSeconds(0);
+    // A new GPX invalidates the previous sync — reset it so the user syncs again.
+    useBackgroundVideoStore.getState().setVideoStartTimestamp(null);
     setGpxError(null);
   }
 

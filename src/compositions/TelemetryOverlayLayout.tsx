@@ -15,12 +15,12 @@ import { getFrameData } from "@/utils/interpolation/getFrameData";
 export const TelemetryOverlayLayout: FC = () => {
   const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
   const trimmedPoints = useTrimmedTelemetryPoints();
-  const gpxTrimStartSeconds = useTelemetryStore((s) => s.gpxTrimStartSeconds);
   const { fps } = useVideoConfig();
   const frame = useCurrentFrame();
-  const { effectiveDurationSeconds } = useEffectiveExportDuration();
+  const { effectiveDurationSeconds, gpxElapsedAtExportStart } =
+    useEffectiveExportDuration();
 
-  const data = getFrameData(telemetryPoints, frame, fps, gpxTrimStartSeconds);
+  const data = getFrameData(telemetryPoints, frame, fps, gpxElapsedAtExportStart);
   const summary = calculateSummary(trimmedPoints);
 
   if (!telemetryPoints || !data) return null;
@@ -31,7 +31,7 @@ export const TelemetryOverlayLayout: FC = () => {
           1,
           Math.max(
             0,
-            (data.properties.elapsed - gpxTrimStartSeconds) /
+            (data.properties.elapsed - gpxElapsedAtExportStart) /
               effectiveDurationSeconds,
           ),
         )

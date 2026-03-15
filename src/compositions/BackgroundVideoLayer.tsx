@@ -2,6 +2,7 @@ import { Video } from "@remotion/media";
 import type { FC } from "react";
 import { AbsoluteFill, useVideoConfig } from "remotion";
 import { useShallow } from "zustand/react/shallow";
+import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 
 export type BackgroundVideoLayerProps = {
@@ -11,39 +12,26 @@ export type BackgroundVideoLayerProps = {
 
 export const BackgroundVideoLayer: FC<BackgroundVideoLayerProps> = (props) => {
   const { hide = false } = props;
-  const {
-    backgroundVideoUrl,
-    backgroundVideoDurationSeconds,
-    videoTrimStartSeconds,
-    videoTrimEndSeconds,
-    flipHorizontal,
-    flipVertical,
-  } = useBackgroundVideoStore(
-    useShallow((s) => ({
-      backgroundVideoUrl: s.backgroundVideoUrl,
-      backgroundVideoDurationSeconds: s.backgroundVideoDurationSeconds,
-      videoTrimStartSeconds: s.videoTrimStartSeconds,
-      videoTrimEndSeconds: s.videoTrimEndSeconds,
-      flipHorizontal: s.flipHorizontal,
-      flipVertical: s.flipVertical,
-    })),
-  );
+  const { backgroundVideoUrl, flipHorizontal, flipVertical } =
+    useBackgroundVideoStore(
+      useShallow((s) => ({
+        backgroundVideoUrl: s.backgroundVideoUrl,
+        flipHorizontal: s.flipHorizontal,
+        flipVertical: s.flipVertical,
+      })),
+    );
   const { fps } = useVideoConfig();
+  const { videoTimeAtFrame0, effectiveDurationSeconds } =
+    useEffectiveExportDuration();
 
   if (hide || !backgroundVideoUrl) return null;
 
-  const videoSegmentEnd =
-    backgroundVideoDurationSeconds != null &&
-    backgroundVideoDurationSeconds > 0 &&
-    videoTrimEndSeconds > 0
-      ? Math.min(videoTrimEndSeconds, backgroundVideoDurationSeconds)
-      : (backgroundVideoDurationSeconds ?? 0);
-  const trimBeforeFrames = Math.round(videoTrimStartSeconds * fps);
-  const trimAfterFramesRaw = Math.round(videoSegmentEnd * fps);
-  const trimAfterFrames =
-    videoSegmentEnd > 0 && trimAfterFramesRaw > trimBeforeFrames
-      ? trimAfterFramesRaw
-      : undefined;
+  // trimBefore: where the video file starts playing at export frame 0.
+  // trimAfter: where it stops. Both are derived from the intersection of
+  // video and GPX segments so they stay consistent with the overlay.
+  const trimBeforeFrames = Math.round(videoTimeAtFrame0 * fps);
+  const trimAfterRaw = Math.round((videoTimeAtFrame0 + effectiveDurationSeconds) * fps);
+  const trimAfterFrames = trimAfterRaw > trimBeforeFrames ? trimAfterRaw : undefined;
 
   const transformParts = [
     flipHorizontal ? "scaleX(-1)" : "",

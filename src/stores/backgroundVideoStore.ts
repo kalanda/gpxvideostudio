@@ -8,6 +8,12 @@ type BackgroundVideoState = {
   videoTrimEndSeconds: number;
   flipHorizontal: boolean;
   flipVertical: boolean;
+  /**
+   * Absolute timestamp of video frame t=0 (the very start of the raw video file).
+   * Set by the sync modal. Null when no sync has been performed.
+   * Changing videoTrimStart/End does not affect this value — sync is stored independently.
+   */
+  videoStartTimestamp: Date | null;
 };
 
 type BackgroundVideoActions = {
@@ -18,6 +24,7 @@ type BackgroundVideoActions = {
   setVideoTrimEndSeconds: (seconds: number) => void;
   setFlipHorizontal: (value: boolean) => void;
   setFlipVertical: (value: boolean) => void;
+  setVideoStartTimestamp: (timestamp: Date | null) => void;
   clearBackgroundVideo: () => void;
 };
 
@@ -29,6 +36,7 @@ const initialState: BackgroundVideoState = {
   videoTrimEndSeconds: 0,
   flipHorizontal: false,
   flipVertical: false,
+  videoStartTimestamp: null,
 };
 
 export const useBackgroundVideoStore = create<
@@ -36,10 +44,18 @@ export const useBackgroundVideoStore = create<
 >((set) => ({
   ...initialState,
   setBackgroundVideoUrl: (url) =>
-    set({
-      backgroundVideoUrl: url,
-      ...(url ? {} : { backgroundVideoDurationSeconds: null }),
-    }),
+    set(url
+      ? {
+          // New video loaded: reset sync and trims so they don't carry over.
+          backgroundVideoUrl: url,
+          videoTrimStartSeconds: 0,
+          videoTrimEndSeconds: 0,
+          videoStartTimestamp: null,
+        }
+      : {
+          backgroundVideoUrl: null,
+          backgroundVideoDurationSeconds: null,
+        }),
   setBackgroundVideoFileName: (name) => set({ backgroundVideoFileName: name }),
   setBackgroundVideoDuration: (seconds) =>
     set({ backgroundVideoDurationSeconds: seconds }),
@@ -49,12 +65,6 @@ export const useBackgroundVideoStore = create<
     set({ videoTrimEndSeconds: Math.max(0, seconds) }),
   setFlipHorizontal: (value) => set({ flipHorizontal: value }),
   setFlipVertical: (value) => set({ flipVertical: value }),
-  clearBackgroundVideo: () =>
-    set({
-      backgroundVideoUrl: null,
-      backgroundVideoFileName: null,
-      backgroundVideoDurationSeconds: null,
-      flipHorizontal: false,
-      flipVertical: false,
-    }),
+  setVideoStartTimestamp: (timestamp) => set({ videoStartTimestamp: timestamp }),
+  clearBackgroundVideo: () => set({ ...initialState }),
 }));

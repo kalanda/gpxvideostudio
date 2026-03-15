@@ -20,6 +20,7 @@ import { MAP_STYLES } from "@/constants/defaults";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
+
 import { MapTheme } from "@/types/map";
 import { formatPlaybackTime } from "@/utils/format/formatPlaybackTime";
 import { interpolateAtTime } from "@/utils/interpolation/interpolateAtTime";
@@ -34,26 +35,17 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const {
-    backgroundVideoUrl,
-    videoTrimStartSeconds,
-    flipHorizontal,
-    flipVertical,
-  } = useBackgroundVideoStore(
-    useShallow((s) => ({
-      backgroundVideoUrl: s.backgroundVideoUrl,
-      videoTrimStartSeconds: s.videoTrimStartSeconds,
-      flipHorizontal: s.flipHorizontal,
-      flipVertical: s.flipVertical,
-    })),
-  );
+  const { backgroundVideoUrl, flipHorizontal, flipVertical, setVideoStartTimestamp } =
+    useBackgroundVideoStore(
+      useShallow((s) => ({
+        backgroundVideoUrl: s.backgroundVideoUrl,
+        flipHorizontal: s.flipHorizontal,
+        flipVertical: s.flipVertical,
+        setVideoStartTimestamp: s.setVideoStartTimestamp,
+      })),
+    );
   const fps = useProjectVideoSettingsStore((s) => s.fps);
-  const { telemetryPoints, setGpxTrimStartSeconds } = useTelemetryStore(
-    useShallow((s) => ({
-      telemetryPoints: s.telemetryPoints,
-      setGpxTrimStartSeconds: s.setGpxTrimStartSeconds,
-    })),
-  );
+  const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
 
   // --- video state ---
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -186,11 +178,12 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
   // --- sync action ---
   const handleSync = () => {
     if (!currentTelemetryPoint) return;
-    const videoPositionSeconds = videoCurrentTime;
-    const telemetryElapsed = currentTelemetryPoint.properties.elapsed;
-    const newGpxTrimStart =
-      telemetryElapsed - videoPositionSeconds + videoTrimStartSeconds;
-    setGpxTrimStartSeconds(Math.max(0, newGpxTrimStart));
+    // Compute the absolute timestamp of video frame t=0:
+    //   videoCurrentTime is how many seconds into the raw video we are right now,
+    //   so t=0 of the video is (gpxPointTime - videoCurrentTime) in real-world time.
+    const gpxPointTimeMs = currentTelemetryPoint.properties.time.getTime();
+    const videoStartTs = new Date(gpxPointTimeMs - videoCurrentTime * 1000);
+    setVideoStartTimestamp(videoStartTs);
     onClose();
   };
 

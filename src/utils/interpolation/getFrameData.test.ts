@@ -64,11 +64,11 @@ describe("getFrameData", () => {
     expect(result?.geometry.coordinates).toEqual([2, 2]);
   });
 
-  test("uses gpxTrimStartSeconds so frame 0 maps to trimmed start elapsed", () => {
+  test("uses gpxElapsedAtExportStart so frame 0 maps to the correct GPX elapsed", () => {
     const points = makePoints(3);
     const fps = 10;
-    const gpxTrimStartSeconds = 20;
-    const result = getFrameData(points, 0, fps, gpxTrimStartSeconds);
+    const gpxElapsedAtExportStart = 20;
+    const result = getFrameData(points, 0, fps, gpxElapsedAtExportStart);
     expect(result).not.toBeNull();
     expect(result?.properties.elapsed).toBe(20);
     expect(result?.properties.progress).toBe(1);

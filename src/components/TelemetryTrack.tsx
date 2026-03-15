@@ -33,6 +33,7 @@ export const TelemetryTrack: FC = () => {
   const { gpxDurationSeconds } = useEffectiveExportDuration();
   const { gpxError, loadFromFile, loadSample } = useGpxLoader();
 
+  // Auto-initialise gpxTrimEndSeconds to the full track length when the GPX is first loaded.
   useEffect(() => {
     if (gpxDurationSeconds <= 0) return;
     const current = useTelemetryStore.getState().gpxTrimEndSeconds;
@@ -43,6 +44,7 @@ export const TelemetryTrack: FC = () => {
     );
   }, [gpxDurationSeconds, setGpxTrimEndSeconds]);
 
+  // Clamp gpxTrimStart if the track shrinks (e.g. new file loaded).
   useEffect(() => {
     if (
       telemetryPoints &&
