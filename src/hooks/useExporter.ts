@@ -2,6 +2,7 @@ import { renderMediaOnWeb, renderStillOnWeb } from "@remotion/web-renderer";
 import { format } from "date-fns";
 import JSZip from "jszip";
 import { useRef, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { MainComposition } from "@/compositions/MainComposition";
 import { DEFAULT_EXPORT_FILENAME_PREFIX } from "@/constants/defaults";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
@@ -11,9 +12,17 @@ import { downloadBlob } from "@/utils/browser/downloadBlob";
 
 export function useExporter() {
   // Stores
-  const { telemetryPoints } = useTelemetryStore();
+  const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
   const { fps, width, height, container, bitrate } =
-    useProjectVideoSettingsStore();
+    useProjectVideoSettingsStore(
+      useShallow((s) => ({
+        fps: s.fps,
+        width: s.width,
+        height: s.height,
+        container: s.container,
+        bitrate: s.bitrate,
+      })),
+    );
   const { durationInFrames: effectiveDurationInFrames } =
     useEffectiveExportDuration();
 

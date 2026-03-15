@@ -1,3 +1,4 @@
+import { useShallow } from "zustand/react/shallow";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
@@ -14,13 +15,25 @@ export function useEffectiveExportDuration(): {
   videoDurationSeconds: number | null;
 } {
   const fps = useProjectVideoSettingsStore((s) => s.fps);
-  const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
+  const { telemetryPoints, gpxTrimStartSeconds, gpxTrimEndSeconds } =
+    useTelemetryStore(
+      useShallow((s) => ({
+        telemetryPoints: s.telemetryPoints,
+        gpxTrimStartSeconds: s.gpxTrimStartSeconds,
+        gpxTrimEndSeconds: s.gpxTrimEndSeconds,
+      })),
+    );
   const {
     backgroundVideoDurationSeconds: videoDurationSeconds,
     videoTrimStartSeconds,
     videoTrimEndSeconds,
-  } = useBackgroundVideoStore();
-  const { gpxTrimStartSeconds, gpxTrimEndSeconds } = useTelemetryStore();
+  } = useBackgroundVideoStore(
+    useShallow((s) => ({
+      backgroundVideoDurationSeconds: s.backgroundVideoDurationSeconds,
+      videoTrimStartSeconds: s.videoTrimStartSeconds,
+      videoTrimEndSeconds: s.videoTrimEndSeconds,
+    })),
+  );
 
   const gpxDurationSeconds = telemetryPoints
     ? telemetryPoints.features[telemetryPoints.features.length - 1].properties

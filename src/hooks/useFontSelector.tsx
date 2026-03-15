@@ -1,6 +1,7 @@
 import { AutocompleteItem } from "@heroui/react";
 import type { Key } from "react";
 import { useEffect, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 import {
   getFontsToShow,
@@ -9,7 +10,9 @@ import {
 } from "@/utils/widgetAppearanceFonts";
 
 export function useFontSelector() {
-  const { fontFamily, setFontFamily } = useWidgetAppearanceStore();
+  const { fontFamily, setFontFamily } = useWidgetAppearanceStore(
+    useShallow((s) => ({ fontFamily: s.fontFamily, setFontFamily: s.setFontFamily })),
+  );
   const [showAllFonts, setShowAllFonts] = useState(false);
 
   useEffect(() => {

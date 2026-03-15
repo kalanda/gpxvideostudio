@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { SVG_PATH_PRECISION } from "@/constants/config";
 import { ELEVATION_CHART } from "@/constants/defaults";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
@@ -22,7 +23,9 @@ const {
 
 export const ElevationChart: FC<ElevationChartProps> = (props) => {
   const { elevations, progress } = props;
-  const { primaryColor, accentColor } = useWidgetAppearanceStore();
+  const { primaryColor, accentColor } = useWidgetAppearanceStore(
+    useShallow((s) => ({ primaryColor: s.primaryColor, accentColor: s.accentColor })),
+  );
 
   const validElevations = elevations.filter((e): e is number => e !== null);
 

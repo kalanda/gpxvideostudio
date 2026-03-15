@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { TELEMETRY_SMOOTHING_FACTOR } from "@/constants/config";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { calculateTelemetry } from "@/utils/calculations/calculateTelemetry";
@@ -9,8 +10,15 @@ const SAMPLE_GPX_URL = `${import.meta.env.BASE_URL}sample.gpx`;
 
 export function useGpxLoader() {
   const [gpxError, setGpxError] = useState<string | null>(null);
-  const { setGpxTrimStartSeconds, setGpxTrimEndSeconds } = useTelemetryStore();
-  const { setTelemetryPoints, setGpxFileName } = useTelemetryStore();
+  const { setTelemetryPoints, setGpxFileName, setGpxTrimStartSeconds, setGpxTrimEndSeconds } =
+    useTelemetryStore(
+      useShallow((s) => ({
+        setTelemetryPoints: s.setTelemetryPoints,
+        setGpxFileName: s.setGpxFileName,
+        setGpxTrimStartSeconds: s.setGpxTrimStartSeconds,
+        setGpxTrimEndSeconds: s.setGpxTrimEndSeconds,
+      })),
+    );
 
   function processGpxString(gpxText: string, fileName: string | undefined) {
     const gpx = parseGpx(gpxText);

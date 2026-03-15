@@ -26,6 +26,7 @@ import {
   type VideoSettingsFormValues,
   videoSettingsFormSchema,
 } from "@/schemas/videoSettingsSchema";
+import { useShallow } from "zustand/react/shallow";
 import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import {
   CUSTOM_PRESET_KEY,
@@ -48,7 +49,16 @@ const PRESET_LABELS: Record<keyof typeof RESOLUTION_PRESETS, string> = {
 export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
   const { isOpen, onFinish } = props;
   const { width, height, fps, setWidth, setHeight, setFps } =
-    useProjectVideoSettingsStore();
+    useProjectVideoSettingsStore(
+      useShallow((s) => ({
+        width: s.width,
+        height: s.height,
+        fps: s.fps,
+        setWidth: s.setWidth,
+        setHeight: s.setHeight,
+        setFps: s.setFps,
+      })),
+    );
 
   const {
     control,

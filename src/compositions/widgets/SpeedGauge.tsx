@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { DataItem } from "@/compositions/widgets/DataItem";
 import { SVG_PATH_PRECISION } from "@/constants/config";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
@@ -18,7 +19,9 @@ const NEEDLE_ANGLE_MAX = 135; // right side (max)
 
 export const SpeedGauge: FC<SpeedGaugeProps> = (props) => {
   const { speed, maxSpeed } = props;
-  const { accentColor, primaryColor } = useWidgetAppearanceStore();
+  const { accentColor, primaryColor } = useWidgetAppearanceStore(
+    useShallow((s) => ({ accentColor: s.accentColor, primaryColor: s.primaryColor })),
+  );
   const effectiveMax = Math.max(maxSpeed, 1);
   const t = Math.min(1, Math.max(0, speed / effectiveMax));
   const angle = NEEDLE_ANGLE_MIN + t * (NEEDLE_ANGLE_MAX - NEEDLE_ANGLE_MIN);

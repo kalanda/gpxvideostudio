@@ -2,6 +2,7 @@ import { Button, Slider } from "@heroui/react";
 import { FlipHorizontal2, FlipVertical2, Trash2, Video } from "lucide-react";
 import type { FC } from "react";
 import { useEffect, useRef } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { BackgroundVideoThumbnails } from "@/components/BackgroundVideoThumbnails";
 import { MiniCard } from "@/components/MiniCard";
 import { useVideoDuration } from "@/hooks/useVideoDuration";
@@ -26,7 +27,24 @@ export const BackgroundVideoTrack: FC = () => {
     setFlipHorizontal,
     flipVertical,
     setFlipVertical,
-  } = useBackgroundVideoStore();
+  } = useBackgroundVideoStore(
+    useShallow((s) => ({
+      backgroundVideoUrl: s.backgroundVideoUrl,
+      backgroundVideoFileName: s.backgroundVideoFileName,
+      setBackgroundVideoUrl: s.setBackgroundVideoUrl,
+      setBackgroundVideoFileName: s.setBackgroundVideoFileName,
+      clearBackgroundVideo: s.clearBackgroundVideo,
+      backgroundVideoDurationSeconds: s.backgroundVideoDurationSeconds,
+      videoTrimStartSeconds: s.videoTrimStartSeconds,
+      setVideoTrimStartSeconds: s.setVideoTrimStartSeconds,
+      videoTrimEndSeconds: s.videoTrimEndSeconds,
+      setVideoTrimEndSeconds: s.setVideoTrimEndSeconds,
+      flipHorizontal: s.flipHorizontal,
+      setFlipHorizontal: s.setFlipHorizontal,
+      flipVertical: s.flipVertical,
+      setFlipVertical: s.setFlipVertical,
+    })),
+  );
 
   useVideoDuration(backgroundVideoUrl);
 

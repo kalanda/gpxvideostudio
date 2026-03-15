@@ -1,12 +1,13 @@
-import bbox from "@turf/bbox";
 import { MapView } from "@deck.gl/core";
 import { TripsLayer } from "@deck.gl/geo-layers";
 import { PathLayer, ScatterplotLayer } from "@deck.gl/layers";
 import { DeckGL } from "@deck.gl/react";
+import bbox from "@turf/bbox";
 import Color from "colorjs.io";
 import { type FC, useCallback, useEffect, useRef, useState } from "react";
 import { Map as MapboxMap } from "react-map-gl/maplibre";
 import { continueRender, delayRender, useCurrentFrame } from "remotion";
+import { useShallow } from "zustand/react/shallow";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 import {
   MapBearingMode,
@@ -41,7 +42,16 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
     mapBearingMode,
     mapViewportMode,
     mapPitch,
-  } = useWidgetAppearanceStore();
+  } = useWidgetAppearanceStore(
+    useShallow((s) => ({
+      primaryColor: s.primaryColor,
+      accentColor: s.accentColor,
+      mapTheme: s.mapTheme,
+      mapBearingMode: s.mapBearingMode,
+      mapViewportMode: s.mapViewportMode,
+      mapPitch: s.mapPitch,
+    })),
+  );
 
   const activePoints =
     boundsPoints && boundsPoints.features.length >= 2 ? boundsPoints : points;

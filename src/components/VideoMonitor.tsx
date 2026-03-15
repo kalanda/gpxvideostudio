@@ -12,14 +12,17 @@ import { useVideoPlayer } from "@/contexts/VideoPlayerContext";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useExporter } from "@/hooks/useExporter";
 import { useGpxLoader } from "@/hooks/useGpxLoader";
+import { useShallow } from "zustand/react/shallow";
 import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 
 export const VideoMonitor: FC = () => {
   const gpxInputRef = useRef<HTMLInputElement>(null);
   const { playerRef } = useVideoPlayer();
-  const { fps, width, height } = useProjectVideoSettingsStore();
-  const { telemetryPoints } = useTelemetryStore();
+  const { fps, width, height } = useProjectVideoSettingsStore(
+    useShallow((s) => ({ fps: s.fps, width: s.width, height: s.height })),
+  );
+  const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
   const { durationInFrames } = useEffectiveExportDuration();
   const { loadFromFile } = useGpxLoader();
   const { error, canExport } = useExporter();

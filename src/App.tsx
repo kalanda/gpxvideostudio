@@ -1,13 +1,16 @@
 import { HeroUIProvider } from "@heroui/react";
 import clsx from "clsx";
 import { StrictMode } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { AppNavbar } from "@/components/AppNavbar";
 import { MainView } from "@/components/MainView";
 import { VideoPlayerProvider } from "@/contexts/VideoPlayerContext";
 import { Theme, useUiPreferencesStore } from "@/stores/uiPreferencesStore";
 
 export const App = () => {
-  const { theme, toggleTheme } = useUiPreferencesStore();
+  const { theme, toggleTheme } = useUiPreferencesStore(
+    useShallow((s) => ({ theme: s.theme, toggleTheme: s.toggleTheme })),
+  );
 
   return (
     <StrictMode>

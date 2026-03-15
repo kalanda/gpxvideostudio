@@ -15,6 +15,7 @@ import { ChevronLeft, ChevronRight, Link2, Pause, Play } from "lucide-react";
 import type { MapMouseEvent } from "maplibre-gl";
 import { type FC, useEffect, useRef, useState } from "react";
 import { Layer, Map as MaplibreMap, Source } from "react-map-gl/maplibre";
+import { useShallow } from "zustand/react/shallow";
 import { MAP_STYLES } from "@/constants/defaults";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
@@ -38,9 +39,21 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
     videoTrimStartSeconds,
     flipHorizontal,
     flipVertical,
-  } = useBackgroundVideoStore();
-  const { fps } = useProjectVideoSettingsStore();
-  const { telemetryPoints, setGpxTrimStartSeconds } = useTelemetryStore();
+  } = useBackgroundVideoStore(
+    useShallow((s) => ({
+      backgroundVideoUrl: s.backgroundVideoUrl,
+      videoTrimStartSeconds: s.videoTrimStartSeconds,
+      flipHorizontal: s.flipHorizontal,
+      flipVertical: s.flipVertical,
+    })),
+  );
+  const fps = useProjectVideoSettingsStore((s) => s.fps);
+  const { telemetryPoints, setGpxTrimStartSeconds } = useTelemetryStore(
+    useShallow((s) => ({
+      telemetryPoints: s.telemetryPoints,
+      setGpxTrimStartSeconds: s.setGpxTrimStartSeconds,
+    })),
+  );
 
   // --- video state ---
   const videoRef = useRef<HTMLVideoElement>(null);

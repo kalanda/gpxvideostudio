@@ -2,6 +2,7 @@ import { Alert, Button, Slider } from "@heroui/react";
 import { FileDown, MapPin, Route, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { useEffect, useRef } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { MiniCard } from "@/components/MiniCard";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useGpxLoader } from "@/hooks/useGpxLoader";
@@ -18,7 +19,17 @@ export const TelemetryTrack: FC = () => {
     setGpxTrimStartSeconds,
     gpxTrimEndSeconds,
     setGpxTrimEndSeconds,
-  } = useTelemetryStore();
+  } = useTelemetryStore(
+    useShallow((s) => ({
+      telemetryPoints: s.telemetryPoints,
+      gpxFileName: s.gpxFileName,
+      clearTelemetry: s.clearTelemetry,
+      gpxTrimStartSeconds: s.gpxTrimStartSeconds,
+      setGpxTrimStartSeconds: s.setGpxTrimStartSeconds,
+      gpxTrimEndSeconds: s.gpxTrimEndSeconds,
+      setGpxTrimEndSeconds: s.setGpxTrimEndSeconds,
+    })),
+  );
   const { gpxDurationSeconds } = useEffectiveExportDuration();
   const { gpxError, loadFromFile, loadSample } = useGpxLoader();
 

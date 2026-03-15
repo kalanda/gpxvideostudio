@@ -4,6 +4,7 @@ import {
   OVERLAY_REFERENCE_HEIGHT,
   OVERLAY_REFERENCE_WIDTH,
 } from "@/constants/config";
+import { useShallow } from "zustand/react/shallow";
 import { useOverlayLayoutStore } from "@/stores/overlayLayoutStore";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 
@@ -12,8 +13,13 @@ export type LayoutWrapperProps = {
 };
 
 export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
-  const { safeAreaVertical, safeAreaHorizontal } = useOverlayLayoutStore();
-  const { fontFamily } = useWidgetAppearanceStore();
+  const { safeAreaVertical, safeAreaHorizontal } = useOverlayLayoutStore(
+    useShallow((s) => ({
+      safeAreaVertical: s.safeAreaVertical,
+      safeAreaHorizontal: s.safeAreaHorizontal,
+    })),
+  );
+  const fontFamily = useWidgetAppearanceStore((s) => s.fontFamily);
   const { width, height } = useVideoConfig();
 
   const isVertical = height > width;

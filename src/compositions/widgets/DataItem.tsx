@@ -1,4 +1,5 @@
 import type { FC, ReactNode } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 
 export type DataItemProps = {
@@ -9,7 +10,9 @@ export type DataItemProps = {
 
 export const DataItem: FC<DataItemProps> = (props) => {
   const { label, value, unit } = props;
-  const { primaryColor, accentColor } = useWidgetAppearanceStore();
+  const { primaryColor, accentColor } = useWidgetAppearanceStore(
+    useShallow((s) => ({ primaryColor: s.primaryColor, accentColor: s.accentColor })),
+  );
   return (
     <div className="flex flex-col items-center py-0.5 px-2">
       {label && (

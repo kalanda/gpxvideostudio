@@ -1,6 +1,7 @@
 import { Video } from "@remotion/media";
 import type { FC } from "react";
 import { AbsoluteFill, useVideoConfig } from "remotion";
+import { useShallow } from "zustand/react/shallow";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 
 export type BackgroundVideoLayerProps = {
@@ -17,7 +18,16 @@ export const BackgroundVideoLayer: FC<BackgroundVideoLayerProps> = (props) => {
     videoTrimEndSeconds,
     flipHorizontal,
     flipVertical,
-  } = useBackgroundVideoStore();
+  } = useBackgroundVideoStore(
+    useShallow((s) => ({
+      backgroundVideoUrl: s.backgroundVideoUrl,
+      backgroundVideoDurationSeconds: s.backgroundVideoDurationSeconds,
+      videoTrimStartSeconds: s.videoTrimStartSeconds,
+      videoTrimEndSeconds: s.videoTrimEndSeconds,
+      flipHorizontal: s.flipHorizontal,
+      flipVertical: s.flipVertical,
+    })),
+  );
   const { fps } = useVideoConfig();
 
   if (hide || !backgroundVideoUrl) return null;

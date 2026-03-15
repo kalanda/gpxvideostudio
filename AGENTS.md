@@ -55,3 +55,27 @@ Always use the `import { whatever } from "@/.../ItemToImport"` format except for
 Use HeroUI as main UI framework. If there is one component to create, check beforehand if HeroUI has one already. 
 
 For modals, use the HeroUI hook `useDisclosure()` always.
+
+## Zustand stores: always use selectors
+
+**Never call a store hook without a selector.** Calling `useStore()` without a selector subscribes the component to every state change in the store, causing unnecessary re-renders.
+
+**Single value** — use an inline selector:
+
+```typescript
+const fps = useProjectVideoSettingsStore((s) => s.fps);
+```
+
+**Multiple values** — use `useShallow` from `zustand/react/shallow`:
+
+```typescript
+import { useShallow } from "zustand/react/shallow";
+
+const { fps, width, height } = useProjectVideoSettingsStore(
+  useShallow((s) => ({ fps: s.fps, width: s.width, height: s.height })),
+);
+```
+
+`useShallow` performs a shallow comparison so the component only re-renders when one of the selected values actually changes, not when any other store field changes.
+
+Actions (setters) are stable references in Zustand and do not trigger re-renders by themselves, but they must still be included in the selector when destructured alongside state values.

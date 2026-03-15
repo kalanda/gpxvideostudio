@@ -11,6 +11,7 @@ import {
 import { Palette } from "lucide-react";
 import { useState } from "react";
 import { CompactPicker } from "react-color";
+import { useShallow } from "zustand/react/shallow";
 import { useFontSelector } from "@/hooks/useFontSelector";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 import {
@@ -64,7 +65,22 @@ export const WidgetAppearanceDropdown = () => {
     setMapViewportMode,
     mapPitch,
     setMapPitch,
-  } = useWidgetAppearanceStore();
+  } = useWidgetAppearanceStore(
+    useShallow((s) => ({
+      accentColor: s.accentColor,
+      setAccentColor: s.setAccentColor,
+      primaryColor: s.primaryColor,
+      setPrimaryColor: s.setPrimaryColor,
+      mapTheme: s.mapTheme,
+      setMapTheme: s.setMapTheme,
+      mapBearingMode: s.mapBearingMode,
+      setMapBearingMode: s.setMapBearingMode,
+      mapViewportMode: s.mapViewportMode,
+      setMapViewportMode: s.setMapViewportMode,
+      mapPitch: s.mapPitch,
+      setMapPitch: s.setMapPitch,
+    })),
+  );
   const [accentColorPickerOpen, setAccentColorPickerOpen] = useState(false);
   const [primaryColorPickerOpen, setPrimaryColorPickerOpen] = useState(false);
 
