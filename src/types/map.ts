@@ -4,6 +4,7 @@ export enum MapTheme {
   Light = "light",
   Dark = "dark",
   Colored = "colored",
+  Satellite = "satellite",
 }
 
 /** MiniMap: north-up vs rotate with route direction. */

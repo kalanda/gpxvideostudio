@@ -25,6 +25,7 @@ const MAP_THEME_LABELS: Record<MapTheme, string> = {
   [MapTheme.Light]: "Light",
   [MapTheme.Dark]: "Dark",
   [MapTheme.Colored]: "Colored",
+  [MapTheme.Satellite]: "Satellite",
 };
 
 const BEARING_MODE_LABELS: Record<MapBearingMode, string> = {

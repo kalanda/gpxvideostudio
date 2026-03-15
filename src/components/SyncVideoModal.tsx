@@ -15,7 +15,7 @@ import { ChevronLeft, ChevronRight, Link2, Pause, Play } from "lucide-react";
 import type { MapMouseEvent } from "maplibre-gl";
 import { type FC, useEffect, useRef, useState } from "react";
 import { Layer, Map as MaplibreMap, Source } from "react-map-gl/maplibre";
-import { MAP_THEMES_BASEMAP_URLS } from "@/constants/defaults";
+import { MAP_STYLES } from "@/constants/defaults";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
@@ -23,27 +23,6 @@ import { MapTheme } from "@/types/map";
 import { formatPlaybackTime } from "@/utils/format/formatPlaybackTime";
 import { interpolateAtTime } from "@/utils/interpolation/interpolateAtTime";
 import "maplibre-gl/dist/maplibre-gl.css";
-
-const SATELLITE_STYLE = {
-  version: 8 as const,
-  sources: {
-    "esri-satellite": {
-      type: "raster" as const,
-      tiles: [
-        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-      ],
-      tileSize: 256,
-      attribution: "Tiles &copy; Esri",
-    },
-  },
-  layers: [
-    {
-      id: "esri-satellite",
-      type: "raster" as const,
-      source: "esri-satellite",
-    },
-  ],
-};
 
 export type SyncVideoModalProps = {
   isOpen: boolean;
@@ -76,7 +55,7 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
           ?.properties.elapsed ?? 0)
       : 0;
   const [selectedElapsed, setSelectedElapsed] = useState(0);
-  const [mapStyle, setMapStyle] = useState<"map" | "satellite">("map");
+  const [mapMode, setMapMode] = useState<"map" | "satellite">("map");
 
   // Reset slider when modal opens
   useEffect(() => {
@@ -186,10 +165,10 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
       : null;
 
   // --- map style URL ---
-  const mapStyleUrl =
-    mapStyle === "satellite"
-      ? SATELLITE_STYLE
-      : (MAP_THEMES_BASEMAP_URLS[MapTheme.Light] ?? "");
+  const mapStyle =
+    mapMode === "satellite"
+      ? MAP_STYLES[MapTheme.Satellite]
+      : MAP_STYLES[MapTheme.Light];
 
   // --- sync action ---
   const handleSync = () => {
@@ -229,12 +208,13 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
                     src={backgroundVideoUrl}
                     className="max-h-full max-w-full object-contain"
                     style={{
-                      transform: [
-                        flipHorizontal ? "scaleX(-1)" : "",
-                        flipVertical ? "scaleY(-1)" : "",
-                      ]
-                        .filter(Boolean)
-                        .join(" ") || undefined,
+                      transform:
+                        [
+                          flipHorizontal ? "scaleX(-1)" : "",
+                          flipVertical ? "scaleY(-1)" : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ") || undefined,
                     }}
                     onTimeUpdate={handleTimeUpdate}
                     onLoadedMetadata={handleLoadedMetadata}
@@ -319,9 +299,9 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
                 </p>
                 <Tabs
                   size="sm"
-                  selectedKey={mapStyle}
+                  selectedKey={mapMode}
                   onSelectionChange={(k) =>
-                    setMapStyle(k as "map" | "satellite")
+                    setMapMode(k as "map" | "satellite")
                   }
                   aria-label="Map style"
                 >
@@ -339,7 +319,7 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
               >
                 {telemetryPoints && initialBounds ? (
                   <MaplibreMap
-                    mapStyle={mapStyleUrl}
+                    mapStyle={mapStyle}
                     initialViewState={{
                       bounds: [
                         initialBounds[0],

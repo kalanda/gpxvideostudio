@@ -21,10 +21,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import clsx from "clsx";
 import type { Feature, Point } from "geojson";
 import maplibregl from "maplibre-gl";
-import {
-  DEFAULT_WIDGET_APPEARANCE,
-  MAP_THEMES_BASEMAP_URLS,
-} from "@/constants/defaults";
+import { DEFAULT_WIDGET_APPEARANCE, MAP_STYLES } from "@/constants/defaults";
 
 type MiniMapProps = {
   /** Full telemetry points for the entire route (drawn as the track line). */
@@ -303,8 +300,6 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
     return () => clearTimeout(timeout);
   }, [releaseFrame]);
 
-  const mapStyleUrl = MAP_THEMES_BASEMAP_URLS[mapTheme];
-
   return (
     <div
       className={clsx("w-full h-full relative rounded-small overflow-hidden", {
@@ -316,19 +311,17 @@ export const MiniMap: FC<MiniMapProps> = (props) => {
       }}
     >
       {/* Base map — rendered first (bottom layer) */}
-      {mapStyleUrl && (
-        <MapboxMap
-          mapLib={maplibregl}
-          mapStyle={mapStyleUrl}
-          interactive={false}
-          attributionControl={false}
-          onLoad={onMapLoad}
-          onError={onMapLoad}
-          maxPitch={85}
-          {...viewState}
-          style={{ position: "absolute", inset: 0 }}
-        />
-      )}
+      <MapboxMap
+        mapLib={maplibregl}
+        mapStyle={MAP_STYLES[mapTheme]}
+        interactive={false}
+        attributionControl={false}
+        onLoad={onMapLoad}
+        onError={onMapLoad}
+        maxPitch={85}
+        {...viewState}
+        style={{ position: "absolute", inset: 0 }}
+      />
 
       {/* DeckGL overlay — separate canvas on top with transparent background */}
       <DeckGL
