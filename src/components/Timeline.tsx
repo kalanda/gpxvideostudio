@@ -1,14 +1,17 @@
-import { Button } from "@heroui/react";
-import { GanttChart, Minus, Plus } from "lucide-react";
+import { Button, useDisclosure } from "@heroui/react";
+import { GanttChart, TextCursorInput, ZoomIn, ZoomOut } from "lucide-react";
 import type { FC } from "react";
 import { useState } from "react";
+import { MiniCard } from "@/components/MiniCard";
+import { SyncVideoModal } from "@/components/SyncVideoModal";
 import { TimelinePlaybackCursor } from "@/components/TimelinePlaybackCursor";
 import { TimelineRuler } from "@/components/TimelineRuler";
 import { useVideoPlayer } from "@/contexts/VideoPlayerContext";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useVideoPlayerControls } from "@/hooks/useVideoPlayerControls";
+import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
-import { MiniCard } from "./MiniCard";
+import { useTelemetryStore } from "@/stores/telemetryStore";
 
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 4;
@@ -24,8 +27,17 @@ export const Timeline: FC = () => {
   useVideoPlayer();
   const { currentFrame, seekTo } = useVideoPlayerControls();
   const { durationInFrames } = useEffectiveExportDuration();
+  const backgroundVideoUrl = useBackgroundVideoStore(
+    (s) => s.backgroundVideoUrl,
+  );
+  const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
   const fps = useProjectVideoSettingsStore((s) => s.fps);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const {
+    isOpen: isSyncModalOpen,
+    onOpen: onSyncModalOpen,
+    onClose: onSyncModalClose,
+  } = useDisclosure();
 
   const totalFrames = Math.max(1, durationInFrames);
   const pixelsPerFrame = PIXELS_PER_FRAME_BASE * zoomLevel;
@@ -43,8 +55,20 @@ export const Timeline: FC = () => {
     setZoomLevel((z) => Math.max(MIN_ZOOM, z - ZOOM_STEP));
   };
 
+  const hasBothTracks = !!backgroundVideoUrl && !!telemetryPoints;
+
   const actions = (
     <>
+      {hasBothTracks && (
+        <Button
+          size="sm"
+          variant="flat"
+          startContent={<TextCursorInput size={16} />}
+          onPress={onSyncModalOpen}
+        >
+          Sync video with telemetry
+        </Button>
+      )}
       <Button
         isIconOnly
         size="sm"
@@ -53,9 +77,9 @@ export const Timeline: FC = () => {
         onPress={handleZoomOut}
         isDisabled={zoomLevel <= MIN_ZOOM}
       >
-        <Minus size={16} />
+        <ZoomOut size={16} />
       </Button>
-      <span className="min-w-[4ch] text-small tabular-nums text-default-500">
+      <span className="min-w-[4ch] text-xs tabular-nums text-default-500">
         {Math.round(zoomLevel * 100)}%
       </span>
       <Button
@@ -66,7 +90,7 @@ export const Timeline: FC = () => {
         onPress={handleZoomIn}
         isDisabled={zoomLevel >= MAX_ZOOM}
       >
-        <Plus size={16} />
+        <ZoomIn size={16} />
       </Button>
     </>
   );
@@ -99,6 +123,7 @@ export const Timeline: FC = () => {
           <TimelinePlaybackCursor leftPx={cursorLeftPx} />
         </div>
       </div>
+      <SyncVideoModal isOpen={isSyncModalOpen} onClose={onSyncModalClose} />
     </MiniCard>
   );
 };
