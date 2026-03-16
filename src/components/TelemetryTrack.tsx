@@ -120,6 +120,12 @@ export const TelemetryTrack: FC = () => {
       actions={actions}
     >
       {gpxError && <Alert color="danger" variant="flat" title={gpxError} />}
+      {!telemetryPoints && !gpxError && (
+        <p className="py-0.5 text-xs text-default-400">
+          Load a GPX file to add speed, distance, elevation and route map data
+          to your video.
+        </p>
+      )}
       {telemetryPoints &&
         (() => {
           const gpxStartTime = telemetryPoints.features[0].properties.time;

@@ -30,7 +30,14 @@ export const AppNavbar = ({ theme, onToggleTheme }: AppNavbarProps) => {
       }}
     >
       <NavbarContent justify="start">
-        <NavbarBrand>GPX Video Studio</NavbarBrand>
+        <NavbarBrand>
+          <span className="font-display text-base font-bold tracking-tight text-primary">
+            GPX
+          </span>
+          <span className="ml-1.5 font-display text-base font-medium tracking-tight text-foreground/50">
+            Video Studio
+          </span>
+        </NavbarBrand>
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>

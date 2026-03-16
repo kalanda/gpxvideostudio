@@ -149,6 +149,12 @@ export const BackgroundVideoTrack: FC = () => {
       titleIcon={<Video size={16} className="shrink-0" />}
       actions={actions}
     >
+      {!backgroundVideoUrl && (
+        <p className="py-0.5 text-xs text-default-400">
+          Add footage from your camera or action cam. Once loaded, you can sync
+          it with the telemetry track.
+        </p>
+      )}
       <BackgroundVideoThumbnails />
       {backgroundVideoUrl && backgroundVideoDurationSeconds != null && (
         <Slider

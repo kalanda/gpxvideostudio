@@ -26,7 +26,7 @@ export const DEFAULT_EXPORT_FILENAME_PREFIX = "telemetry-overlay";
 export const DEFAULT_WIDGET_APPEARANCE = {
   fontFamily: "Roboto",
   primaryColor: "#ffffff",
-  accentColor: "#B0BC00",
+  accentColor: "#bfd200",
   mapTheme: MapTheme.Dark,
   mapBearingMode: MapBearingMode.Fixed,
   mapViewportMode: MapViewportMode.FollowPoint,
