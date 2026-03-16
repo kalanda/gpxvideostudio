@@ -8,7 +8,6 @@ import {
   Slider,
   Tab,
   Tabs,
-  Tooltip,
 } from "@heroui/react";
 import bbox from "@turf/bbox";
 import { ChevronLeft, ChevronRight, Link2, Pause, Play } from "lucide-react";
@@ -35,15 +34,19 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { backgroundVideoUrl, flipHorizontal, flipVertical, setVideoStartTimestamp } =
-    useBackgroundVideoStore(
-      useShallow((s) => ({
-        backgroundVideoUrl: s.backgroundVideoUrl,
-        flipHorizontal: s.flipHorizontal,
-        flipVertical: s.flipVertical,
-        setVideoStartTimestamp: s.setVideoStartTimestamp,
-      })),
-    );
+  const {
+    backgroundVideoUrl,
+    flipHorizontal,
+    flipVertical,
+    setVideoStartTimestamp,
+  } = useBackgroundVideoStore(
+    useShallow((s) => ({
+      backgroundVideoUrl: s.backgroundVideoUrl,
+      flipHorizontal: s.flipHorizontal,
+      flipVertical: s.flipVertical,
+      setVideoStartTimestamp: s.setVideoStartTimestamp,
+    })),
+  );
   const fps = useProjectVideoSettingsStore((s) => s.fps);
   const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
 
@@ -190,9 +193,18 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
   const currentTelemetryTime = currentTelemetryPoint?.properties.time;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="5xl" scrollBehavior="normal">
-      <ModalContent>
-        <ModalHeader className="flex flex-col gap-2">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="full"
+      scrollBehavior="inside"
+      classNames={{
+        base: "h-[90vh] max-w-[90vw]",
+        body: "flex flex-col flex-1 min-h-0 overflow-hidden p-0",
+      }}
+    >
+      <ModalContent className="flex flex-col">
+        <ModalHeader className="flex flex-col gap-2 shrink-0">
           <div className="flex items-center gap-2">
             <Link2 size={20} />
             Sync video with telemetry
@@ -203,11 +215,19 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
           </p>
         </ModalHeader>
         <ModalBody>
-          <div className="grid grid-cols-2 divide-x divide-divider">
-            {/* ── Left: video panel ── */}
-            <div className="flex flex-col gap-3 p-4">
-              <p className="text-sm font-medium text-foreground/70">Video</p>
-              <div className="relative flex-1 bg-black rounded-medium overflow-hidden flex items-center justify-center">
+          {/*
+           * 3-row shared grid: labels / media (1fr) / controls
+           * Both media cells share the same 1fr row so they are always equal height.
+           */}
+          <div className="grid grid-cols-2 grid-rows-[auto_1fr_auto] h-full min-h-0">
+            {/* ── Video: label ── */}
+            <p className="px-4 pt-4 text-sm font-medium text-foreground/70 col-start-1 row-start-1">
+              Video
+            </p>
+
+            {/* ── Video: media ── */}
+            <div className="px-4 pt-3 min-h-0 col-start-1 row-start-2">
+              <div className="relative h-full bg-black rounded-medium overflow-hidden flex items-center justify-center">
                 {backgroundVideoUrl ? (
                   <video
                     ref={videoRef}
@@ -236,93 +256,84 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
                   <p className="text-foreground/40 text-sm">No video loaded</p>
                 )}
               </div>
+            </div>
 
-              {/* Video controls */}
-              <div className="flex flex-col gap-2">
-                <Slider
+            {/* ── Video: controls ── */}
+            <div className="px-4 pt-3 pb-4 flex flex-col gap-3 col-start-1 row-start-3">
+              <Slider
+                size="sm"
+                step={1 / fps}
+                minValue={0}
+                maxValue={Math.max(1, videoDuration)}
+                value={videoCurrentTime}
+                onChange={handleVideoSeek}
+                aria-label="Video position"
+                isDisabled={!backgroundVideoUrl}
+              />
+              <p className="text-xs text-foreground/50 font-mono tabular-nums text-center">
+                Video time: {formatPlaybackTime(videoCurrentTime)}
+                {" / "}
+                {formatPlaybackTime(videoDuration)}
+              </p>
+              <div className="flex items-center gap-2 justify-center">
+                <Button
+                  isIconOnly
                   size="sm"
-                  step={1 / fps}
-                  minValue={0}
-                  maxValue={Math.max(1, videoDuration)}
-                  value={videoCurrentTime}
-                  onChange={handleVideoSeek}
-                  aria-label="Video position"
+                  variant="flat"
+                  onPress={() => stepFrame(-1)}
                   isDisabled={!backgroundVideoUrl}
-                />
-
-                <div className="flex items-center gap-2">
-                  <Tooltip content="Previous frame">
-                    <Button
-                      isIconOnly
-                      size="sm"
-                      variant="flat"
-                      onPress={() => stepFrame(-1)}
-                      isDisabled={!backgroundVideoUrl}
-                      aria-label="Previous frame"
-                    >
-                      <ChevronLeft size={16} />
-                    </Button>
-                  </Tooltip>
-
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    variant="flat"
-                    onPress={toggleVideoPlay}
-                    isDisabled={!backgroundVideoUrl}
-                    aria-label={videoIsPlaying ? "Pause" : "Play"}
-                  >
-                    {videoIsPlaying ? <Pause size={18} /> : <Play size={18} />}
-                  </Button>
-
-                  <Tooltip content="Next frame">
-                    <Button
-                      isIconOnly
-                      size="sm"
-                      variant="flat"
-                      onPress={() => stepFrame(1)}
-                      isDisabled={!backgroundVideoUrl}
-                      aria-label="Next frame"
-                    >
-                      <ChevronRight size={16} />
-                    </Button>
-                  </Tooltip>
-
-                  <span className="font-mono text-xs text-foreground/70 tabular-nums">
-                    {formatPlaybackTime(videoCurrentTime)}
-                    {" / "}
-                    {formatPlaybackTime(videoDuration)}
-                  </span>
-                </div>
+                  aria-label="Previous frame"
+                >
+                  <ChevronLeft size={16} />
+                </Button>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="flat"
+                  onPress={toggleVideoPlay}
+                  isDisabled={!backgroundVideoUrl}
+                  aria-label={videoIsPlaying ? "Pause" : "Play"}
+                >
+                  {videoIsPlaying ? <Pause size={18} /> : <Play size={18} />}
+                </Button>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="flat"
+                  onPress={() => stepFrame(1)}
+                  isDisabled={!backgroundVideoUrl}
+                  aria-label="Next frame"
+                >
+                  <ChevronRight size={16} />
+                </Button>
               </div>
             </div>
 
-            {/* ── Right: map panel ── */}
-            <div className="flex flex-col gap-3 p-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-foreground/70">
-                  GPX track
-                </p>
-                <Tabs
-                  size="sm"
-                  selectedKey={mapMode}
-                  onSelectionChange={(k) =>
-                    setMapMode(k as "map" | "satellite")
-                  }
-                  aria-label="Map style"
-                >
-                  <Tab key="map" title="Map" />
-                  <Tab key="satellite" title="Satellite" />
-                </Tabs>
-              </div>
+            {/* ── Map: label ── */}
+            <p className="px-4 pt-4 text-sm font-medium text-foreground/70 border-l border-divider col-start-2 row-start-1">
+              GPX track
+            </p>
 
-              <div
-                className="relative flex-1 rounded-medium overflow-hidden"
-                style={{
-                  minHeight: "300px",
-                  cursor: telemetryPoints ? "crosshair" : "default",
-                }}
-              >
+            {/* ── Map: media ── */}
+            <div
+              className="px-4 pt-3 min-h-0 border-l border-divider col-start-2 row-start-2"
+              style={{ cursor: telemetryPoints ? "crosshair" : "default" }}
+            >
+              <div className="relative h-full rounded-medium overflow-hidden">
+                <div className="absolute top-2 right-2 z-10">
+                  <Tabs
+                    size="sm"
+                    selectedKey={mapMode}
+                    onSelectionChange={(k) =>
+                      setMapMode(k as "map" | "satellite")
+                    }
+                    aria-label="Map style"
+                    classNames={{ base: "shadow-medium" }}
+                  >
+                    <Tab key="map" title="Map" />
+                    <Tab key="satellite" title="Satellite" />
+                  </Tabs>
+                </div>
                 {telemetryPoints && initialBounds ? (
                   <MaplibreMap
                     mapStyle={mapStyle}
@@ -339,7 +350,6 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
                     attributionControl={false}
                     onClick={handleMapClick}
                   >
-                    {/* Full route line */}
                     {routeGeoJson && (
                       <Source id="route" type="geojson" data={routeGeoJson}>
                         <Layer
@@ -354,8 +364,6 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
                         />
                       </Source>
                     )}
-
-                    {/* Current selected point */}
                     {currentPointGeoJson && (
                       <Source
                         id="current-point"
@@ -392,49 +400,47 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
                   </div>
                 )}
               </div>
+            </div>
 
-              {/* Telemetry position slider */}
-              <div className="flex flex-col gap-1">
-                <Slider
-                  size="sm"
-                  label="Track position"
-                  step={0.1}
-                  minValue={0}
-                  maxValue={Math.max(1, totalElapsed)}
-                  value={selectedElapsed}
-                  onChange={(v) =>
-                    setSelectedElapsed(typeof v === "number" ? v : (v[0] ?? 0))
-                  }
-                  getValue={(v) =>
-                    formatPlaybackTime(
-                      typeof v === "number" ? v : ((v as number[])[0] ?? 0),
-                    )
-                  }
-                  isDisabled={!telemetryPoints}
-                  aria-label="Telemetry position"
-                  classNames={{
-                    value: "text-xs text-foreground/70 font-mono tabular-nums",
-                    label: "text-xs text-foreground/70",
-                  }}
-                />
-
-                {currentTelemetryTime && (
-                  <p className="text-xs text-foreground/50 font-mono tabular-nums">
-                    GPS time:{" "}
-                    {currentTelemetryTime.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                      hour12: false,
-                    })}
-                  </p>
-                )}
-              </div>
+            {/* ── Map: controls ── */}
+            <div className="px-4 pt-3 pb-4 flex flex-col gap-2 border-l border-divider col-start-2 row-start-3">
+              <Slider
+                size="sm"
+                step={0.1}
+                minValue={0}
+                maxValue={Math.max(1, totalElapsed)}
+                value={selectedElapsed}
+                onChange={(v) =>
+                  setSelectedElapsed(typeof v === "number" ? v : (v[0] ?? 0))
+                }
+                getValue={(v) =>
+                  formatPlaybackTime(
+                    typeof v === "number" ? v : ((v as number[])[0] ?? 0),
+                  )
+                }
+                isDisabled={!telemetryPoints}
+                aria-label="Telemetry position"
+                classNames={{
+                  value: "text-xs text-foreground/70 font-mono tabular-nums",
+                  label: "text-xs text-foreground/70",
+                }}
+              />
+              {currentTelemetryTime && (
+                <p className="text-xs text-foreground/50 font-mono tabular-nums text-center">
+                  GPS time:{" "}
+                  {currentTelemetryTime.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false,
+                  })}
+                </p>
+              )}
             </div>
           </div>
         </ModalBody>
 
-        <ModalFooter>
+        <ModalFooter className="shrink-0">
           <Button variant="flat" onPress={onClose}>
             Cancel
           </Button>
