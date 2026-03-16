@@ -60,6 +60,11 @@ export const TelemetryOverlayLayout: FC = () => {
               elevations={(trimmedPoints ?? telemetryPoints).features.map(
                 (p) => p.properties.elevation,
               )}
+              elapsedTimes={(trimmedPoints ?? telemetryPoints).features.map(
+                (p) => p.properties.elapsed,
+              )}
+              segmentStartElapsed={gpxElapsedAtExportStart}
+              segmentDuration={effectiveDurationSeconds}
               progress={progressInSegment}
             />
             <div className="flex flex-col items-center justify-center gap-8 shrink-0 w-64">

@@ -6,7 +6,13 @@ import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 
 type ElevationChartProps = {
   elevations: Array<number | null>;
-  /** Progress through the track (0 to 1) */
+  /** Elapsed time (seconds) for each elevation sample, 1:1 with the elevations array. */
+  elapsedTimes: number[];
+  /** Elapsed time (seconds) at the start of the export segment. */
+  segmentStartElapsed: number;
+  /** Duration (seconds) of the export segment. */
+  segmentDuration: number;
+  /** Progress through the segment (0 to 1), derived from elapsed time. */
   progress: number;
 };
 
@@ -22,7 +28,7 @@ const {
 } = ELEVATION_CHART;
 
 export const ElevationChart: FC<ElevationChartProps> = (props) => {
-  const { elevations, progress } = props;
+  const { elevations, elapsedTimes, segmentStartElapsed, segmentDuration, progress } = props;
   const { primaryColor, accentColor } = useWidgetAppearanceStore(
     useShallow((s) => ({ primaryColor: s.primaryColor, accentColor: s.accentColor })),
   );
@@ -52,8 +58,18 @@ export const ElevationChart: FC<ElevationChartProps> = (props) => {
   const innerW = viewBoxWidth - pad * 2;
   const innerH = viewBoxHeight - pad * 2;
 
-  const toX = (i: number) =>
-    pad + (i / Math.max(1, elevations.length - 1)) * innerW;
+  // X position derived from elapsed time so it uses the same scale as `progress`.
+  // Falls back to index-based if segmentDuration is zero.
+  const toX = (i: number) => {
+    if (segmentDuration <= 0) {
+      return pad + (i / Math.max(1, elevations.length - 1)) * innerW;
+    }
+    const t = Math.max(
+      0,
+      Math.min(1, (elapsedTimes[i] - segmentStartElapsed) / segmentDuration),
+    );
+    return pad + t * innerW;
+  };
   const toY = (ele: number | null) => {
     if (ele === null) return pad + innerH / 2;
     return pad + innerH - ((ele - displayMinEle) / range) * innerH;
@@ -98,22 +114,35 @@ export const ElevationChart: FC<ElevationChartProps> = (props) => {
           strokeOpacity={0.5}
           strokeWidth={cursorLineStrokeWidth}
         />
-        {/* Cursor dot on the line */}
-        {elevations.length > 0 && (
-          <circle
-            cx={cursorX.toFixed(SVG_PATH_PRECISION)}
-            cy={toY(
-              elevations[
-                Math.min(
-                  Math.floor(progress * elevations.length),
-                  elevations.length - 1,
-                )
-              ],
-            ).toFixed(SVG_PATH_PRECISION)}
-            r={cursorDotRadius}
-            fill={accentColor}
-          />
-        )}
+        {/* Cursor dot — Y interpolated between the two surrounding elapsed-time points */}
+        {elevations.length > 0 && (() => {
+          const currentElapsed = segmentStartElapsed + progress * segmentDuration;
+          // Binary search for the lower-bound index
+          let lo = 0;
+          let hi = elapsedTimes.length - 1;
+          while (lo < hi - 1) {
+            const mid = (lo + hi) >> 1;
+            if ((elapsedTimes[mid] ?? 0) <= currentElapsed) lo = mid;
+            else hi = mid;
+          }
+          const hiIdx = Math.min(lo + 1, elevations.length - 1);
+          const span = (elapsedTimes[hiIdx] ?? 0) - (elapsedTimes[lo] ?? 0);
+          const t = span > 0 ? (currentElapsed - (elapsedTimes[lo] ?? 0)) / span : 0;
+          const e0 = elevations[lo];
+          const e1 = elevations[hiIdx];
+          const dotEle =
+            e0 !== null && e1 !== null
+              ? e0 + t * (e1 - e0)
+              : (e0 ?? e1 ?? null);
+          return (
+            <circle
+              cx={cursorX.toFixed(SVG_PATH_PRECISION)}
+              cy={toY(dotEle).toFixed(SVG_PATH_PRECISION)}
+              r={cursorDotRadius}
+              fill={accentColor}
+            />
+          );
+        })()}
       </svg>
     </div>
   );
