@@ -428,7 +428,10 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
               {currentTelemetryTime && (
                 <p className="text-xs text-foreground/50 font-mono tabular-nums text-center">
                   GPS time:{" "}
-                  {currentTelemetryTime.toLocaleTimeString([], {
+                  {currentTelemetryTime.toLocaleString([], {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
                     hour: "2-digit",
                     minute: "2-digit",
                     second: "2-digit",
