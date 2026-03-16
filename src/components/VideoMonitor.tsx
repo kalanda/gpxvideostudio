@@ -2,29 +2,26 @@ import { Alert, Button, useDisclosure } from "@heroui/react";
 import { Player } from "@remotion/player";
 import { Download, MonitorPlay, Settings } from "lucide-react";
 import type { FC } from "react";
-import { useRef } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { ExportVideoModal } from "@/components/ExportVideoModal";
 import { MiniCard } from "@/components/MiniCard";
+import { VideoMonitorEmptyState } from "@/components/VideoMonitorEmptyState";
 import { VideoSettingsModal } from "@/components/VideoSettingsModal";
 import { WidgetAppearanceDropdown } from "@/components/WidgetAppearanceDropdown";
 import { MainComposition } from "@/compositions/MainComposition";
 import { useVideoPlayer } from "@/contexts/VideoPlayerContext";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useExporter } from "@/hooks/useExporter";
-import { useGpxLoader } from "@/hooks/useGpxLoader";
-import { useShallow } from "zustand/react/shallow";
 import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 
 export const VideoMonitor: FC = () => {
-  const gpxInputRef = useRef<HTMLInputElement>(null);
   const { playerRef } = useVideoPlayer();
   const { fps, width, height } = useProjectVideoSettingsStore(
     useShallow((s) => ({ fps: s.fps, width: s.width, height: s.height })),
   );
   const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
   const { durationInFrames } = useEffectiveExportDuration();
-  const { loadFromFile } = useGpxLoader();
   const { error, canExport } = useExporter();
   const {
     isOpen: isVideoSettingsModalOpen,
@@ -83,25 +80,8 @@ export const VideoMonitor: FC = () => {
               maxHeight: "min(50vh, 700px)",
             }}
           >
-            {!telemetryPoints && (
-              <div className="absolute inset-0 z-10 flex w-full flex-col items-center justify-center">
-                <input
-                  ref={gpxInputRef}
-                  type="file"
-                  accept=".gpx"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    e.target.value = "";
-                    if (file) void loadFromFile(file);
-                  }}
-                  className="hidden"
-                  aria-hidden
-                />
-                <Button onPress={() => gpxInputRef.current?.click()}>
-                  Load a GPX to add the telemetry track
-                </Button>
-              </div>
-            )}
+            {/* Empty state */}
+            {!telemetryPoints && <VideoMonitorEmptyState />}
             {/* Wrapper sized to fit inside 16:9 box while keeping video aspect ratio */}
             <div
               className="relative shrink-0 cursor-pointer"
