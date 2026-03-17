@@ -1,5 +1,6 @@
 import {
   Button,
+  Divider,
   Modal,
   ModalBody,
   ModalContent,
@@ -200,7 +201,6 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
       scrollBehavior="inside"
       classNames={{
         base: "h-[90vh] max-w-[90vw]",
-        body: "flex flex-col flex-1 min-h-0 overflow-hidden p-0",
       }}
     >
       <ModalContent className="flex flex-col">
@@ -209,24 +209,18 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
             <Link2 size={20} />
             Sync video with telemetry
           </div>
-          <p className="text-sm text-foreground/70">
+          <p className="text-sm font-normal text-foreground/70">
             Align the video and GPX track to synchronize them. Navigate to a
-            recognisable moment in both, then press Sync.
+            recognisable moment in both, then press "Sync these points".
           </p>
         </ModalHeader>
         <ModalBody>
-          {/*
-           * 3-row shared grid: labels / media (1fr) / controls
-           * Both media cells share the same 1fr row so they are always equal height.
-           */}
-          <div className="grid grid-cols-2 grid-rows-[auto_1fr_auto] h-full min-h-0">
+          <div className="grid grid-flow-col grid-cols-[1fr_1px_1fr] grid-rows-[auto_1fr_auto] gap-4 h-full min-h-0">
             {/* ── Video: label ── */}
-            <p className="px-4 pt-4 text-sm font-medium text-foreground/70 col-start-1 row-start-1">
-              Video
-            </p>
+            <p className="text-sm font-medium text-foreground/70">Video</p>
 
             {/* ── Video: media ── */}
-            <div className="px-4 pt-3 min-h-0 col-start-1 row-start-2">
+            <div className="min-h-0">
               <div className="relative h-full bg-black rounded-medium overflow-hidden flex items-center justify-center">
                 {backgroundVideoUrl ? (
                   <video
@@ -259,7 +253,7 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
             </div>
 
             {/* ── Video: controls ── */}
-            <div className="px-4 pt-3 pb-4 flex flex-col gap-3 col-start-1 row-start-3">
+            <div className="flex flex-col gap-4">
               <Slider
                 size="sm"
                 step={1 / fps}
@@ -309,14 +303,15 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
               </div>
             </div>
 
+            {/* Divider */}
+            <Divider orientation="vertical" className="row-span-3" />
+
             {/* ── Map: label ── */}
-            <p className="px-4 pt-4 text-sm font-medium text-foreground/70 border-l border-divider col-start-2 row-start-1">
-              GPX track
-            </p>
+            <p className="text-sm font-medium text-foreground/70">GPX track</p>
 
             {/* ── Map: media ── */}
             <div
-              className="px-4 pt-3 min-h-0 border-l border-divider col-start-2 row-start-2"
+              className="min-h-0"
               style={{ cursor: telemetryPoints ? "crosshair" : "default" }}
             >
               <div className="relative h-full rounded-medium overflow-hidden">
@@ -328,7 +323,6 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
                       setMapMode(k as "map" | "satellite")
                     }
                     aria-label="Map style"
-                    classNames={{ base: "shadow-medium" }}
                   >
                     <Tab key="map" title="Map" />
                     <Tab key="satellite" title="Satellite" />
@@ -403,7 +397,7 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
             </div>
 
             {/* ── Map: controls ── */}
-            <div className="px-4 pt-3 pb-4 flex flex-col gap-2 border-l border-divider col-start-2 row-start-3">
+            <div className="flex flex-col gap-4">
               <Slider
                 size="sm"
                 step={0.1}
@@ -443,7 +437,7 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
           </div>
         </ModalBody>
 
-        <ModalFooter className="shrink-0">
+        <ModalFooter>
           <Button variant="flat" onPress={onClose}>
             Cancel
           </Button>
