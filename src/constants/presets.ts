@@ -16,14 +16,6 @@ export const VIDEO_BITRATE_PRESETS: VideoBitrate[] = [
   VideoBitrate.VeryHigh,
 ] as const;
 
-export const VIDEO_BITRATE_LABELS: Record<VideoBitrate, string> = {
-  [VideoBitrate.VeryLow]: "Very low",
-  [VideoBitrate.Low]: "Low",
-  [VideoBitrate.Medium]: "Medium",
-  [VideoBitrate.High]: "High",
-  [VideoBitrate.VeryHigh]: "Very high",
-} as const;
-
 /** Subset of Google Fonts shown by default (legible, versatile). Use the "Show all" option to search the full catalog. */
 export const PRESET_FONT_FAMILIES = [
   "Roboto",

@@ -75,13 +75,8 @@ export function useGpxLoader() {
     }
   }
 
-  function clearError() {
-    setGpxError(null);
-  }
-
   return {
     gpxError,
-    clearError,
     loadFromFile,
     loadSample,
   };

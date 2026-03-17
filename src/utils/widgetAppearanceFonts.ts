@@ -18,10 +18,6 @@ export async function loadFontByFamily(fontFamily: string): Promise<void> {
   mod.loadFont("normal", FONT_LOAD_OPTIONS);
 }
 
-export function getAllFonts(): GoogleFontItem[] {
-  return allFonts;
-}
-
 const PRESET_SET = new Set<string>(PRESET_FONT_FAMILIES);
 
 export function getFontsToShow(

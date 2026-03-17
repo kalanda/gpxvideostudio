@@ -78,14 +78,3 @@ export const MAP_STYLES: Record<MapTheme, string | StyleSpecification> = {
     ],
   },
 } as const;
-
-/** MiniMap: viewBox, padding and path stroke in viewBox units. */
-export const MINIMAP = {
-  viewBoxSize: 100,
-  pad: 8,
-  routeStrokeWidth: 1,
-  defaultMapTheme: MapTheme.Dark,
-  defaultMapBearingMode: MapBearingMode.Fixed,
-  defaultMapViewportMode: MapViewportMode.FollowPoint,
-  defaultMapPitch: MapPitch.Tilted,
-} as const;

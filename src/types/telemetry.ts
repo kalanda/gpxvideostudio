@@ -64,11 +64,5 @@ export type TelemetryFeatureCollection = FeatureCollection<
   TelemetryPoint
 >;
 
-/** Empty telemetry collection for "no data" state (e.g. preview without GPX) */
-export const EMPTY_TELEMETRY: TelemetryFeatureCollection = {
-  type: "FeatureCollection",
-  features: [],
-};
-
 /** A GeoJSON Feature for one frame: geometry holds position, properties hold telemetry */
 export type TelemetryFrameFeature = Feature<Point, TelemetryFrame>;
