@@ -73,47 +73,38 @@ export const VideoMonitor: FC = () => {
           <Alert color="danger" variant="flat" description={error} />
         )}
         <div className="flex w-full flex-col">
+          {/*
+           * Width is the min of:
+           *   - 100% of the container (narrow viewports — height derives from aspect ratio)
+           *   - maxH × (w/h): the width that exactly fills the max allowed height (wide viewports)
+           * Height is always auto-derived from aspect-ratio, so there is never any letterboxing.
+           */}
           <div
-            className="relative flex w-full items-center justify-center overflow-hidden rounded-small bg-background-800"
             style={{
-              aspectRatio: `${width}/${height}`,
-              maxHeight: "min(50vh, 700px)",
+              width: `min(100%, min(50vh, 700px) * ${width} / ${height})`,
+              margin: "0 auto",
+              aspectRatio: `${width} / ${height}`,
+              position: "relative",
             }}
           >
-            {/* Empty state */}
             {!telemetryPoints && <VideoMonitorEmptyState />}
-            {/* Wrapper sized to fit inside 16:9 box while keeping video aspect ratio */}
-            <div
-              className="relative shrink-0 cursor-pointer"
+            <Player
+              ref={playerRef}
+              key={`${width}x${height}-${fps}`}
+              component={MainComposition}
+              durationInFrames={durationInFrames}
+              fps={fps}
+              compositionWidth={width}
+              compositionHeight={height}
+              controls={true}
+              autoPlay={false}
+              loop={false}
+              acknowledgeRemotionLicense
               style={{
-                aspectRatio: `${width} / ${height}`,
-                // Video wider than 16/9: limit by height. Video taller: limit by width.
-                maxWidth: "100%",
-                maxHeight: "100%",
-                width: width / height >= 16 / 9 ? "100%" : undefined,
-                height: width / height < 16 / 9 ? "100%" : undefined,
+                width: "100%",
+                backgroundColor: "black",
               }}
-            >
-              <Player
-                ref={playerRef}
-                key={`${width}x${height}-${fps}`}
-                component={MainComposition}
-                durationInFrames={durationInFrames}
-                fps={fps}
-                compositionWidth={width}
-                compositionHeight={height}
-                controls={true}
-                autoPlay={false}
-                loop={false}
-                acknowledgeRemotionLicense
-                style={{
-                  display: "block",
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "black",
-                }}
-              />
-            </div>
+            />
           </div>
         </div>
       </MiniCard>
