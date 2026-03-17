@@ -9,14 +9,12 @@ const SAMPLE_GPX_URL = `${import.meta.env.BASE_URL}sample.gpx`;
 
 export function useGpxLoader() {
   const [gpxError, setGpxError] = useState<string | null>(null);
-  const { setTelemetryPoints, setGpxFileName, setGpxTrimEndSeconds } =
-    useTelemetryStore(
-      useShallow((s) => ({
-        setTelemetryPoints: s.setTelemetryPoints,
-        setGpxFileName: s.setGpxFileName,
-        setGpxTrimEndSeconds: s.setGpxTrimEndSeconds,
-      })),
-    );
+  const { setTelemetryPoints, setGpxFileName } = useTelemetryStore(
+    useShallow((s) => ({
+      setTelemetryPoints: s.setTelemetryPoints,
+      setGpxFileName: s.setGpxFileName,
+    })),
+  );
 
   function processGpxString(gpxText: string, fileName: string | undefined) {
     const gpx = parseGpx(gpxText);
@@ -38,7 +36,6 @@ export function useGpxLoader() {
 
     setTelemetryPoints(telemetryPoints);
     if (fileName != null) setGpxFileName(fileName);
-    setGpxTrimEndSeconds(0);
     // A new GPX invalidates the previous sync — reset it so the user syncs again.
     useBackgroundVideoStore.getState().setVideoStartTimestamp(null);
     setGpxError(null);

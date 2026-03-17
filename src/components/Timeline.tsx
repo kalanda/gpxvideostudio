@@ -16,7 +16,7 @@ import { useTelemetryStore } from "@/stores/telemetryStore";
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 4;
 const ZOOM_STEP = 0.25;
-const PIXELS_PER_FRAME_BASE = 2;
+const PIXELS_PER_FRAME_BASE = 1;
 
 /**
  * Timeline component for video composition.

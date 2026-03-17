@@ -6,30 +6,22 @@ import { computeEffectiveExportDuration } from "@/utils/calculations/computeEffe
 import { computeSyncOffset } from "@/utils/calculations/computeSyncOffset";
 
 /**
- * Effective export duration = intersection of the video and GPX track segments.
+ * Effective export duration = video segment mapped to GPX elapsed via sync.
  *
- * Sync is read from videoStartTimestamp (independent of trims). Changing any trim
- * adjusts the duration without altering the sync relationship.
+ * The video trim determines the export range. Sync is read from videoStartTimestamp
+ * (independent of trims). Changing the video trim adjusts the duration without
+ * altering the sync relationship.
  */
 export function useEffectiveExportDuration(): {
-  gpxDurationSeconds: number;
   effectiveDurationSeconds: number;
   durationInFrames: number;
-  videoDurationSeconds: number | null;
   /** GPX elapsed time (seconds) that corresponds to export frame 0. */
   gpxElapsedAtExportStart: number;
   /** Video time (seconds into the raw file) at export frame 0. Used for Remotion trimBefore. */
   videoTimeAtFrame0: number;
 } {
   const fps = useProjectVideoSettingsStore((s) => s.fps);
-  const { telemetryPoints, gpxTrimStartSeconds, gpxTrimEndSeconds } =
-    useTelemetryStore(
-      useShallow((s) => ({
-        telemetryPoints: s.telemetryPoints,
-        gpxTrimStartSeconds: s.gpxTrimStartSeconds,
-        gpxTrimEndSeconds: s.gpxTrimEndSeconds,
-      })),
-    );
+  const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
   const {
     backgroundVideoDurationSeconds: videoDurationSeconds,
     videoTrimStartSeconds,
@@ -54,7 +46,10 @@ export function useEffectiveExportDuration(): {
       ? telemetryPoints.features[0].properties.time
       : null;
 
-  const syncOffsetSeconds = computeSyncOffset(videoStartTimestamp, gpxStartTime);
+  const syncOffsetSeconds = computeSyncOffset(
+    videoStartTimestamp,
+    gpxStartTime,
+  );
 
   const {
     effectiveDurationSeconds,
@@ -63,8 +58,6 @@ export function useEffectiveExportDuration(): {
     videoTimeAtFrame0,
   } = computeEffectiveExportDuration({
     gpxDurationSeconds,
-    gpxTrimStartSeconds,
-    gpxTrimEndSeconds,
     syncOffsetSeconds,
     videoDurationSeconds,
     videoTrimStartSeconds,
@@ -73,10 +66,8 @@ export function useEffectiveExportDuration(): {
   });
 
   return {
-    gpxDurationSeconds,
     effectiveDurationSeconds,
     durationInFrames,
-    videoDurationSeconds: videoDurationSeconds ?? null,
     gpxElapsedAtExportStart,
     videoTimeAtFrame0,
   };
