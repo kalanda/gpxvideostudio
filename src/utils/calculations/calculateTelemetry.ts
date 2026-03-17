@@ -2,11 +2,15 @@ import bearing from "@turf/bearing";
 import distance from "@turf/distance";
 import { featureCollection, lineString, point } from "@turf/helpers";
 import type { Feature, Point } from "geojson";
+import { SPEED_SMOOTHING_FACTOR } from "@/constants/config";
 import type { GpxTrackPoint } from "@/types/gpx";
 import type {
   TelemetryFeatureCollection,
   TelemetryPoint,
 } from "@/types/telemetry";
+import { smoothElevations } from "@/utils/calculations/smoothElevations";
+import { smoothSlopes } from "@/utils/calculations/smoothSlopes";
+import { smoothSpeeds } from "./smoothSpeeds";
 
 const MIN_TIME_DELTA_S = 0.5;
 
@@ -98,5 +102,15 @@ export function calculateTelemetry(
     );
   }
 
-  return featureCollection<Point, TelemetryPoint>(featuresWithTelemetry);
+  // Elevation and slope from smoothed elevation (suppress GPS altitude noise).
+  const smoothedEle = smoothElevations(featuresWithTelemetry);
+  smoothSlopes(featuresWithTelemetry, smoothedEle);
+
+  // Smooth speeds last: copy features and overwrite speed.
+  const result = smoothSpeeds(
+    featuresWithTelemetry,
+    SPEED_SMOOTHING_FACTOR,
+  );
+
+  return featureCollection<Point, TelemetryPoint>(result);
 }

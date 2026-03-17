@@ -20,7 +20,12 @@ export const TelemetryOverlayLayout: FC = () => {
   const { effectiveDurationSeconds, gpxElapsedAtExportStart } =
     useEffectiveExportDuration();
 
-  const data = getFrameData(telemetryPoints, frame, fps, gpxElapsedAtExportStart);
+  const data = getFrameData(
+    telemetryPoints,
+    frame,
+    fps,
+    gpxElapsedAtExportStart,
+  );
   const summary = calculateSummary(trimmedPoints);
 
   if (!telemetryPoints || !data) return null;
@@ -67,7 +72,7 @@ export const TelemetryOverlayLayout: FC = () => {
               segmentDuration={effectiveDurationSeconds}
               progress={progressInSegment}
             />
-            <div className="flex flex-col items-center justify-center gap-8 shrink-0 w-64">
+            <div className="flex flex-col items-center justify-center gap-6 shrink-0 w-64">
               <DataPanel
                 distance={data.properties.distance}
                 elapsed={data.properties.elapsed}
@@ -76,6 +81,7 @@ export const TelemetryOverlayLayout: FC = () => {
                 power={data.properties.power}
                 elevation={data.properties.elevation}
                 slope={data.properties.slope}
+                temp={data.properties.temp}
               />
             </div>
           </div>

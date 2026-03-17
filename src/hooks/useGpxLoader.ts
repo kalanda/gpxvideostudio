@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { TELEMETRY_SMOOTHING_FACTOR } from "@/constants/config";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { calculateTelemetry } from "@/utils/calculations/calculateTelemetry";
-import { smoothSpeeds } from "@/utils/calculations/smoothSpeeds";
 import { parseGpx } from "@/utils/gpx-parser/parseGpx";
 
 const SAMPLE_GPX_URL = `${import.meta.env.BASE_URL}sample.gpx`;
@@ -36,11 +34,9 @@ export function useGpxLoader() {
       setGpxError("The track must have timestamps");
       return;
     }
-    const nextTelemetryPoints = smoothSpeeds(
-      calculateTelemetry(points),
-      TELEMETRY_SMOOTHING_FACTOR,
-    );
-    setTelemetryPoints(nextTelemetryPoints);
+    const telemetryPoints = calculateTelemetry(points);
+
+    setTelemetryPoints(telemetryPoints);
     if (fileName != null) setGpxFileName(fileName);
     setGpxTrimEndSeconds(0);
     // A new GPX invalidates the previous sync — reset it so the user syncs again.

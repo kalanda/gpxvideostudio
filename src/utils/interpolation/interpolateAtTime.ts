@@ -108,7 +108,10 @@ export function interpolateAtTime(
     elevation: lerp(p1.properties.elevation, p2.properties.elevation, t),
     speed: lerp(p1.properties.speed, p2.properties.speed, t),
     distance: lerp(p1.properties.distance, p2.properties.distance, t),
-    slope: lerp(p1.properties.slope, p2.properties.slope, t),
+    // slope is backward-looking (segment i-1 → i), so p2's slope IS the slope
+    // of the segment currently being traversed. Lerping would bleed the previous
+    // segment's gradient into this one, showing ascent/descent when elevation is flat.
+    slope: p2.properties.slope,
     bearing: segmentBearing,
     hr: lerp(p1.properties.hr, p2.properties.hr, t),
     cad: lerp(p1.properties.cad, p2.properties.cad, t),

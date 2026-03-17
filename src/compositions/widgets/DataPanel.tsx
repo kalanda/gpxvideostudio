@@ -2,6 +2,7 @@ import type { FC } from "react";
 import { DataItem } from "@/compositions/widgets/DataItem";
 import { formatElevation } from "@/utils/format/formatElevation";
 import { formatSlope } from "@/utils/format/formatSlope";
+import { formatTemperature } from "@/utils/format/formatTemperature";
 import { formatTime } from "@/utils/format/formatTime";
 
 type DataPanelProps = {
@@ -12,10 +13,11 @@ type DataPanelProps = {
   power: number | null;
   elevation: number | null;
   slope: number;
+  temp: number | null;
 };
 
 export const DataPanel: FC<DataPanelProps> = (props) => {
-  const { distance, elapsed, hr, cad, power, elevation, slope } = props;
+  const { distance, elapsed, hr, cad, power, elevation, slope, temp } = props;
   const { distanceValue, distanceUnit } =
     distance < 1000
       ? { distanceValue: distance.toFixed(0), distanceUnit: "m" }
@@ -46,6 +48,13 @@ export const DataPanel: FC<DataPanelProps> = (props) => {
           label="Elevation"
           value={formatElevation(elevation)}
           unit="m"
+        />
+      )}
+      {typeof temp === "number" && (
+        <DataItem
+          label="Temperature"
+          value={formatTemperature(temp)}
+          unit="°C"
         />
       )}
     </>

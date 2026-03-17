@@ -95,6 +95,7 @@ describe("interpolateAtTime", () => {
     const result = interpolateAtTime(points, 5, 0, totalDuration);
     expect(result.properties.elevation).toBe(105);
     expect(result.properties.hr).toBe(125);
-    expect(result.properties.slope).toBe(0.5);
+    // slope uses p2's value directly (backward-looking segment slope), not lerped
+    expect(result.properties.slope).toBe(1);
   });
 });
