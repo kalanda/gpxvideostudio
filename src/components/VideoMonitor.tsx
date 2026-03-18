@@ -2,6 +2,7 @@ import { Alert, Button, useDisclosure } from "@heroui/react";
 import { Player } from "@remotion/player";
 import { Download, MonitorPlay, Settings } from "lucide-react";
 import type { FC } from "react";
+import { useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { ExportVideoModal } from "@/components/ExportVideoModal";
 import { MiniCard } from "@/components/MiniCard";
@@ -12,16 +13,21 @@ import { MainComposition } from "@/compositions/MainComposition";
 import { useVideoPlayer } from "@/contexts/VideoPlayerContext";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useExporter } from "@/hooks/useExporter";
+import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 
 export const VideoMonitor: FC = () => {
   const { playerRef } = useVideoPlayer();
+  const savedFrameRef = useRef<number | null>(null);
   const { fps, width, height } = useProjectVideoSettingsStore(
     useShallow((s) => ({ fps: s.fps, width: s.width, height: s.height })),
   );
   const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
-  const { durationInFrames } = useEffectiveExportDuration();
+  const trimPreviewSeconds = useBackgroundVideoStore(
+    (s) => s.trimPreviewSeconds,
+  );
+  const { durationInFrames, videoTimeAtFrame0 } = useEffectiveExportDuration();
   const { error, canExport } = useExporter();
   const {
     isOpen: isVideoSettingsModalOpen,
@@ -33,6 +39,36 @@ export const VideoMonitor: FC = () => {
     onOpen: onExportModalOpen,
     onClose: onExportModalClose,
   } = useDisclosure();
+
+  // When editing trim, preview the frame at the trim edge; on release, restore playback position.
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!player) return;
+
+    if (trimPreviewSeconds == null) {
+      if (savedFrameRef.current !== null) {
+        player.seekTo(Math.round(savedFrameRef.current));
+        savedFrameRef.current = null;
+      }
+      return;
+    }
+
+    if (savedFrameRef.current === null) {
+      savedFrameRef.current = player.getCurrentFrame();
+    }
+    const frame = (trimPreviewSeconds - videoTimeAtFrame0) * fps;
+    const clampedFrame = Math.max(
+      0,
+      Math.min(durationInFrames - 1, Math.round(frame)),
+    );
+    player.seekTo(clampedFrame);
+  }, [
+    trimPreviewSeconds,
+    videoTimeAtFrame0,
+    fps,
+    durationInFrames,
+    playerRef,
+  ]);
 
   return (
     <>

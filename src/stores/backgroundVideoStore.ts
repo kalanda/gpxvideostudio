@@ -14,6 +14,11 @@ type BackgroundVideoState = {
    * Changing videoTrimStart/End does not affect this value — sync is stored independently.
    */
   videoStartTimestamp: Date | null;
+  /**
+   * When non-null, the video preview should show this video time (seconds). Used while
+   * dragging the trim slider; cleared on release so playback position is restored.
+   */
+  trimPreviewSeconds: number | null;
 };
 
 type BackgroundVideoActions = {
@@ -25,6 +30,7 @@ type BackgroundVideoActions = {
   setFlipHorizontal: (value: boolean) => void;
   setFlipVertical: (value: boolean) => void;
   setVideoStartTimestamp: (timestamp: Date | null) => void;
+  setTrimPreviewSeconds: (seconds: number | null) => void;
   clearBackgroundVideo: () => void;
 };
 
@@ -37,6 +43,7 @@ const initialState: BackgroundVideoState = {
   flipHorizontal: false,
   flipVertical: false,
   videoStartTimestamp: null,
+  trimPreviewSeconds: null,
 };
 
 export const useBackgroundVideoStore = create<
@@ -66,5 +73,6 @@ export const useBackgroundVideoStore = create<
   setFlipHorizontal: (value) => set({ flipHorizontal: value }),
   setFlipVertical: (value) => set({ flipVertical: value }),
   setVideoStartTimestamp: (timestamp) => set({ videoStartTimestamp: timestamp }),
+  setTrimPreviewSeconds: (seconds) => set({ trimPreviewSeconds: seconds }),
   clearBackgroundVideo: () => set({ ...initialState }),
 }));

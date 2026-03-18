@@ -12,6 +12,7 @@ import { formatTime } from "@/utils/format/formatTime";
 export const BackgroundVideoTrack: FC = () => {
   const videoInputRef = useRef<HTMLInputElement>(null);
 
+  const trimRangeRef = useRef<[number, number]>([0, 0]);
   const {
     backgroundVideoUrl,
     backgroundVideoFileName,
@@ -23,6 +24,7 @@ export const BackgroundVideoTrack: FC = () => {
     setVideoTrimStartSeconds,
     videoTrimEndSeconds,
     setVideoTrimEndSeconds,
+    setTrimPreviewSeconds,
     flipHorizontal,
     setFlipHorizontal,
     flipVertical,
@@ -39,6 +41,7 @@ export const BackgroundVideoTrack: FC = () => {
       setVideoTrimStartSeconds: s.setVideoTrimStartSeconds,
       videoTrimEndSeconds: s.videoTrimEndSeconds,
       setVideoTrimEndSeconds: s.setVideoTrimEndSeconds,
+      setTrimPreviewSeconds: s.setTrimPreviewSeconds,
       flipHorizontal: s.flipHorizontal,
       setFlipHorizontal: s.setFlipHorizontal,
       flipVertical: s.flipVertical,
@@ -47,6 +50,23 @@ export const BackgroundVideoTrack: FC = () => {
   );
 
   useVideoDuration(backgroundVideoUrl);
+
+  useEffect(() => {
+    if (
+      backgroundVideoDurationSeconds != null &&
+      backgroundVideoDurationSeconds > 0
+    ) {
+      const end =
+        videoTrimEndSeconds > 0
+          ? videoTrimEndSeconds
+          : backgroundVideoDurationSeconds;
+      trimRangeRef.current = [videoTrimStartSeconds, end];
+    }
+  }, [
+    backgroundVideoDurationSeconds,
+    videoTrimStartSeconds,
+    videoTrimEndSeconds,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -169,6 +189,23 @@ export const BackgroundVideoTrack: FC = () => {
               ? videoTrimEndSeconds
               : backgroundVideoDurationSeconds,
           ]}
+          renderThumb={(props) => {
+            const { index, ...thumbProps } = props;
+            const end =
+              videoTrimEndSeconds > 0
+                ? videoTrimEndSeconds
+                : backgroundVideoDurationSeconds;
+            const previewSeconds = index === 0 ? videoTrimStartSeconds : end;
+            return (
+              <div
+                {...thumbProps}
+                onPointerDown={(e) => {
+                  thumbProps.onPointerDown?.(e);
+                  setTrimPreviewSeconds(previewSeconds);
+                }}
+              />
+            );
+          }}
           onChange={(v: number | number[]) => {
             const arr = Array.isArray(v) ? v : [v, v];
             const max = Math.max(1, Math.floor(backgroundVideoDurationSeconds));
@@ -176,8 +213,21 @@ export const BackgroundVideoTrack: FC = () => {
             let end = Math.max(arr[0], arr[1]);
             if (end <= start) end = Math.min(start + 1, max);
             start = Math.min(start, end - 1);
+            const [prevStart, prevEnd] = trimRangeRef.current;
             setVideoTrimStartSeconds(start);
             setVideoTrimEndSeconds(end);
+            trimRangeRef.current = [start, end];
+            // Preview the frame at the edge being dragged.
+            if (start !== prevStart && end === prevEnd) {
+              setTrimPreviewSeconds(start);
+            } else if (end !== prevEnd) {
+              setTrimPreviewSeconds(end);
+            } else if (start !== prevStart) {
+              setTrimPreviewSeconds(start);
+            }
+          }}
+          onChangeEnd={() => {
+            setTrimPreviewSeconds(null);
           }}
           getValue={(v) =>
             Array.isArray(v)
