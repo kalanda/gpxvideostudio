@@ -1,16 +1,29 @@
-import { Button, Slider } from "@heroui/react";
-import { FlipHorizontal2, FlipVertical2, Trash2, Video } from "lucide-react";
+import { Button, Slider, useDisclosure } from "@heroui/react";
+import {
+  FlipHorizontal2,
+  FlipVertical2,
+  TextCursorInput,
+  Trash2,
+  Video,
+} from "lucide-react";
 import type { FC } from "react";
 import { useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { BackgroundVideoThumbnails } from "@/components/BackgroundVideoThumbnails";
 import { MiniCard } from "@/components/MiniCard";
+import { SyncVideoModal } from "@/components/SyncVideoModal";
 import { useVideoDuration } from "@/hooks/useVideoDuration";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
+import { useTelemetryStore } from "@/stores/telemetryStore";
 import { formatTime } from "@/utils/format/formatTime";
 
 export const BackgroundVideoTrack: FC = () => {
   const videoInputRef = useRef<HTMLInputElement>(null);
+  const {
+    isOpen: isSyncModalOpen,
+    onOpen: onSyncModalOpen,
+    onClose: onSyncModalClose,
+  } = useDisclosure();
 
   const trimRangeRef = useRef<[number, number]>([0, 0]);
   const {
@@ -48,6 +61,9 @@ export const BackgroundVideoTrack: FC = () => {
       setFlipVertical: s.setFlipVertical,
     })),
   );
+
+  const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
+  const hasBothTracks = !!backgroundVideoUrl && !!telemetryPoints;
 
   useVideoDuration(backgroundVideoUrl);
 
@@ -110,6 +126,16 @@ export const BackgroundVideoTrack: FC = () => {
     <>
       {backgroundVideoUrl ? (
         <>
+          {hasBothTracks && (
+            <Button
+              size="sm"
+              variant="flat"
+              startContent={<TextCursorInput size={16} />}
+              onPress={onSyncModalOpen}
+            >
+              Sync video with telemetry
+            </Button>
+          )}
           <Button
             size="sm"
             variant={flipHorizontal ? "solid" : "flat"}
@@ -244,6 +270,7 @@ export const BackgroundVideoTrack: FC = () => {
           }}
         />
       )}
+      <SyncVideoModal isOpen={isSyncModalOpen} onClose={onSyncModalClose} />
     </MiniCard>
   );
 };
