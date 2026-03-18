@@ -98,10 +98,7 @@ describe("smoothElevations", () => {
   });
 
   test("uses the custom halfWindowM parameter", () => {
-    const features = [
-      makeFeature(0, 100),
-      makeFeature(50, 200),
-    ];
+    const features = [makeFeature(0, 100), makeFeature(50, 200)];
     // With halfWindowM=10 they cannot see each other (50 > 10)
     expect(smoothElevations(features, 10)).toEqual([100, 200]);
     // With halfWindowM=50 they are at the boundary and both are included

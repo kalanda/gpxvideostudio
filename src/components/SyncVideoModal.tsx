@@ -36,7 +36,7 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
       })),
     );
 
-  const { telemetryPoints } = useTelemetryStore();
+  const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
 
   const {
     videoRef,

@@ -11,7 +11,10 @@ export type DataItemProps = {
 export const DataItem: FC<DataItemProps> = (props) => {
   const { label, value, unit } = props;
   const { primaryColor, accentColor } = useWidgetAppearanceStore(
-    useShallow((s) => ({ primaryColor: s.primaryColor, accentColor: s.accentColor })),
+    useShallow((s) => ({
+      primaryColor: s.primaryColor,
+      accentColor: s.accentColor,
+    })),
   );
   return (
     <div className="flex flex-col items-center py-0.5 px-2">

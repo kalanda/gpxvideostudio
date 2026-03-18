@@ -28,9 +28,18 @@ const {
 } = ELEVATION_CHART;
 
 export const ElevationChart: FC<ElevationChartProps> = (props) => {
-  const { elevations, elapsedTimes, segmentStartElapsed, segmentDuration, progress } = props;
+  const {
+    elevations,
+    elapsedTimes,
+    segmentStartElapsed,
+    segmentDuration,
+    progress,
+  } = props;
   const { primaryColor, accentColor } = useWidgetAppearanceStore(
-    useShallow((s) => ({ primaryColor: s.primaryColor, accentColor: s.accentColor })),
+    useShallow((s) => ({
+      primaryColor: s.primaryColor,
+      accentColor: s.accentColor,
+    })),
   );
 
   const validElevations = elevations.filter((e): e is number => e !== null);
@@ -115,34 +124,37 @@ export const ElevationChart: FC<ElevationChartProps> = (props) => {
           strokeWidth={cursorLineStrokeWidth}
         />
         {/* Cursor dot — Y interpolated between the two surrounding elapsed-time points */}
-        {elevations.length > 0 && (() => {
-          const currentElapsed = segmentStartElapsed + progress * segmentDuration;
-          // Binary search for the lower-bound index
-          let lo = 0;
-          let hi = elapsedTimes.length - 1;
-          while (lo < hi - 1) {
-            const mid = (lo + hi) >> 1;
-            if ((elapsedTimes[mid] ?? 0) <= currentElapsed) lo = mid;
-            else hi = mid;
-          }
-          const hiIdx = Math.min(lo + 1, elevations.length - 1);
-          const span = (elapsedTimes[hiIdx] ?? 0) - (elapsedTimes[lo] ?? 0);
-          const t = span > 0 ? (currentElapsed - (elapsedTimes[lo] ?? 0)) / span : 0;
-          const e0 = elevations[lo];
-          const e1 = elevations[hiIdx];
-          const dotEle =
-            e0 !== null && e1 !== null
-              ? e0 + t * (e1 - e0)
-              : (e0 ?? e1 ?? null);
-          return (
-            <circle
-              cx={cursorX.toFixed(SVG_PATH_PRECISION)}
-              cy={toY(dotEle).toFixed(SVG_PATH_PRECISION)}
-              r={cursorDotRadius}
-              fill={accentColor}
-            />
-          );
-        })()}
+        {elevations.length > 0 &&
+          (() => {
+            const currentElapsed =
+              segmentStartElapsed + progress * segmentDuration;
+            // Binary search for the lower-bound index
+            let lo = 0;
+            let hi = elapsedTimes.length - 1;
+            while (lo < hi - 1) {
+              const mid = (lo + hi) >> 1;
+              if ((elapsedTimes[mid] ?? 0) <= currentElapsed) lo = mid;
+              else hi = mid;
+            }
+            const hiIdx = Math.min(lo + 1, elevations.length - 1);
+            const span = (elapsedTimes[hiIdx] ?? 0) - (elapsedTimes[lo] ?? 0);
+            const t =
+              span > 0 ? (currentElapsed - (elapsedTimes[lo] ?? 0)) / span : 0;
+            const e0 = elevations[lo];
+            const e1 = elevations[hiIdx];
+            const dotEle =
+              e0 !== null && e1 !== null
+                ? e0 + t * (e1 - e0)
+                : (e0 ?? e1 ?? null);
+            return (
+              <circle
+                cx={cursorX.toFixed(SVG_PATH_PRECISION)}
+                cy={toY(dotEle).toFixed(SVG_PATH_PRECISION)}
+                r={cursorDotRadius}
+                fill={accentColor}
+              />
+            );
+          })()}
       </svg>
     </div>
   );

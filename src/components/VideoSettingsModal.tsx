@@ -15,6 +15,7 @@ import { ArrowRightLeft, Settings } from "lucide-react";
 import type { FC } from "react";
 import { useEffect } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { useShallow } from "zustand/react/shallow";
 import {
   FPS_MAX,
   FPS_MIN,
@@ -26,7 +27,6 @@ import {
   type VideoSettingsFormValues,
   videoSettingsFormSchema,
 } from "@/schemas/videoSettingsSchema";
-import { useShallow } from "zustand/react/shallow";
 import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import {
   CUSTOM_PRESET_KEY,

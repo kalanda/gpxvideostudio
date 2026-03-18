@@ -14,8 +14,11 @@ const base = {
 
 describe("computeEffectiveExportDuration — no video", () => {
   test("full GPX track, no trims", () => {
-    const { effectiveDurationSeconds, durationInFrames, gpxElapsedAtExportStart } =
-      computeEffectiveExportDuration({ ...base });
+    const {
+      effectiveDurationSeconds,
+      durationInFrames,
+      gpxElapsedAtExportStart,
+    } = computeEffectiveExportDuration({ ...base });
     expect(effectiveDurationSeconds).toBe(120);
     expect(durationInFrames).toBe(3600);
     expect(gpxElapsedAtExportStart).toBe(0);
@@ -49,12 +52,15 @@ describe("computeEffectiveExportDuration — video trim determines export", () =
   test("syncOffset shifts GPX start relative to video", () => {
     // Video starts at GPX elapsed 30s (syncOffset=30, videoTrimStart=0).
     // GPX has no trim. Video is 60s. Export = 60s (video is the limit).
-    const { effectiveDurationSeconds, gpxElapsedAtExportStart, videoTimeAtFrame0 } =
-      computeEffectiveExportDuration({
-        ...base,
-        syncOffsetSeconds: 30,
-        videoDurationSeconds: 60,
-      });
+    const {
+      effectiveDurationSeconds,
+      gpxElapsedAtExportStart,
+      videoTimeAtFrame0,
+    } = computeEffectiveExportDuration({
+      ...base,
+      syncOffsetSeconds: 30,
+      videoDurationSeconds: 60,
+    });
     expect(gpxElapsedAtExportStart).toBe(30);
     expect(videoTimeAtFrame0).toBe(0);
     expect(effectiveDurationSeconds).toBe(60);

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useVideoPlayer } from "@/contexts/VideoPlayerContext";
 
 /**
@@ -55,11 +55,11 @@ export function useVideoPlayerControls() {
     );
   }, []);
 
-  const togglePlay = useCallback(() => {
+  const togglePlay = () => {
     playerRef.current?.toggle();
-  }, [playerRef]);
+  };
 
-  const toggleMute = useCallback(() => {
+  const toggleMute = () => {
     const current = playerRef.current;
     if (!current) return;
     if (current.isMuted()) {
@@ -67,9 +67,9 @@ export function useVideoPlayerControls() {
     } else {
       current.mute();
     }
-  }, [playerRef]);
+  };
 
-  const toggleFullscreen = useCallback(() => {
+  const toggleFullscreen = () => {
     const current = playerRef.current;
     if (!current) return;
     if (document.fullscreenElement) {
@@ -77,14 +77,11 @@ export function useVideoPlayerControls() {
     } else {
       current.requestFullscreen();
     }
-  }, [playerRef]);
+  };
 
-  const seekTo = useCallback(
-    (frame: number) => {
-      playerRef.current?.seekTo(Math.round(frame));
-    },
-    [playerRef],
-  );
+  const seekTo = (frame: number) => {
+    playerRef.current?.seekTo(Math.round(frame));
+  };
 
   return {
     playerRef,

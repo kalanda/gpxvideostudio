@@ -11,7 +11,10 @@ import {
 
 export function useFontSelector() {
   const { fontFamily, setFontFamily } = useWidgetAppearanceStore(
-    useShallow((s) => ({ fontFamily: s.fontFamily, setFontFamily: s.setFontFamily })),
+    useShallow((s) => ({
+      fontFamily: s.fontFamily,
+      setFontFamily: s.setFontFamily,
+    })),
   );
   const [showAllFonts, setShowAllFonts] = useState(false);
 

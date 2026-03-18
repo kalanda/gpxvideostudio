@@ -20,7 +20,10 @@ const NEEDLE_ANGLE_MAX = 135; // right side (max)
 export const SpeedGauge: FC<SpeedGaugeProps> = (props) => {
   const { speed, maxSpeed } = props;
   const { accentColor, primaryColor } = useWidgetAppearanceStore(
-    useShallow((s) => ({ accentColor: s.accentColor, primaryColor: s.primaryColor })),
+    useShallow((s) => ({
+      accentColor: s.accentColor,
+      primaryColor: s.primaryColor,
+    })),
   );
   const effectiveMax = Math.max(maxSpeed, 1);
   const t = Math.min(1, Math.max(0, speed / effectiveMax));

@@ -62,13 +62,7 @@ export const VideoMonitor: FC = () => {
       Math.min(durationInFrames - 1, Math.round(frame)),
     );
     player.seekTo(clampedFrame);
-  }, [
-    trimPreviewSeconds,
-    videoTimeAtFrame0,
-    fps,
-    durationInFrames,
-    playerRef,
-  ]);
+  }, [trimPreviewSeconds, videoTimeAtFrame0, fps, durationInFrames, playerRef]);
 
   return (
     <>

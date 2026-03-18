@@ -107,10 +107,7 @@ export function calculateTelemetry(
   smoothSlopes(featuresWithTelemetry, smoothedEle);
 
   // Smooth speeds last: copy features and overwrite speed.
-  const result = smoothSpeeds(
-    featuresWithTelemetry,
-    SPEED_SMOOTHING_FACTOR,
-  );
+  const result = smoothSpeeds(featuresWithTelemetry, SPEED_SMOOTHING_FACTOR);
 
   return featureCollection<Point, TelemetryPoint>(result);
 }

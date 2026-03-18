@@ -71,7 +71,7 @@ describe("smoothSlopes", () => {
     const features = [makeFeature(0), makeFeature(10), makeFeature(20)];
     const smoothedEle: (number | null)[] = [200, 190, 180]; // -10 m over 20 m = -50%
     smoothSlopes(features, smoothedEle, 10);
-    // Middle point: lo=0 (dist 0), hi=2 (dist 20) → (180-200)/20*100 = -100%... 
+    // Middle point: lo=0 (dist 0), hi=2 (dist 20) → (180-200)/20*100 = -100%...
     // wait, halfWindowM=10 → lo walks back while 10-dist[loIdx-1] ≤ 10:
     // idx 1: 10-0=10 ≤ 10 → loIdx=0. idx 2: 20-0=20 > 10 → stop.
     // hi walks forward while dist[hiIdx+1]-10 ≤ 10: 20-10=10 ≤ 10 → hiIdx=2.

@@ -51,18 +51,20 @@ export const useBackgroundVideoStore = create<
 >((set) => ({
   ...initialState,
   setBackgroundVideoUrl: (url) =>
-    set(url
-      ? {
-          // New video loaded: reset sync and trims so they don't carry over.
-          backgroundVideoUrl: url,
-          videoTrimStartSeconds: 0,
-          videoTrimEndSeconds: 0,
-          videoStartTimestamp: null,
-        }
-      : {
-          backgroundVideoUrl: null,
-          backgroundVideoDurationSeconds: null,
-        }),
+    set(
+      url
+        ? {
+            // New video loaded: reset sync and trims so they don't carry over.
+            backgroundVideoUrl: url,
+            videoTrimStartSeconds: 0,
+            videoTrimEndSeconds: 0,
+            videoStartTimestamp: null,
+          }
+        : {
+            backgroundVideoUrl: null,
+            backgroundVideoDurationSeconds: null,
+          },
+    ),
   setBackgroundVideoFileName: (name) => set({ backgroundVideoFileName: name }),
   setBackgroundVideoDuration: (seconds) =>
     set({ backgroundVideoDurationSeconds: seconds }),
@@ -72,7 +74,8 @@ export const useBackgroundVideoStore = create<
     set({ videoTrimEndSeconds: Math.max(0, seconds) }),
   setFlipHorizontal: (value) => set({ flipHorizontal: value }),
   setFlipVertical: (value) => set({ flipVertical: value }),
-  setVideoStartTimestamp: (timestamp) => set({ videoStartTimestamp: timestamp }),
+  setVideoStartTimestamp: (timestamp) =>
+    set({ videoStartTimestamp: timestamp }),
   setTrimPreviewSeconds: (seconds) => set({ trimPreviewSeconds: seconds }),
   clearBackgroundVideo: () => set({ ...initialState }),
 }));

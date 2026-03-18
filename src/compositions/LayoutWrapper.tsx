@@ -1,10 +1,10 @@
 import type { FC, ReactNode } from "react";
 import { useVideoConfig } from "remotion";
+import { useShallow } from "zustand/react/shallow";
 import {
   OVERLAY_REFERENCE_HEIGHT,
   OVERLAY_REFERENCE_WIDTH,
 } from "@/constants/config";
-import { useShallow } from "zustand/react/shallow";
 import { useOverlayLayoutStore } from "@/stores/overlayLayoutStore";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 

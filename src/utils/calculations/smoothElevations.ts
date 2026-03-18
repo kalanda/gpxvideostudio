@@ -28,13 +28,19 @@ export function smoothElevations(
     for (let j = i; j >= 0; j--) {
       if (curDist - features[j].properties.distance > halfWindowM) break;
       const e = features[j].properties.elevation;
-      if (e !== null) { sum += e; count++; }
+      if (e !== null) {
+        sum += e;
+        count++;
+      }
     }
 
     for (let j = i + 1; j < features.length; j++) {
       if (features[j].properties.distance - curDist > halfWindowM) break;
       const e = features[j].properties.elevation;
-      if (e !== null) { sum += e; count++; }
+      if (e !== null) {
+        sum += e;
+        count++;
+      }
     }
 
     return count > 0 ? sum / count : f.properties.elevation;

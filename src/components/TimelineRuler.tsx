@@ -6,13 +6,13 @@ import { formatPlaybackTime } from "@/utils/format/formatPlaybackTime";
 const MIN_TICK_PX = 80;
 const NICE_INTERVALS_SEC = [0.25, 0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300, 600];
 
-
 /**
  * Pick the smallest "nice" interval (in seconds) such that ticks are
  * at least MIN_TICK_PX pixels apart given the current pixel density.
  */
 function pickTickIntervalSeconds(pixelsPerSecond: number): number {
-  if (pixelsPerSecond <= 0) return NICE_INTERVALS_SEC[NICE_INTERVALS_SEC.length - 1];
+  if (pixelsPerSecond <= 0)
+    return NICE_INTERVALS_SEC[NICE_INTERVALS_SEC.length - 1];
   const minIntervalSeconds = MIN_TICK_PX / pixelsPerSecond;
   const found = NICE_INTERVALS_SEC.find((n) => n >= minIntervalSeconds);
   return found ?? NICE_INTERVALS_SEC[NICE_INTERVALS_SEC.length - 1];

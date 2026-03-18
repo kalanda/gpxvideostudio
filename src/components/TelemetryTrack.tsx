@@ -15,11 +15,7 @@ export const TelemetryTrack: FC = () => {
     onOpen: onRemoveModalOpen,
     onClose: onRemoveModalClose,
   } = useDisclosure();
-  const {
-    telemetryPoints,
-    gpxFileName,
-    clearTelemetry,
-  } = useTelemetryStore(
+  const { telemetryPoints, gpxFileName, clearTelemetry } = useTelemetryStore(
     useShallow((s) => ({
       telemetryPoints: s.telemetryPoints,
       gpxFileName: s.gpxFileName,

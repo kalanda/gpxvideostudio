@@ -30,14 +30,18 @@ export const BackgroundVideoLayer: FC<BackgroundVideoLayerProps> = (props) => {
   // trimAfter: where it stops. Both are derived from the intersection of
   // video and GPX segments so they stay consistent with the overlay.
   const trimBeforeFrames = Math.round(videoTimeAtFrame0 * fps);
-  const trimAfterRaw = Math.round((videoTimeAtFrame0 + effectiveDurationSeconds) * fps);
-  const trimAfterFrames = trimAfterRaw > trimBeforeFrames ? trimAfterRaw : undefined;
+  const trimAfterRaw = Math.round(
+    (videoTimeAtFrame0 + effectiveDurationSeconds) * fps,
+  );
+  const trimAfterFrames =
+    trimAfterRaw > trimBeforeFrames ? trimAfterRaw : undefined;
 
   const transformParts = [
     flipHorizontal ? "scaleX(-1)" : "",
     flipVertical ? "scaleY(-1)" : "",
   ].filter(Boolean);
-  const transform = transformParts.length > 0 ? transformParts.join(" ") : undefined;
+  const transform =
+    transformParts.length > 0 ? transformParts.join(" ") : undefined;
 
   return (
     <AbsoluteFill>
