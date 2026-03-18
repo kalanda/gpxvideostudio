@@ -9,6 +9,7 @@ import {
 import type { FC } from "react";
 import { useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
+import { ActionConfirmationModal } from "@/components/ActionConfirmationModal";
 import { BackgroundVideoThumbnails } from "@/components/BackgroundVideoThumbnails";
 import { MiniCard } from "@/components/MiniCard";
 import { SyncVideoModal } from "@/components/SyncVideoModal";
@@ -23,6 +24,11 @@ export const BackgroundVideoTrack: FC = () => {
     isOpen: isSyncModalOpen,
     onOpen: onSyncModalOpen,
     onClose: onSyncModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isRemoveModalOpen,
+    onOpen: onRemoveModalOpen,
+    onClose: onRemoveModalClose,
   } = useDisclosure();
 
   const trimRangeRef = useRef<[number, number]>([0, 0]);
@@ -156,7 +162,7 @@ export const BackgroundVideoTrack: FC = () => {
             size="sm"
             variant="flat"
             color="danger"
-            onPress={onRemoveVideo}
+            onPress={onRemoveModalOpen}
             startContent={<Trash2 size={16} />}
           >
             Remove
@@ -271,6 +277,16 @@ export const BackgroundVideoTrack: FC = () => {
         />
       )}
       <SyncVideoModal isOpen={isSyncModalOpen} onClose={onSyncModalClose} />
+      <ActionConfirmationModal
+        isOpen={isRemoveModalOpen}
+        title="Remove background video"
+        description="This will remove the video from the track. You can add another one later."
+        onConfirm={() => {
+          onRemoveVideo();
+          onRemoveModalClose();
+        }}
+        onCancel={onRemoveModalClose}
+      />
     </MiniCard>
   );
 };
