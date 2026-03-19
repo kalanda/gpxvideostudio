@@ -166,8 +166,8 @@
 
   "widgets": {
     "distance": "Distancia",
-    "elapsedTime": "Tiempo transcurrido",
-    "heartRate": "Frecuencia cardíaca",
+    "elapsedTime": "Tiempo",
+    "heartRate": "Ritmo cardíaco",
     "cadence": "Cadencia",
     "power": "Potencia",
     "slope": "Pendiente",

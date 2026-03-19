@@ -20,7 +20,7 @@ export const DataItem: FC<DataItemProps> = (props) => {
     <div className="flex flex-col items-center py-0.5 px-2">
       {label && (
         <span
-          className="text-2xl font-medium tracking-wider uppercase text-shadow-xs"
+          className="text-2xl font-medium tracking-wider uppercase text-shadow-xs text-center leading-tight block"
           style={{ color: primaryColor }}
         >
           {label}
