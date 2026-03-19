@@ -38,3 +38,7 @@ yarn-error.log*
 
 *storybook.log
 storybook-static
+
+# IDE agents
+.claude
+.cursor
