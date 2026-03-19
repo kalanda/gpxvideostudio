@@ -9,6 +9,7 @@ import {
 } from "@heroui/react";
 import { Link2 } from "lucide-react";
 import type { FC } from "react";
+import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { SyncVideoModalMapControls } from "@/components/SyncVideoModalMapControls";
 import { SyncVideoModalMapView } from "@/components/SyncVideoModalMapView";
@@ -28,6 +29,7 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const { backgroundVideoUrl, setVideoStartTimestamp } =
     useBackgroundVideoStore(
       useShallow((s) => ({
@@ -92,17 +94,18 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
         <ModalHeader className="flex flex-col gap-2 shrink-0">
           <div className="flex items-center gap-2">
             <Link2 size={20} />
-            Sync video with telemetry
+            {t("syncVideo.title")}
           </div>
           <p className="text-sm font-normal text-foreground/70">
-            Align the video and GPX track to synchronize them. Navigate to a
-            recognisable moment in both, then press "Sync these points".
+            {t("syncVideo.description")}
           </p>
         </ModalHeader>
         <ModalBody>
           <div className="grid grid-flow-col grid-cols-[1fr_1px_1fr] grid-rows-[auto_1fr_auto] gap-4 h-full min-h-0">
             {/* ── Video: label ── */}
-            <p className="text-sm font-medium text-foreground/70">Video</p>
+            <p className="text-sm font-medium text-foreground/70">
+              {t("syncVideo.labelVideo")}
+            </p>
 
             {/* ── Video: media ── */}
             <div className="min-h-0">
@@ -131,7 +134,9 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
             <Divider orientation="vertical" className="row-span-3" />
 
             {/* ── Map: label ── */}
-            <p className="text-sm font-medium text-foreground/70">GPX track</p>
+            <p className="text-sm font-medium text-foreground/70">
+              {t("syncVideo.labelGpxTrack")}
+            </p>
 
             {/* ── Map: media ── */}
             <div className="min-h-0">
@@ -158,14 +163,14 @@ export const SyncVideoModal: FC<SyncVideoModalProps> = ({
 
         <ModalFooter>
           <Button variant="flat" onPress={onClose}>
-            Cancel
+            {t("syncVideo.cancel")}
           </Button>
           <Button
             color="primary"
             onPress={handleSync}
             isDisabled={!backgroundVideoUrl || !telemetryPoints}
           >
-            Sync these points
+            {t("syncVideo.syncPoints")}
           </Button>
         </ModalFooter>
       </ModalContent>

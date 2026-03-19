@@ -15,6 +15,7 @@ import { ArrowRightLeft, Settings } from "lucide-react";
 import type { FC } from "react";
 import { useEffect } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import {
   FPS_MAX,
@@ -38,15 +39,8 @@ export type VideoSettingsModalProps = {
   onFinish: () => void;
 };
 
-// TODO: move to i18n
-const PRESET_LABELS: Record<keyof typeof RESOLUTION_PRESETS, string> = {
-  "4k": "4K",
-  "2k": "2K",
-  "1080p": "1080p",
-  "720p": "720p",
-};
-
 export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
+  const { t } = useTranslation();
   const { isOpen, onFinish } = props;
   const { width, height, fps, setWidth, setHeight, setFps } =
     useProjectVideoSettingsStore(
@@ -117,11 +111,11 @@ export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
       <ModalContent>
         <ModalHeader className="flex items-center gap-2">
           <Settings size={20} />
-          Video settings
+          {t("videoSettings.title")}
         </ModalHeader>
         <ModalBody>
           <Select
-            label="Preset"
+            label={t("videoSettings.presetLabel")}
             selectedKeys={[currentPresetKey]}
             onSelectionChange={(keys) => {
               const key = Array.from(keys)[0];
@@ -129,22 +123,28 @@ export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
                 applyPreset(key as keyof typeof RESOLUTION_PRESETS);
               }
             }}
-            aria-label="Resolution preset"
+            aria-label={t("videoSettings.presetAriaLabel")}
           >
-            <SelectItem key={CUSTOM_PRESET_KEY} textValue="Custom">
-              Custom
+            <SelectItem
+              key={CUSTOM_PRESET_KEY}
+              textValue={t("videoSettings.presetCustom")}
+            >
+              {t("videoSettings.presetCustom")}
             </SelectItem>
-            <SelectItem key="4k" textValue={PRESET_LABELS["4k"]}>
-              {PRESET_LABELS["4k"]}
+            <SelectItem key="4k" textValue={t("videoSettings.presets.4k")}>
+              {t("videoSettings.presets.4k")}
             </SelectItem>
-            <SelectItem key="2k" textValue={PRESET_LABELS["2k"]}>
-              {PRESET_LABELS["2k"]}
+            <SelectItem key="2k" textValue={t("videoSettings.presets.2k")}>
+              {t("videoSettings.presets.2k")}
             </SelectItem>
-            <SelectItem key="1080p" textValue={PRESET_LABELS["1080p"]}>
-              {PRESET_LABELS["1080p"]}
+            <SelectItem
+              key="1080p"
+              textValue={t("videoSettings.presets.1080p")}
+            >
+              {t("videoSettings.presets.1080p")}
             </SelectItem>
-            <SelectItem key="720p" textValue={PRESET_LABELS["720p"]}>
-              {PRESET_LABELS["720p"]}
+            <SelectItem key="720p" textValue={t("videoSettings.presets.720p")}>
+              {t("videoSettings.presets.720p")}
             </SelectItem>
           </Select>
 
@@ -155,7 +155,7 @@ export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
               render={({ field }) => (
                 <Input
                   type="number"
-                  label="Width"
+                  label={t("videoSettings.widthLabel")}
                   value={field.value == null ? "" : String(field.value)}
                   min={WIDTH_HEIGHT_MIN}
                   max={WIDTH_HEIGHT_MAX}
@@ -171,11 +171,11 @@ export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
               )}
             />
             <div className="pt-3">
-              <Tooltip content="Swap width and height">
+              <Tooltip content={t("videoSettings.swapWidthHeight")}>
                 <Button
                   isIconOnly
                   variant="flat"
-                  aria-label="Swap width and height"
+                  aria-label={t("videoSettings.swapWidthHeight")}
                   onPress={handleRotate}
                   size="sm"
                 >
@@ -189,7 +189,7 @@ export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
               render={({ field }) => (
                 <Input
                   type="number"
-                  label="Height"
+                  label={t("videoSettings.heightLabel")}
                   value={field.value == null ? "" : String(field.value)}
                   min={WIDTH_HEIGHT_MIN}
                   max={WIDTH_HEIGHT_MAX}
@@ -211,7 +211,7 @@ export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
             render={({ field }) => (
               <Input
                 type="number"
-                label="FPS"
+                label={t("videoSettings.fpsLabel")}
                 value={field.value == null ? "" : String(field.value)}
                 min={FPS_MIN}
                 max={FPS_MAX}
@@ -228,10 +228,10 @@ export const VideoSettingsModal: FC<VideoSettingsModalProps> = (props) => {
         </ModalBody>
         <ModalFooter>
           <Button variant="flat" onPress={() => onFinish?.()}>
-            Cancel
+            {t("videoSettings.cancel")}
           </Button>
           <Button color="primary" onPress={() => onSubmit()}>
-            Save
+            {t("videoSettings.save")}
           </Button>
         </ModalFooter>
       </ModalContent>

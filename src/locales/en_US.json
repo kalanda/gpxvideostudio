@@ -1,1 +1,177 @@
-{}
+{
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "remove": "Remove"
+  },
+
+  "navbar": {
+    "githubAriaLabel": "GitHub repository",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode",
+    "languageAriaLabel": "Language"
+  },
+
+  "preview": {
+    "title": "Preview",
+    "resolution": "Resolution: {{width}}x{{height}} @ {{fps}} FPS",
+    "resolutionShort": "{{width}}×{{height}}",
+    "exportVideo": "Export video"
+  },
+
+  "emptyState": {
+    "headline": "Overlay activity data on your footage",
+    "subtitle": "Speed · Distance · Elevation · Route map",
+    "step1": "Load GPX",
+    "step2": "Add video",
+    "step3": "Export",
+    "loadGpx": "Load GPX file",
+    "trySample": "Try sample"
+  },
+
+  "telemetryTrack": {
+    "title": "Telemetry track",
+    "titleWithFile": "Telemetry track ({{filename}})",
+    "description": "Load a GPX file to add speed, distance, elevation and route map data to your video.",
+    "loadSample": "Load sample",
+    "addGpx": "Add .GPX",
+    "remove": "Remove",
+    "removeModalTitle": "Remove telemetry track",
+    "removeModalDescription": "This will remove the GPX data from the track. You can load another file later."
+  },
+
+  "backgroundVideoTrack": {
+    "title": "Background video track",
+    "titleWithFile": "Background video track ({{filename}})",
+    "description": "Add footage from your camera or action cam. Once loaded, you can sync it with the telemetry track.",
+    "syncWithTelemetry": "Sync video with telemetry",
+    "flipH": "Flip H",
+    "flipV": "Flip V",
+    "remove": "Remove",
+    "addVideo": "Add video",
+    "trim": "Trim",
+    "removeModalTitle": "Remove background video",
+    "removeModalDescription": "This will remove the video from the track. You can add another one later.",
+    "generatingThumbnails": "Generating thumbnails…",
+    "thumbnailAlt": "Thumbnail {{index}}"
+  },
+
+  "timeline": {
+    "title": "Timeline",
+    "zoomOut": "Zoom out",
+    "zoomIn": "Zoom in"
+  },
+
+  "videoSettings": {
+    "title": "Video settings",
+    "presetLabel": "Preset",
+    "presetCustom": "Custom",
+    "presetAriaLabel": "Resolution preset",
+    "widthLabel": "Width",
+    "heightLabel": "Height",
+    "fpsLabel": "FPS",
+    "swapWidthHeight": "Swap width and height",
+    "cancel": "Cancel",
+    "save": "Save",
+    "presets": {
+      "4k": "4K",
+      "2k": "2K",
+      "1080p": "1080p",
+      "720p": "720p"
+    }
+  },
+
+  "export": {
+    "title": "Export options",
+    "containerLabel": "Container",
+    "containerMp4": "Video MP4",
+    "containerPng": "PNG sequence (with transparency)",
+    "alertNoVideo": "Background video will not be included to preserve transparency",
+    "alertMemory": "Recommended: reduce FPS to avoid memory issues. Estimated {{size}} for the file.",
+    "bitrateLabel": "Bitrate",
+    "cancel": "Cancel",
+    "accept": "Export",
+    "exportingTitle": "Exporting",
+    "elapsedTime": "Elapsed time:",
+    "timeRemaining": "Time remaining (approx.):",
+    "bitrates": {
+      "veryLow": "Very low",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "veryHigh": "Very high"
+    }
+  },
+
+  "syncVideo": {
+    "title": "Sync video with telemetry",
+    "description": "Align the video and GPX track to synchronize them. Navigate to a recognisable moment in both, then press \"Sync these points\".",
+    "labelVideo": "Video",
+    "labelGpxTrack": "GPX track",
+    "cancel": "Cancel",
+    "syncPoints": "Sync these points",
+    "videoTimeDisplay": "Video time: {{current}} / {{total}}",
+    "gpsTimeDisplay": "GPS time: {{time}}",
+    "noVideoLoaded": "No video loaded",
+    "noGpxLoaded": "No GPX track loaded",
+    "mapStyleAriaLabel": "Map style",
+    "mapTab": "Map",
+    "satelliteTab": "Satellite",
+    "videoPositionAriaLabel": "Video position",
+    "telemetryPositionAriaLabel": "Telemetry position",
+    "previousFrame": "Previous frame",
+    "nextFrame": "Next frame",
+    "pause": "Pause",
+    "play": "Play"
+  },
+
+  "appearance": {
+    "buttonLabel": "Appearance",
+    "ariaLabel": "Appearance settings",
+    "fontLabel": "Font",
+    "fontSearchPlaceholder": "Search all fonts…",
+    "fontSelectPlaceholder": "Select font",
+    "fontNoResults": "No results",
+    "showAllFonts": "Show all fonts",
+    "showRecommendedFonts": "Show only recommended fonts",
+    "primaryColorLabel": "Primary color",
+    "accentColorLabel": "Accent color",
+    "chooseColor": "Choose {{label}}",
+    "mapAppearanceSection": "Map appearance",
+    "mapThemeLabel": "Theme",
+    "mapViewportLabel": "Viewport",
+    "mapCameraLabel": "Camera",
+    "mapBearingLabel": "Bearing",
+    "mapThemes": {
+      "none": "None",
+      "light": "Light",
+      "dark": "Dark",
+      "colored": "Colored",
+      "satellite": "Satellite"
+    },
+    "mapBearingModes": {
+      "fixed": "Fixed",
+      "dynamic": "Dynamic"
+    },
+    "mapViewportModes": {
+      "fullRoute": "Full Route",
+      "followPoint": "Follow Point"
+    },
+    "mapPitchModes": {
+      "topDown": "Top Down",
+      "tilted": "Tilted"
+    }
+  },
+
+  "widgets": {
+    "distance": "Distance",
+    "elapsedTime": "Elapsed Time",
+    "heartRate": "Heart Rate",
+    "cadence": "Cadence",
+    "power": "Power",
+    "slope": "Slope",
+    "elevation": "Elevation",
+    "temperature": "Temperature"
+  }
+}

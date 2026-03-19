@@ -1,8 +1,10 @@
 import type { FC } from "react";
+import { useTranslation } from "react-i18next";
 import { useVideoThumbnails } from "@/hooks/useVideoThumbnails";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 
 export const BackgroundVideoThumbnails: FC = () => {
+  const { t } = useTranslation();
   const backgroundVideoUrl = useBackgroundVideoStore(
     (s) => s.backgroundVideoUrl,
   );
@@ -14,7 +16,7 @@ export const BackgroundVideoThumbnails: FC = () => {
     <div className="flex min-h-12 items-center gap-0.5 rounded border border-default bg-default p-1">
       {isLoading ? (
         <span className="px-2 text-xs text-foreground/60">
-          Generating thumbnails…
+          {t("backgroundVideoTrack.generatingThumbnails")}
         </span>
       ) : thumbnails.length > 0 ? (
         thumbnails.map((src, index) => (
@@ -27,7 +29,7 @@ export const BackgroundVideoThumbnails: FC = () => {
           >
             <img
               src={src}
-              alt={`Thumbnail ${index + 1}`}
+              alt={t("backgroundVideoTrack.thumbnailAlt", { index: index + 1 })}
               className="w-full h-full object-cover"
             />
           </div>

@@ -2,6 +2,7 @@ import { Alert, Button, useDisclosure } from "@heroui/react";
 import { FileDown, MapPin, Route, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { ActionConfirmationModal } from "@/components/ActionConfirmationModal";
 import { MiniCard } from "@/components/MiniCard";
@@ -9,6 +10,7 @@ import { useGpxLoader } from "@/hooks/useGpxLoader";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 
 export const TelemetryTrack: FC = () => {
+  const { t } = useTranslation();
   const gpxInputRef = useRef<HTMLInputElement>(null);
   const {
     isOpen: isRemoveModalOpen,
@@ -40,7 +42,7 @@ export const TelemetryTrack: FC = () => {
           onPress={onRemoveModalOpen}
           startContent={<Trash2 size={16} />}
         >
-          Remove
+          {t("telemetryTrack.remove")}
         </Button>
       ) : (
         <>
@@ -58,7 +60,7 @@ export const TelemetryTrack: FC = () => {
             onPress={loadSample}
             startContent={<FileDown size={16} />}
           >
-            Load sample
+            {t("telemetryTrack.loadSample")}
           </Button>
           <Button
             size="sm"
@@ -66,7 +68,7 @@ export const TelemetryTrack: FC = () => {
             onPress={() => gpxInputRef.current?.click()}
             startContent={<MapPin size={16} />}
           >
-            Add .GPX
+            {t("telemetryTrack.addGpx")}
           </Button>
         </>
       )}
@@ -74,8 +76,8 @@ export const TelemetryTrack: FC = () => {
   );
 
   const title = gpxFileName
-    ? `Telemetry track (${gpxFileName})`
-    : "Telemetry track";
+    ? t("telemetryTrack.titleWithFile", { filename: gpxFileName })
+    : t("telemetryTrack.title");
 
   return (
     <MiniCard
@@ -86,14 +88,13 @@ export const TelemetryTrack: FC = () => {
       {gpxError && <Alert color="danger" variant="flat" title={gpxError} />}
       {!telemetryPoints && !gpxError && (
         <p className="py-0.5 text-xs text-default-400">
-          Load a GPX file to add speed, distance, elevation and route map data
-          to your video.
+          {t("telemetryTrack.description")}
         </p>
       )}
       <ActionConfirmationModal
         isOpen={isRemoveModalOpen}
-        title="Remove telemetry track"
-        description="This will remove the GPX data from the track. You can load another file later."
+        title={t("telemetryTrack.removeModalTitle")}
+        description={t("telemetryTrack.removeModalDescription")}
         onConfirm={() => {
           clearTelemetry();
           onRemoveModalClose();

@@ -12,6 +12,7 @@ import {
 } from "@heroui/react";
 import { FileOutput, Loader2 } from "lucide-react";
 import type { FC } from "react";
+import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { VIDEO_BITRATE_PRESETS } from "@/constants/presets";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
@@ -23,15 +24,6 @@ import { calculatePngMemoryUse } from "@/utils/calculations/calculatePngMemoryUs
 import { formatFileWeight } from "@/utils/format/formatFileWeight";
 import { formatTime } from "@/utils/format/formatTime";
 
-// TODO: move to i18n
-const VIDEO_BITRATE_LABELS: Record<VideoBitrate, string> = {
-  [VideoBitrate.VeryLow]: "Very low",
-  [VideoBitrate.Low]: "Low",
-  [VideoBitrate.Medium]: "Medium",
-  [VideoBitrate.High]: "High",
-  [VideoBitrate.VeryHigh]: "Very high",
-};
-
 export type ExportVideoModalProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -41,6 +33,7 @@ export const ExportVideoModal: FC<ExportVideoModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const backgroundVideoUrl = useBackgroundVideoStore(
     (s) => s.backgroundVideoUrl,
   );
@@ -67,6 +60,14 @@ export const ExportVideoModal: FC<ExportVideoModalProps> = ({
     height,
   );
 
+  const VIDEO_BITRATE_LABELS: Record<VideoBitrate, string> = {
+    [VideoBitrate.VeryLow]: t("export.bitrates.veryLow"),
+    [VideoBitrate.Low]: t("export.bitrates.low"),
+    [VideoBitrate.Medium]: t("export.bitrates.medium"),
+    [VideoBitrate.High]: t("export.bitrates.high"),
+    [VideoBitrate.VeryHigh]: t("export.bitrates.veryHigh"),
+  };
+
   const handleAcceptExport = () => {
     onClose();
     startExport();
@@ -78,25 +79,25 @@ export const ExportVideoModal: FC<ExportVideoModalProps> = ({
         <ModalContent>
           <ModalHeader className="flex items-center gap-2">
             <FileOutput size={20} className="shrink-0" />
-            Export options
+            {t("export.title")}
           </ModalHeader>
           <ModalBody className="flex flex-col gap-4">
             <Select
-              label="Container"
+              label={t("export.containerLabel")}
               selectedKeys={[container]}
               onSelectionChange={(keys) => {
                 const key = Array.from(keys)[0];
                 if (key) setContainer(key as VideoContainer);
               }}
             >
-              <SelectItem key="mp4" textValue="Video MP4">
-                Video MP4
+              <SelectItem key="mp4" textValue={t("export.containerMp4")}>
+                {t("export.containerMp4")}
               </SelectItem>
               <SelectItem
                 key="png-sequence"
-                textValue="PNG sequence (with transparency)"
+                textValue={t("export.containerPng")}
               >
-                PNG sequence (with transparency)
+                {t("export.containerPng")}
               </SelectItem>
             </Select>
 
@@ -104,7 +105,7 @@ export const ExportVideoModal: FC<ExportVideoModalProps> = ({
               <Alert
                 color="primary"
                 variant="faded"
-                title="Background video will not be included to preserve transparency"
+                title={t("export.alertNoVideo")}
               />
             )}
 
@@ -112,13 +113,15 @@ export const ExportVideoModal: FC<ExportVideoModalProps> = ({
               <Alert
                 color="warning"
                 variant="faded"
-                title={`Recommended: reduce FPS to avoid memory issues. Estimated ${formatFileWeight(pngEstimatedMemoryUse)} for the file.`}
+                title={t("export.alertMemory", {
+                  size: formatFileWeight(pngEstimatedMemoryUse),
+                })}
               />
             )}
 
             {container === "mp4" && (
               <Select
-                label="Bitrate"
+                label={t("export.bitrateLabel")}
                 selectedKeys={[bitrate]}
                 onSelectionChange={(keys) => {
                   const key = Array.from(keys)[0];
@@ -135,10 +138,10 @@ export const ExportVideoModal: FC<ExportVideoModalProps> = ({
           </ModalBody>
           <ModalFooter>
             <Button variant="flat" onPress={onClose}>
-              Cancel
+              {t("export.cancel")}
             </Button>
             <Button color="primary" onPress={handleAcceptExport}>
-              Accept
+              {t("export.accept")}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -148,22 +151,22 @@ export const ExportVideoModal: FC<ExportVideoModalProps> = ({
         <ModalContent>
           <ModalHeader className="flex items-center gap-2">
             <Loader2 size={20} className="shrink-0 animate-spin" aria-hidden />
-            Exporting
+            {t("export.exportingTitle")}
           </ModalHeader>
           <ModalBody className="flex flex-col gap-3">
             <Progress
               showValueLabel={true}
-              aria-label="Export progress"
+              aria-label={t("export.exportingTitle")}
               value={exportProgress.progress}
             />
             <div className="flex flex-col gap-1 text-sm text-foreground/80">
               <p>
-                Elapsed time:{" "}
+                {t("export.elapsedTime")}{" "}
                 <strong>{formatTime(exportProgress.elapsedSeconds)}</strong>
               </p>
               {exportProgress.estimatedRemainingSeconds != null && (
                 <p>
-                  Time remaining (approx.):{" "}
+                  {t("export.timeRemaining")}{" "}
                   <strong>
                     {formatTime(exportProgress.estimatedRemainingSeconds)}
                   </strong>
@@ -173,7 +176,7 @@ export const ExportVideoModal: FC<ExportVideoModalProps> = ({
           </ModalBody>
           <ModalFooter>
             <Button color="primary" onPress={cancelExport}>
-              Cancel
+              {t("export.cancel")}
             </Button>
           </ModalFooter>
         </ModalContent>

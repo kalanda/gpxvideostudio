@@ -1,4 +1,5 @@
 import type { FC, RefObject } from "react";
+import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 
@@ -21,6 +22,7 @@ export const SyncVideoModalVideoPlayer: FC<SyncVideoModalVideoPlayerProps> = ({
   onPause,
   onClick,
 }) => {
+  const { t } = useTranslation();
   const { backgroundVideoUrl, flipHorizontal, flipVertical } =
     useBackgroundVideoStore(
       useShallow((s) => ({
@@ -57,7 +59,9 @@ export const SyncVideoModalVideoPlayer: FC<SyncVideoModalVideoPlayerProps> = ({
           <track kind="captions" />
         </video>
       ) : (
-        <p className="text-foreground/40 text-sm">No video loaded</p>
+        <p className="text-foreground/40 text-sm">
+          {t("syncVideo.noVideoLoaded")}
+        </p>
       )}
     </div>
   );

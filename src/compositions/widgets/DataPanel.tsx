@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { useTranslation } from "react-i18next";
 import { DataItem } from "@/compositions/widgets/DataItem";
 import { formatElevation } from "@/utils/format/formatElevation";
 import { formatSlope } from "@/utils/format/formatSlope";
@@ -17,6 +18,7 @@ type DataPanelProps = {
 };
 
 export const DataPanel: FC<DataPanelProps> = (props) => {
+  const { t } = useTranslation();
   const { distance, elapsed, hr, cad, power, elevation, slope, temp } = props;
   const { distanceValue, distanceUnit } =
     distance < 1000
@@ -24,35 +26,51 @@ export const DataPanel: FC<DataPanelProps> = (props) => {
       : { distanceValue: (distance / 1000).toFixed(2), distanceUnit: "km" };
   return (
     <>
-      <DataItem label="Distance" value={distanceValue} unit={distanceUnit} />
-      <DataItem label="Elapsed Time" value={formatTime(elapsed)} />
+      <DataItem
+        label={t("widgets.distance")}
+        value={distanceValue}
+        unit={distanceUnit}
+      />
+      <DataItem label={t("widgets.elapsedTime")} value={formatTime(elapsed)} />
       {typeof hr === "number" && (
         <DataItem
-          label="Heart Rate"
+          label={t("widgets.heartRate")}
           value={String(Math.round(hr))}
           unit="bpm"
         />
       )}
       {typeof cad === "number" && (
-        <DataItem label="Cadence" value={String(Math.round(cad))} unit="rpm" />
+        <DataItem
+          label={t("widgets.cadence")}
+          value={String(Math.round(cad))}
+          unit="rpm"
+        />
       )}
       {typeof power === "number" && (
-        <DataItem label="Power" value={String(Math.round(power))} unit="W" />
+        <DataItem
+          label={t("widgets.power")}
+          value={String(Math.round(power))}
+          unit="W"
+        />
       )}
 
       {typeof slope === "number" && (
-        <DataItem label="Slope" value={formatSlope(slope)} unit="%" />
+        <DataItem
+          label={t("widgets.slope")}
+          value={formatSlope(slope)}
+          unit="%"
+        />
       )}
       {typeof elevation === "number" && (
         <DataItem
-          label="Elevation"
+          label={t("widgets.elevation")}
           value={formatElevation(elevation)}
           unit="m"
         />
       )}
       {typeof temp === "number" && (
         <DataItem
-          label="Temperature"
+          label={t("widgets.temperature")}
           value={formatTemperature(temp)}
           unit="°C"
         />

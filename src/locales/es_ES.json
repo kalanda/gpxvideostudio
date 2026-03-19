@@ -1,0 +1,177 @@
+{
+  "common": {
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Guardar",
+    "remove": "Eliminar"
+  },
+
+  "navbar": {
+    "githubAriaLabel": "Repositorio de GitHub",
+    "switchToLight": "Cambiar a modo claro",
+    "switchToDark": "Cambiar a modo oscuro",
+    "languageAriaLabel": "Idioma"
+  },
+
+  "preview": {
+    "title": "Vista previa",
+    "resolution": "Resolución: {{width}}x{{height}} @ {{fps}} FPS",
+    "resolutionShort": "{{width}}×{{height}}",
+    "exportVideo": "Exportar vídeo"
+  },
+
+  "emptyState": {
+    "headline": "Superpón datos de actividad en tu grabación",
+    "subtitle": "Velocidad · Distancia · Elevación · Mapa de ruta",
+    "step1": "Cargar GPX",
+    "step2": "Añadir vídeo",
+    "step3": "Exportar",
+    "loadGpx": "Cargar archivo GPX",
+    "trySample": "Probar ejemplo"
+  },
+
+  "telemetryTrack": {
+    "title": "Pista de telemetría",
+    "titleWithFile": "Pista de telemetría ({{filename}})",
+    "description": "Carga un archivo GPX para añadir datos de velocidad, distancia, elevación y mapa de ruta a tu vídeo.",
+    "loadSample": "Cargar ejemplo",
+    "addGpx": "Añadir .GPX",
+    "remove": "Eliminar",
+    "removeModalTitle": "Eliminar pista de telemetría",
+    "removeModalDescription": "Esto eliminará los datos GPX de la pista. Puedes cargar otro archivo más adelante."
+  },
+
+  "backgroundVideoTrack": {
+    "title": "Pista de vídeo de fondo",
+    "titleWithFile": "Pista de vídeo de fondo ({{filename}})",
+    "description": "Añade grabaciones de tu cámara o cámara de acción. Una vez cargado, puedes sincronizarlo con la pista de telemetría.",
+    "syncWithTelemetry": "Sincronizar vídeo con telemetría",
+    "flipH": "Voltear H",
+    "flipV": "Voltear V",
+    "remove": "Eliminar",
+    "addVideo": "Añadir vídeo",
+    "trim": "Recortar",
+    "removeModalTitle": "Eliminar vídeo de fondo",
+    "removeModalDescription": "Esto eliminará el vídeo de la pista. Puedes añadir otro más adelante.",
+    "generatingThumbnails": "Generando miniaturas…",
+    "thumbnailAlt": "Miniatura {{index}}"
+  },
+
+  "timeline": {
+    "title": "Línea de tiempo",
+    "zoomOut": "Alejar",
+    "zoomIn": "Acercar"
+  },
+
+  "videoSettings": {
+    "title": "Ajustes de vídeo",
+    "presetLabel": "Ajuste predefinido",
+    "presetCustom": "Personalizado",
+    "presetAriaLabel": "Ajuste predefinido de resolución",
+    "widthLabel": "Anchura",
+    "heightLabel": "Altura",
+    "fpsLabel": "FPS",
+    "swapWidthHeight": "Intercambiar anchura y altura",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "presets": {
+      "4k": "4K",
+      "2k": "2K",
+      "1080p": "1080p",
+      "720p": "720p"
+    }
+  },
+
+  "export": {
+    "title": "Opciones de exportación",
+    "containerLabel": "Formato",
+    "containerMp4": "Vídeo MP4",
+    "containerPng": "Secuencia PNG (con transparencia)",
+    "alertNoVideo": "El vídeo de fondo no se incluirá para conservar la transparencia",
+    "alertMemory": "Recomendado: reduce los FPS para evitar problemas de memoria. Se estima {{size}} para el archivo.",
+    "bitrateLabel": "Tasa de bits",
+    "cancel": "Cancelar",
+    "accept": "Exportar",
+    "exportingTitle": "Exportando",
+    "elapsedTime": "Tiempo transcurrido:",
+    "timeRemaining": "Tiempo restante (aprox.):",
+    "bitrates": {
+      "veryLow": "Muy baja",
+      "low": "Baja",
+      "medium": "Media",
+      "high": "Alta",
+      "veryHigh": "Muy alta"
+    }
+  },
+
+  "syncVideo": {
+    "title": "Sincronizar vídeo con telemetría",
+    "description": "Alinea el vídeo y la pista GPX para sincronizarlos. Navega hasta un momento reconocible en ambos y pulsa \"Sincronizar estos puntos\".",
+    "labelVideo": "Vídeo",
+    "labelGpxTrack": "Pista GPX",
+    "cancel": "Cancelar",
+    "syncPoints": "Sincronizar estos puntos",
+    "videoTimeDisplay": "Tiempo de vídeo: {{current}} / {{total}}",
+    "gpsTimeDisplay": "Hora GPS: {{time}}",
+    "noVideoLoaded": "No hay vídeo cargado",
+    "noGpxLoaded": "No hay pista GPX cargada",
+    "mapStyleAriaLabel": "Estilo de mapa",
+    "mapTab": "Mapa",
+    "satelliteTab": "Satélite",
+    "videoPositionAriaLabel": "Posición del vídeo",
+    "telemetryPositionAriaLabel": "Posición de telemetría",
+    "previousFrame": "Fotograma anterior",
+    "nextFrame": "Fotograma siguiente",
+    "pause": "Pausar",
+    "play": "Reproducir"
+  },
+
+  "appearance": {
+    "buttonLabel": "Apariencia",
+    "ariaLabel": "Ajustes de apariencia",
+    "fontLabel": "Fuente",
+    "fontSearchPlaceholder": "Buscar todas las fuentes…",
+    "fontSelectPlaceholder": "Seleccionar fuente",
+    "fontNoResults": "Sin resultados",
+    "showAllFonts": "Mostrar todas las fuentes",
+    "showRecommendedFonts": "Mostrar solo fuentes recomendadas",
+    "primaryColorLabel": "Color principal",
+    "accentColorLabel": "Color de énfasis",
+    "chooseColor": "Elegir {{label}}",
+    "mapAppearanceSection": "Apariencia del mapa",
+    "mapThemeLabel": "Tema",
+    "mapViewportLabel": "Vista",
+    "mapCameraLabel": "Cámara",
+    "mapBearingLabel": "Orientación",
+    "mapThemes": {
+      "none": "Ninguno",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "colored": "De color",
+      "satellite": "Satélite"
+    },
+    "mapBearingModes": {
+      "fixed": "Fijo",
+      "dynamic": "Dinámico"
+    },
+    "mapViewportModes": {
+      "fullRoute": "Ruta completa",
+      "followPoint": "Seguir punto"
+    },
+    "mapPitchModes": {
+      "topDown": "Cenital",
+      "tilted": "Inclinado"
+    }
+  },
+
+  "widgets": {
+    "distance": "Distancia",
+    "elapsedTime": "Tiempo transcurrido",
+    "heartRate": "Frecuencia cardíaca",
+    "cadence": "Cadencia",
+    "power": "Potencia",
+    "slope": "Pendiente",
+    "elevation": "Elevación",
+    "temperature": "Temperatura"
+  }
+}

@@ -11,6 +11,7 @@ import {
 import { Palette } from "lucide-react";
 import { useState } from "react";
 import { CompactPicker } from "react-color";
+import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { useFontSelector } from "@/hooks/useFontSelector";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
@@ -21,30 +22,8 @@ import {
   MapViewportMode,
 } from "@/types/map";
 
-const MAP_THEME_LABELS: Record<MapTheme, string> = {
-  [MapTheme.None]: "None",
-  [MapTheme.Light]: "Light",
-  [MapTheme.Dark]: "Dark",
-  [MapTheme.Colored]: "Colored",
-  [MapTheme.Satellite]: "Satellite",
-};
-
-const BEARING_MODE_LABELS: Record<MapBearingMode, string> = {
-  [MapBearingMode.Fixed]: "Fixed",
-  [MapBearingMode.Dynamic]: "Dynamic",
-};
-
-const VIEWPORT_MODE_LABELS: Record<MapViewportMode, string> = {
-  [MapViewportMode.FullRoute]: "Full Route",
-  [MapViewportMode.FollowPoint]: "Follow Point",
-};
-
-const PITCH_LABELS: Record<MapPitch, string> = {
-  [MapPitch.TopDown]: "Top Down",
-  [MapPitch.Tilted]: "Tilted",
-};
-
 export const WidgetAppearanceDropdown = () => {
+  const { t } = useTranslation();
   const {
     fontFamily,
     fontItems,
@@ -99,7 +78,7 @@ export const WidgetAppearanceDropdown = () => {
           onClick={() => setOpen((o) => !o)}
           className="h-8 w-full max-w-full rounded-small border border-default-200 bg-default-100 px-2 shadow-sm transition-colors hover:border-default-400"
           style={{ backgroundColor: color }}
-          aria-label={`Choose ${label}`}
+          aria-label={t("appearance.chooseColor", { label })}
         />
         {open && (
           <>
@@ -126,23 +105,27 @@ export const WidgetAppearanceDropdown = () => {
         <Button
           size="sm"
           variant="flat"
-          aria-label="Appearance settings"
+          aria-label={t("appearance.ariaLabel")}
           startContent={<Palette size={16} />}
         >
-          Appearance
+          {t("appearance.buttonLabel")}
         </Button>
       </PopoverTrigger>
       <PopoverContent>
         <div className="flex flex-col gap-3 px-1 py-2">
           <div className="flex flex-col gap-1">
             <Autocomplete
-              label="Font"
-              placeholder={showAllFonts ? "Search all fonts…" : "Select font"}
+              label={t("appearance.fontLabel")}
+              placeholder={
+                showAllFonts
+                  ? t("appearance.fontSearchPlaceholder")
+                  : t("appearance.fontSelectPlaceholder")
+              }
               selectedKey={fontFamily}
               onSelectionChange={onSelectionChange}
               size="sm"
               classNames={{ base: "w-full" }}
-              listboxProps={{ emptyContent: "No results" }}
+              listboxProps={{ emptyContent: t("appearance.fontNoResults") }}
               isVirtualized={showAllFonts}
               scrollShadowProps={{ isEnabled: false }}
             >
@@ -154,18 +137,20 @@ export const WidgetAppearanceDropdown = () => {
               className="w-full justify-start text-foreground-500"
               onPress={() => setShowAllFonts((v) => !v)}
             >
-              {showAllFonts ? "Show only recommended fonts" : "Show all fonts"}
+              {showAllFonts
+                ? t("appearance.showRecommendedFonts")
+                : t("appearance.showAllFonts")}
             </Button>
           </div>
           {colorPickerSection(
-            "Primary color",
+            t("appearance.primaryColorLabel"),
             primaryColor,
             setPrimaryColor,
             primaryColorPickerOpen,
             setPrimaryColorPickerOpen,
           )}
           {colorPickerSection(
-            "Accent color",
+            t("appearance.accentColorLabel"),
             accentColor,
             setAccentColor,
             accentColorPickerOpen,
@@ -174,10 +159,10 @@ export const WidgetAppearanceDropdown = () => {
           <Divider />
           <div className="flex flex-col gap-2">
             <span className="text-xs font-medium text-foreground-500">
-              Map appearance
+              {t("appearance.mapAppearanceSection")}
             </span>
             <Select
-              label="Theme"
+              label={t("appearance.mapThemeLabel")}
               selectedKeys={[mapTheme]}
               onSelectionChange={(keys) => {
                 const v = Array.from(keys)[0] as MapTheme | undefined;
@@ -187,12 +172,24 @@ export const WidgetAppearanceDropdown = () => {
               size="sm"
               classNames={{ base: "w-full" }}
             >
-              {Object.values(MapTheme).map((t) => (
-                <SelectItem key={t}>{MAP_THEME_LABELS[t]}</SelectItem>
-              ))}
+              <SelectItem key={MapTheme.None}>
+                {t("appearance.mapThemes.none")}
+              </SelectItem>
+              <SelectItem key={MapTheme.Light}>
+                {t("appearance.mapThemes.light")}
+              </SelectItem>
+              <SelectItem key={MapTheme.Dark}>
+                {t("appearance.mapThemes.dark")}
+              </SelectItem>
+              <SelectItem key={MapTheme.Colored}>
+                {t("appearance.mapThemes.colored")}
+              </SelectItem>
+              <SelectItem key={MapTheme.Satellite}>
+                {t("appearance.mapThemes.satellite")}
+              </SelectItem>
             </Select>
             <Select
-              label="Viewport"
+              label={t("appearance.mapViewportLabel")}
               selectedKeys={[mapViewportMode]}
               onSelectionChange={(keys) => {
                 const v = Array.from(keys)[0] as MapViewportMode | undefined;
@@ -202,12 +199,15 @@ export const WidgetAppearanceDropdown = () => {
               size="sm"
               classNames={{ base: "w-full" }}
             >
-              {Object.values(MapViewportMode).map((m) => (
-                <SelectItem key={m}>{VIEWPORT_MODE_LABELS[m]}</SelectItem>
-              ))}
+              <SelectItem key={MapViewportMode.FullRoute}>
+                {t("appearance.mapViewportModes.fullRoute")}
+              </SelectItem>
+              <SelectItem key={MapViewportMode.FollowPoint}>
+                {t("appearance.mapViewportModes.followPoint")}
+              </SelectItem>
             </Select>
             <Select
-              label="Camera"
+              label={t("appearance.mapCameraLabel")}
               selectedKeys={[String(mapPitch)]}
               onSelectionChange={(keys) => {
                 const v = Array.from(keys)[0];
@@ -216,12 +216,15 @@ export const WidgetAppearanceDropdown = () => {
               size="sm"
               classNames={{ base: "w-full" }}
             >
-              {Object.values(MapPitch).map((p) => (
-                <SelectItem key={String(p)}>{PITCH_LABELS[p]}</SelectItem>
-              ))}
+              <SelectItem key={String(MapPitch.TopDown)}>
+                {t("appearance.mapPitchModes.topDown")}
+              </SelectItem>
+              <SelectItem key={String(MapPitch.Tilted)}>
+                {t("appearance.mapPitchModes.tilted")}
+              </SelectItem>
             </Select>
             <Select
-              label="Bearing"
+              label={t("appearance.mapBearingLabel")}
               selectedKeys={[mapBearingMode]}
               onSelectionChange={(keys) => {
                 const v = Array.from(keys)[0] as MapBearingMode | undefined;
@@ -231,9 +234,12 @@ export const WidgetAppearanceDropdown = () => {
               size="sm"
               classNames={{ base: "w-full" }}
             >
-              {Object.values(MapBearingMode).map((b) => (
-                <SelectItem key={b}>{BEARING_MODE_LABELS[b]}</SelectItem>
-              ))}
+              <SelectItem key={MapBearingMode.Fixed}>
+                {t("appearance.mapBearingModes.fixed")}
+              </SelectItem>
+              <SelectItem key={MapBearingMode.Dynamic}>
+                {t("appearance.mapBearingModes.dynamic")}
+              </SelectItem>
             </Select>
           </div>
         </div>

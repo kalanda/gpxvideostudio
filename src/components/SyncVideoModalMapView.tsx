@@ -2,6 +2,7 @@ import { Tab, Tabs } from "@heroui/react";
 import type { Feature, LineString, Point } from "geojson";
 import type { MapMouseEvent, StyleSpecification } from "maplibre-gl";
 import type { FC } from "react";
+import { useTranslation } from "react-i18next";
 import { Layer, Map as MaplibreMap, Source } from "react-map-gl/maplibre";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -25,6 +26,7 @@ export const SyncVideoModalMapView: FC<SyncVideoModalMapViewProps> = ({
   onMapModeChange,
   onMapClick,
 }) => {
+  const { t } = useTranslation();
   const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
   const hasTelemetry = !!telemetryPoints;
 
@@ -38,10 +40,10 @@ export const SyncVideoModalMapView: FC<SyncVideoModalMapViewProps> = ({
           size="sm"
           selectedKey={mapMode}
           onSelectionChange={(k) => onMapModeChange(k as "map" | "satellite")}
-          aria-label="Map style"
+          aria-label={t("syncVideo.mapStyleAriaLabel")}
         >
-          <Tab key="map" title="Map" />
-          <Tab key="satellite" title="Satellite" />
+          <Tab key="map" title={t("syncVideo.mapTab")} />
+          <Tab key="satellite" title={t("syncVideo.satelliteTab")} />
         </Tabs>
       </div>
       {hasTelemetry && initialBounds ? (
@@ -104,7 +106,9 @@ export const SyncVideoModalMapView: FC<SyncVideoModalMapViewProps> = ({
         </MaplibreMap>
       ) : (
         <div className="flex h-full items-center justify-center bg-default-100 rounded-medium">
-          <p className="text-foreground/40 text-sm">No GPX track loaded</p>
+          <p className="text-foreground/40 text-sm">
+            {t("syncVideo.noGpxLoaded")}
+          </p>
         </div>
       )}
     </div>

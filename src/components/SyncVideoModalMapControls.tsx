@@ -1,5 +1,6 @@
 import { Slider } from "@heroui/react";
 import type { FC } from "react";
+import { useTranslation } from "react-i18next";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { formatPlaybackTime } from "@/utils/format/formatPlaybackTime";
 
@@ -16,6 +17,7 @@ export const SyncVideoModalMapControls: FC<SyncVideoModalMapControlsProps> = ({
   currentTelemetryTime,
   onElapsedChange,
 }) => {
+  const { t } = useTranslation();
   const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
 
   return (
@@ -33,7 +35,7 @@ export const SyncVideoModalMapControls: FC<SyncVideoModalMapControlsProps> = ({
           )
         }
         isDisabled={!telemetryPoints}
-        aria-label="Telemetry position"
+        aria-label={t("syncVideo.telemetryPositionAriaLabel")}
         classNames={{
           value: "text-xs text-foreground/70 font-mono tabular-nums",
           label: "text-xs text-foreground/70",
@@ -41,15 +43,16 @@ export const SyncVideoModalMapControls: FC<SyncVideoModalMapControlsProps> = ({
       />
       {currentTelemetryTime && (
         <p className="text-xs text-foreground/50 font-mono tabular-nums text-center">
-          GPS time:{" "}
-          {currentTelemetryTime.toLocaleString([], {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false,
+          {t("syncVideo.gpsTimeDisplay", {
+            time: currentTelemetryTime.toLocaleString([], {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: false,
+            }),
           })}
         </p>
       )}

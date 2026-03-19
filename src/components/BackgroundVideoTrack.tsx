@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import type { FC } from "react";
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { ActionConfirmationModal } from "@/components/ActionConfirmationModal";
 import { BackgroundVideoThumbnails } from "@/components/BackgroundVideoThumbnails";
@@ -19,6 +20,7 @@ import { useTelemetryStore } from "@/stores/telemetryStore";
 import { formatTime } from "@/utils/format/formatTime";
 
 export const BackgroundVideoTrack: FC = () => {
+  const { t } = useTranslation();
   const videoInputRef = useRef<HTMLInputElement>(null);
   const {
     isOpen: isSyncModalOpen,
@@ -139,7 +141,7 @@ export const BackgroundVideoTrack: FC = () => {
               startContent={<TextCursorInput size={16} />}
               onPress={onSyncModalOpen}
             >
-              Sync video with telemetry
+              {t("backgroundVideoTrack.syncWithTelemetry")}
             </Button>
           )}
           <Button
@@ -148,7 +150,7 @@ export const BackgroundVideoTrack: FC = () => {
             onPress={() => setFlipHorizontal(!flipHorizontal)}
             startContent={<FlipHorizontal2 size={16} />}
           >
-            Flip H
+            {t("backgroundVideoTrack.flipH")}
           </Button>
           <Button
             size="sm"
@@ -156,7 +158,7 @@ export const BackgroundVideoTrack: FC = () => {
             onPress={() => setFlipVertical(!flipVertical)}
             startContent={<FlipVertical2 size={16} />}
           >
-            Flip V
+            {t("backgroundVideoTrack.flipV")}
           </Button>
           <Button
             size="sm"
@@ -165,7 +167,7 @@ export const BackgroundVideoTrack: FC = () => {
             onPress={onRemoveModalOpen}
             startContent={<Trash2 size={16} />}
           >
-            Remove
+            {t("backgroundVideoTrack.remove")}
           </Button>
         </>
       ) : (
@@ -184,7 +186,7 @@ export const BackgroundVideoTrack: FC = () => {
             onPress={onAddVideo}
             startContent={<Video size={16} />}
           >
-            Add video
+            {t("backgroundVideoTrack.addVideo")}
           </Button>
         </>
       )}
@@ -192,8 +194,10 @@ export const BackgroundVideoTrack: FC = () => {
   );
 
   const title = backgroundVideoFileName
-    ? `Background video track (${backgroundVideoFileName})`
-    : "Background video track";
+    ? t("backgroundVideoTrack.titleWithFile", {
+        filename: backgroundVideoFileName,
+      })
+    : t("backgroundVideoTrack.title");
 
   return (
     <MiniCard
@@ -203,15 +207,14 @@ export const BackgroundVideoTrack: FC = () => {
     >
       {!backgroundVideoUrl && (
         <p className="py-0.5 text-xs text-default-400">
-          Add footage from your camera or action cam. Once loaded, you can sync
-          it with the telemetry track.
+          {t("backgroundVideoTrack.description")}
         </p>
       )}
       <BackgroundVideoThumbnails />
       {backgroundVideoUrl && backgroundVideoDurationSeconds != null && (
         <Slider
           size="sm"
-          label="Trim"
+          label={t("backgroundVideoTrack.trim")}
           step={1}
           minValue={0}
           maxValue={Math.max(1, Math.floor(backgroundVideoDurationSeconds))}
@@ -279,8 +282,8 @@ export const BackgroundVideoTrack: FC = () => {
       <SyncVideoModal isOpen={isSyncModalOpen} onClose={onSyncModalClose} />
       <ActionConfirmationModal
         isOpen={isRemoveModalOpen}
-        title="Remove background video"
-        description="This will remove the video from the track. You can add another one later."
+        title={t("backgroundVideoTrack.removeModalTitle")}
+        description={t("backgroundVideoTrack.removeModalDescription")}
         onConfirm={() => {
           onRemoveVideo();
           onRemoveModalClose();

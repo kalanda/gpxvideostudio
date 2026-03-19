@@ -1,6 +1,7 @@
 import { Button, Slider } from "@heroui/react";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import type { FC } from "react";
+import { useTranslation } from "react-i18next";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import { formatPlaybackTime } from "@/utils/format/formatPlaybackTime";
@@ -24,6 +25,7 @@ export const SyncVideoModalVideoControls: FC<
   onStepFrame,
   onTogglePlay,
 }) => {
+  const { t } = useTranslation();
   const fps = useProjectVideoSettingsStore((s) => s.fps);
   const backgroundVideoUrl = useBackgroundVideoStore(
     (s) => s.backgroundVideoUrl,
@@ -39,13 +41,14 @@ export const SyncVideoModalVideoControls: FC<
         maxValue={Math.max(1, videoDuration)}
         value={videoCurrentTime}
         onChange={onSeek}
-        aria-label="Video position"
+        aria-label={t("syncVideo.videoPositionAriaLabel")}
         isDisabled={isDisabled}
       />
       <p className="text-xs text-foreground/50 font-mono tabular-nums text-center">
-        Video time: {formatPlaybackTime(videoCurrentTime)}
-        {" / "}
-        {formatPlaybackTime(videoDuration)}
+        {t("syncVideo.videoTimeDisplay", {
+          current: formatPlaybackTime(videoCurrentTime),
+          total: formatPlaybackTime(videoDuration),
+        })}
       </p>
       <div className="flex items-center gap-2 justify-center">
         <Button
@@ -54,7 +57,7 @@ export const SyncVideoModalVideoControls: FC<
           variant="flat"
           onPress={() => onStepFrame(-1)}
           isDisabled={isDisabled}
-          aria-label="Previous frame"
+          aria-label={t("syncVideo.previousFrame")}
         >
           <ChevronLeft size={16} />
         </Button>
@@ -64,7 +67,9 @@ export const SyncVideoModalVideoControls: FC<
           variant="flat"
           onPress={onTogglePlay}
           isDisabled={isDisabled}
-          aria-label={videoIsPlaying ? "Pause" : "Play"}
+          aria-label={
+            videoIsPlaying ? t("syncVideo.pause") : t("syncVideo.play")
+          }
         >
           {videoIsPlaying ? <Pause size={18} /> : <Play size={18} />}
         </Button>
@@ -74,7 +79,7 @@ export const SyncVideoModalVideoControls: FC<
           variant="flat"
           onPress={() => onStepFrame(1)}
           isDisabled={isDisabled}
-          aria-label="Next frame"
+          aria-label={t("syncVideo.nextFrame")}
         >
           <ChevronRight size={16} />
         </Button>

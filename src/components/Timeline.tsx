@@ -2,6 +2,7 @@ import { Button } from "@heroui/react";
 import { GanttChart, ZoomIn, ZoomOut } from "lucide-react";
 import type { FC } from "react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MiniCard } from "@/components/MiniCard";
 import { TimelinePlaybackCursor } from "@/components/TimelinePlaybackCursor";
 import { TimelineRuler } from "@/components/TimelineRuler";
@@ -21,6 +22,7 @@ const PIXELS_PER_FRAME_BASE = 1;
  * horizontal scroll when content overflows, and zoom controls.
  */
 export const Timeline: FC = () => {
+  const { t } = useTranslation();
   useVideoPlayer();
   const { currentFrame, seekTo } = useVideoPlayerControls();
   const { durationInFrames } = useEffectiveExportDuration();
@@ -49,7 +51,7 @@ export const Timeline: FC = () => {
         isIconOnly
         size="sm"
         variant="flat"
-        aria-label="Zoom out"
+        aria-label={t("timeline.zoomOut")}
         onPress={handleZoomOut}
         isDisabled={zoomLevel <= MIN_ZOOM}
       >
@@ -62,7 +64,7 @@ export const Timeline: FC = () => {
         isIconOnly
         size="sm"
         variant="flat"
-        aria-label="Zoom in"
+        aria-label={t("timeline.zoomIn")}
         onPress={handleZoomIn}
         isDisabled={zoomLevel >= MAX_ZOOM}
       >
@@ -73,7 +75,7 @@ export const Timeline: FC = () => {
 
   return (
     <MiniCard
-      title="Timeline"
+      title={t("timeline.title")}
       titleIcon={<GanttChart size={16} />}
       actions={actions}
     >

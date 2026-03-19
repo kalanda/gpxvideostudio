@@ -3,6 +3,7 @@ import { Player } from "@remotion/player";
 import { Download, MonitorPlay, Settings } from "lucide-react";
 import type { FC } from "react";
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { ExportVideoModal } from "@/components/ExportVideoModal";
 import { MiniCard } from "@/components/MiniCard";
@@ -18,6 +19,7 @@ import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore
 import { useTelemetryStore } from "@/stores/telemetryStore";
 
 export const VideoMonitor: FC = () => {
+  const { t } = useTranslation();
   const { playerRef } = useVideoPlayer();
   const savedFrameRef = useRef<number | null>(null);
   const { fps, width, height } = useProjectVideoSettingsStore(
@@ -64,10 +66,12 @@ export const VideoMonitor: FC = () => {
     player.seekTo(clampedFrame);
   }, [trimPreviewSeconds, videoTimeAtFrame0, fps, durationInFrames, playerRef]);
 
+  const resolutionLabel = t("preview.resolution", { width, height, fps });
+
   return (
     <>
       <MiniCard
-        title="Preview"
+        title={t("preview.title")}
         titleIcon={<MonitorPlay size={16} className="shrink-0" />}
         actions={
           <div className="flex flex-wrap items-center gap-2">
@@ -75,15 +79,15 @@ export const VideoMonitor: FC = () => {
             <Button
               size="sm"
               variant="flat"
-              aria-label={`Resolution: ${width}x${height} @ ${fps} FPS`}
-              title={`Resolution: ${width}x${height} @ ${fps} FPS`}
+              aria-label={resolutionLabel}
+              title={resolutionLabel}
               onPress={onVideoSettingsModalOpen}
               startContent={<Settings size={16} />}
             >
-              <span className="hidden sm:inline">
-                {`Resolution: ${width}x${height} @ ${fps} FPS`}
+              <span className="hidden sm:inline">{resolutionLabel}</span>
+              <span className="sm:hidden">
+                {t("preview.resolutionShort", { width, height })}
               </span>
-              <span className="sm:hidden">{`${width}×${height}`}</span>
             </Button>
             {telemetryPoints && (
               <Button
@@ -93,7 +97,7 @@ export const VideoMonitor: FC = () => {
                 isDisabled={!canExport}
                 startContent={<Download size={18} />}
               >
-                Export video
+                {t("preview.exportVideo")}
               </Button>
             )}
           </div>

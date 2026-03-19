@@ -7,6 +7,7 @@ import {
   ModalHeader,
 } from "@heroui/react";
 import type { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 export type ActionConfirmationModalProps = {
   isOpen: boolean;
@@ -22,21 +23,25 @@ export const ActionConfirmationModal: FC<ActionConfirmationModalProps> = ({
   description,
   onConfirm,
   onCancel,
-}) => (
-  <Modal isOpen={isOpen} onClose={onCancel}>
-    <ModalContent>
-      <ModalHeader>{title}</ModalHeader>
-      <ModalBody>
-        <p className="text-sm text-foreground/80">{description}</p>
-      </ModalBody>
-      <ModalFooter>
-        <Button variant="flat" onPress={onCancel}>
-          Cancel
-        </Button>
-        <Button color="danger" onPress={onConfirm}>
-          Confirm
-        </Button>
-      </ModalFooter>
-    </ModalContent>
-  </Modal>
-);
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <Modal isOpen={isOpen} onClose={onCancel}>
+      <ModalContent>
+        <ModalHeader>{title}</ModalHeader>
+        <ModalBody>
+          <p className="text-sm text-foreground/80">{description}</p>
+        </ModalBody>
+        <ModalFooter>
+          <Button variant="flat" onPress={onCancel}>
+            {t("common.cancel")}
+          </Button>
+          <Button color="danger" onPress={onConfirm}>
+            {t("common.confirm")}
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
