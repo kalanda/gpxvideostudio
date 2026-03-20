@@ -9,10 +9,9 @@ import {
   SelectItem,
 } from "@heroui/react";
 import { Palette } from "lucide-react";
-import { useState } from "react";
-import { CompactPicker } from "react-color";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
+import { ColorPicker } from "@/components/ColorPicker";
 import { useFontSelector } from "@/hooks/useFontSelector";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 import {
@@ -60,45 +59,6 @@ export const WidgetAppearanceDropdown = () => {
       setMapPitch: s.setMapPitch,
     })),
   );
-  const [accentColorPickerOpen, setAccentColorPickerOpen] = useState(false);
-  const [primaryColorPickerOpen, setPrimaryColorPickerOpen] = useState(false);
-
-  const colorPickerSection = (
-    label: string,
-    color: string,
-    setColor: (c: string) => void,
-    open: boolean,
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  ) => (
-    <div className="flex flex-col gap-1">
-      <span className="text-xs text-foreground-500">{label}</span>
-      <div className="relative">
-        <button
-          type="button"
-          onClick={() => setOpen((o) => !o)}
-          className="h-8 w-full max-w-full rounded-small border border-default-200 bg-default-100 px-2 shadow-sm transition-colors hover:border-default-400"
-          style={{ backgroundColor: color }}
-          aria-label={t("appearance.chooseColor", { label })}
-        />
-        {open && (
-          <>
-            <div
-              className="fixed inset-0 z-10"
-              aria-hidden
-              onClick={() => setOpen(false)}
-            />
-            <div className="absolute left-0 top-full z-20 mt-1">
-              <CompactPicker
-                color={color}
-                onChangeComplete={(c) => setColor(c.hex)}
-              />
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-
   return (
     <Popover placement="bottom-start" showArrow>
       <PopoverTrigger>
@@ -142,20 +102,16 @@ export const WidgetAppearanceDropdown = () => {
                 : t("appearance.showAllFonts")}
             </Button>
           </div>
-          {colorPickerSection(
-            t("appearance.primaryColorLabel"),
-            primaryColor,
-            setPrimaryColor,
-            primaryColorPickerOpen,
-            setPrimaryColorPickerOpen,
-          )}
-          {colorPickerSection(
-            t("appearance.accentColorLabel"),
-            accentColor,
-            setAccentColor,
-            accentColorPickerOpen,
-            setAccentColorPickerOpen,
-          )}
+          <ColorPicker
+            label={t("appearance.primaryColorLabel")}
+            color={primaryColor}
+            onChange={setPrimaryColor}
+          />
+          <ColorPicker
+            label={t("appearance.accentColorLabel")}
+            color={accentColor}
+            onChange={setAccentColor}
+          />
           <Divider />
           <div className="flex flex-col gap-2">
             <span className="text-xs font-medium text-foreground-500">
