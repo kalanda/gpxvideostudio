@@ -1,4 +1,4 @@
-import { Button, Slider, useDisclosure } from "@heroui/react";
+import { Button, useDisclosure } from "@heroui/react";
 import {
   FlipHorizontal2,
   FlipVertical2,
@@ -7,17 +7,18 @@ import {
   Video,
 } from "lucide-react";
 import type { FC } from "react";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { ActionConfirmationModal } from "@/components/ActionConfirmationModal";
 import { BackgroundVideoThumbnails } from "@/components/BackgroundVideoThumbnails";
 import { MiniCard } from "@/components/MiniCard";
 import { SyncVideoModal } from "@/components/SyncVideoModal";
+import { VideoTrimSlider } from "@/components/VideoTrimSlider";
 import { useVideoDuration } from "@/hooks/useVideoDuration";
+import { useVideoUrl } from "@/hooks/useVideoUrl";
 import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
-import { formatTime } from "@/utils/format/formatTime";
 
 export const BackgroundVideoTrack: FC = () => {
   const { t } = useTranslation();
@@ -33,36 +34,18 @@ export const BackgroundVideoTrack: FC = () => {
     onClose: onRemoveModalClose,
   } = useDisclosure();
 
-  const trimRangeRef = useRef<[number, number]>([0, 0]);
+  const { backgroundVideoUrl, setFile, clearUrl } = useVideoUrl();
   const {
-    backgroundVideoUrl,
     backgroundVideoFileName,
-    setBackgroundVideoUrl,
-    setBackgroundVideoFileName,
-    clearBackgroundVideo,
     backgroundVideoDurationSeconds,
-    videoTrimStartSeconds,
-    setVideoTrimStartSeconds,
-    videoTrimEndSeconds,
-    setVideoTrimEndSeconds,
-    setTrimPreviewSeconds,
     flipHorizontal,
     setFlipHorizontal,
     flipVertical,
     setFlipVertical,
   } = useBackgroundVideoStore(
     useShallow((s) => ({
-      backgroundVideoUrl: s.backgroundVideoUrl,
       backgroundVideoFileName: s.backgroundVideoFileName,
-      setBackgroundVideoUrl: s.setBackgroundVideoUrl,
-      setBackgroundVideoFileName: s.setBackgroundVideoFileName,
-      clearBackgroundVideo: s.clearBackgroundVideo,
       backgroundVideoDurationSeconds: s.backgroundVideoDurationSeconds,
-      videoTrimStartSeconds: s.videoTrimStartSeconds,
-      setVideoTrimStartSeconds: s.setVideoTrimStartSeconds,
-      videoTrimEndSeconds: s.videoTrimEndSeconds,
-      setVideoTrimEndSeconds: s.setVideoTrimEndSeconds,
-      setTrimPreviewSeconds: s.setTrimPreviewSeconds,
       flipHorizontal: s.flipHorizontal,
       setFlipHorizontal: s.setFlipHorizontal,
       flipVertical: s.flipVertical,
@@ -75,60 +58,22 @@ export const BackgroundVideoTrack: FC = () => {
 
   useVideoDuration(backgroundVideoUrl);
 
-  useEffect(() => {
-    if (
-      backgroundVideoDurationSeconds != null &&
-      backgroundVideoDurationSeconds > 0
-    ) {
-      const end =
-        videoTrimEndSeconds > 0
-          ? videoTrimEndSeconds
-          : backgroundVideoDurationSeconds;
-      trimRangeRef.current = [videoTrimStartSeconds, end];
-    }
-  }, [
-    backgroundVideoDurationSeconds,
-    videoTrimStartSeconds,
-    videoTrimEndSeconds,
-  ]);
-
-  useEffect(() => {
-    return () => {
-      if (backgroundVideoUrl) URL.revokeObjectURL(backgroundVideoUrl);
-    };
-  }, [backgroundVideoUrl]);
-
-  useEffect(() => {
-    if (
-      backgroundVideoDurationSeconds == null ||
-      backgroundVideoDurationSeconds <= 0
-    )
-      return;
-    const current = useBackgroundVideoStore.getState().videoTrimEndSeconds;
-    setVideoTrimEndSeconds(
-      current === 0
-        ? backgroundVideoDurationSeconds
-        : Math.min(current, backgroundVideoDurationSeconds),
-    );
-  }, [backgroundVideoDurationSeconds, setVideoTrimEndSeconds]);
-
   const onVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = "";
-    if (!file) return;
-    if (backgroundVideoUrl) URL.revokeObjectURL(backgroundVideoUrl);
-    setBackgroundVideoFileName(file.name);
-    setBackgroundVideoUrl(URL.createObjectURL(file));
+    if (file) setFile(file);
   };
 
-  const onAddVideo = () => {
-    videoInputRef.current?.click();
+  const onConfirmRemove = () => {
+    clearUrl();
+    onRemoveModalClose();
   };
 
-  const onRemoveVideo = () => {
-    if (backgroundVideoUrl) URL.revokeObjectURL(backgroundVideoUrl);
-    clearBackgroundVideo();
-  };
+  const title = backgroundVideoFileName
+    ? t("backgroundVideoTrack.titleWithFile", {
+        filename: backgroundVideoFileName,
+      })
+    : t("backgroundVideoTrack.title");
 
   const actions = (
     <>
@@ -183,7 +128,7 @@ export const BackgroundVideoTrack: FC = () => {
           <Button
             size="sm"
             variant="bordered"
-            onPress={onAddVideo}
+            onPress={() => videoInputRef.current?.click()}
             startContent={<Video size={16} />}
           >
             {t("backgroundVideoTrack.addVideo")}
@@ -192,12 +137,6 @@ export const BackgroundVideoTrack: FC = () => {
       )}
     </>
   );
-
-  const title = backgroundVideoFileName
-    ? t("backgroundVideoTrack.titleWithFile", {
-        filename: backgroundVideoFileName,
-      })
-    : t("backgroundVideoTrack.title");
 
   return (
     <MiniCard
@@ -212,82 +151,14 @@ export const BackgroundVideoTrack: FC = () => {
       )}
       <BackgroundVideoThumbnails />
       {backgroundVideoUrl && backgroundVideoDurationSeconds != null && (
-        <Slider
-          size="sm"
-          label={t("backgroundVideoTrack.trim")}
-          step={1}
-          minValue={0}
-          maxValue={Math.max(1, Math.floor(backgroundVideoDurationSeconds))}
-          value={[
-            videoTrimStartSeconds,
-            videoTrimEndSeconds > 0
-              ? videoTrimEndSeconds
-              : backgroundVideoDurationSeconds,
-          ]}
-          renderThumb={(props) => {
-            const { index, ...thumbProps } = props;
-            const end =
-              videoTrimEndSeconds > 0
-                ? videoTrimEndSeconds
-                : backgroundVideoDurationSeconds;
-            const previewSeconds = index === 0 ? videoTrimStartSeconds : end;
-            return (
-              <div
-                {...thumbProps}
-                onPointerDown={(e) => {
-                  thumbProps.onPointerDown?.(e);
-                  setTrimPreviewSeconds(previewSeconds);
-                }}
-              />
-            );
-          }}
-          onChange={(v: number | number[]) => {
-            const arr = Array.isArray(v) ? v : [v, v];
-            const max = Math.max(1, Math.floor(backgroundVideoDurationSeconds));
-            let start = Math.min(arr[0], arr[1]);
-            let end = Math.max(arr[0], arr[1]);
-            if (end <= start) end = Math.min(start + 1, max);
-            start = Math.min(start, end - 1);
-            const [prevStart, prevEnd] = trimRangeRef.current;
-            setVideoTrimStartSeconds(start);
-            setVideoTrimEndSeconds(end);
-            trimRangeRef.current = [start, end];
-            // Preview the frame at the edge being dragged.
-            if (start !== prevStart && end === prevEnd) {
-              setTrimPreviewSeconds(start);
-            } else if (end !== prevEnd) {
-              setTrimPreviewSeconds(end);
-            } else if (start !== prevStart) {
-              setTrimPreviewSeconds(start);
-            }
-          }}
-          onChangeEnd={() => {
-            setTrimPreviewSeconds(null);
-          }}
-          getValue={(v) =>
-            Array.isArray(v)
-              ? `${formatTime(v[0])} – ${formatTime(v[1])}`
-              : formatTime(v)
-          }
-          getTooltipValue={(v, index) =>
-            formatTime(Array.isArray(v) ? v[index ?? 0] : v)
-          }
-          showTooltip
-          classNames={{
-            value: "text-xs text-foreground/80",
-            label: "text-foreground/80",
-          }}
-        />
+        <VideoTrimSlider durationSeconds={backgroundVideoDurationSeconds} />
       )}
       <SyncVideoModal isOpen={isSyncModalOpen} onClose={onSyncModalClose} />
       <ActionConfirmationModal
         isOpen={isRemoveModalOpen}
         title={t("backgroundVideoTrack.removeModalTitle")}
         description={t("backgroundVideoTrack.removeModalDescription")}
-        onConfirm={() => {
-          onRemoveVideo();
-          onRemoveModalClose();
-        }}
+        onConfirm={onConfirmRemove}
         onCancel={onRemoveModalClose}
       />
     </MiniCard>

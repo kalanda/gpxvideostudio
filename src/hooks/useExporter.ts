@@ -6,12 +6,13 @@ import { useShallow } from "zustand/react/shallow";
 import { MainComposition } from "@/compositions/MainComposition";
 import { DEFAULT_EXPORT_FILENAME_PREFIX } from "@/constants/defaults";
 import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
+import { useExportProgress } from "@/hooks/useExportProgress";
+import { useWakeLock } from "@/hooks/useWakeLock";
 import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
 import { useTelemetryStore } from "@/stores/telemetryStore";
 import { downloadBlob } from "@/utils/browser/downloadBlob";
 
 export function useExporter() {
-  // Stores
   const telemetryPoints = useTelemetryStore((s) => s.telemetryPoints);
   const { fps, width, height, container, bitrate } =
     useProjectVideoSettingsStore(
@@ -26,28 +27,16 @@ export function useExporter() {
   const { durationInFrames: effectiveDurationInFrames } =
     useEffectiveExportDuration();
 
-  // States
   const [error, setError] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
-  const [exportProgress, setExportProgress] = useState({
-    currentFrame: 0,
-    totalFrames: 0,
-    progress: 0,
-    elapsedSeconds: 0,
-    estimatedRemainingSeconds: null as number | null,
-  });
-
-  // Refs
   const abortController = useRef<AbortController | null>(null);
-  const exportStartTimeRef = useRef<number | null>(null);
-  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
 
-  // Computed
+  const { exportProgress, initProgress, updateProgress, resetProgress } =
+    useExportProgress();
+  const wakeLock = useWakeLock();
+
   const canExport = telemetryPoints && !isExporting;
 
-  /**
-   * Export as video (MP4). Used when container is "mp4".
-   */
   async function exportAsVideo(
     totalFrames: number,
     signal: AbortSignal,
@@ -69,27 +58,13 @@ export function useExporter() {
       transparent: false,
       videoBitrate: bitrate,
       onProgress: (p) => {
-        const progress = (100 * p.renderedFrames) / totalFrames;
-        const start = exportStartTimeRef.current ?? Date.now();
-        const elapsedSeconds = (Date.now() - start) / 1000;
-        const estimatedRemainingSeconds =
-          progress > 1 ? (elapsedSeconds / progress) * (100 - progress) : null;
-        setExportProgress({
-          currentFrame: p.renderedFrames,
-          totalFrames,
-          progress,
-          elapsedSeconds,
-          estimatedRemainingSeconds,
-        });
+        updateProgress(p.renderedFrames, totalFrames);
       },
       signal,
     });
     return getBlob();
   }
 
-  /**
-   * Export as ZIP of PNG frames (with transparency). Used when container is "png-sequence".
-   */
   async function exportAsPngZip(
     totalFrames: number,
     signal: AbortSignal,
@@ -120,27 +95,12 @@ export function useExporter() {
 
       const name = `frame_${String(frame).padStart(safePadLength, "0")}.png`;
       zip.file(name, blob);
-
-      const progress = (100 * (frame + 1)) / totalFrames;
-      const start = exportStartTimeRef.current ?? Date.now();
-      const elapsedSeconds = (Date.now() - start) / 1000;
-      const estimatedRemainingSeconds =
-        progress > 1 ? (elapsedSeconds / progress) * (100 - progress) : null;
-      setExportProgress({
-        currentFrame: frame + 1,
-        totalFrames,
-        progress,
-        elapsedSeconds,
-        estimatedRemainingSeconds,
-      });
+      updateProgress(frame + 1, totalFrames);
     }
 
     return zip.generateAsync({ type: "blob" });
   }
 
-  /**
-   * Start the export process. Dispatches to exportAsVideo or exportAsPngZip by container.
-   */
   const startExport = async () => {
     if (!telemetryPoints) {
       setError("No telemetry points found.");
@@ -148,31 +108,18 @@ export function useExporter() {
       return;
     }
     abortController.current = new AbortController();
-    exportStartTimeRef.current = Date.now();
     setIsExporting(true);
     setError(null);
 
-    if ("wakeLock" in navigator) {
-      try {
-        wakeLockRef.current = await navigator.wakeLock.request("screen");
-      } catch {
-        // Graceful degradation: continue without wake lock (e.g. low battery, policy)
-      }
-    }
+    await wakeLock.acquire();
 
     const now = new Date();
     const exportDateString = format(now, "yyyyMMdd-HHmmss");
     const filenamePrefix = `${DEFAULT_EXPORT_FILENAME_PREFIX}-${exportDateString}`;
-
     const totalFrames = effectiveDurationInFrames;
-    setExportProgress({
-      currentFrame: 0,
-      totalFrames,
-      progress: 0,
-      elapsedSeconds: 0,
-      estimatedRemainingSeconds: null,
-    });
     const signal = abortController.current.signal;
+
+    initProgress(totalFrames);
 
     try {
       if (container === "png-sequence") {
@@ -194,31 +141,15 @@ export function useExporter() {
       setError(err instanceof Error ? err.message : "Export failed.");
       setIsExporting(false);
     } finally {
-      if (wakeLockRef.current) {
-        wakeLockRef.current.release();
-        wakeLockRef.current = null;
-      }
+      wakeLock.release();
     }
   };
 
-  /**
-   * Cancel the export process.
-   */
   const cancelExport = () => {
     abortController.current?.abort();
-    exportStartTimeRef.current = null;
-    if (wakeLockRef.current) {
-      wakeLockRef.current.release();
-      wakeLockRef.current = null;
-    }
+    wakeLock.release();
+    resetProgress();
     setIsExporting(false);
-    setExportProgress({
-      currentFrame: 0,
-      totalFrames: 0,
-      progress: 0,
-      elapsedSeconds: 0,
-      estimatedRemainingSeconds: null,
-    });
     setError(null);
   };
 
