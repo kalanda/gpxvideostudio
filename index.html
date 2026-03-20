@@ -7,9 +7,36 @@
       name="description"
       content="Generate telemetry overlay videos from GPX files, directly in your browser."
     />
+    <!-- Security: Content Security Policy -->
+    <!-- 'unsafe-eval' required by Remotion's video renderer (WebAssembly + dynamic evaluation) -->
+    <!-- blob: required by MapLibre GL workers and local video file loading -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self';
+        script-src 'self' 'unsafe-eval' blob:;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com data:;
+        img-src 'self' blob: data: https://*.arcgisonline.com https://*.cartocdn.com;
+        media-src 'self' blob: data:;
+        worker-src blob:;
+        connect-src 'self'
+          blob:
+          https://*.cartocdn.com
+          https://fonts.googleapis.com
+          https://fonts.gstatic.com
+          https://*.arcgisonline.com;
+        object-src 'none';
+        base-uri 'self';
+        form-action 'self';
+        upgrade-insecure-requests;
+      "
+    />
+    <!-- Security: Referrer Policy — sends origin only on cross-origin requests -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>GPX Video Telemetry</title>
   </head>
-  <body class="homemade-apple-regular">
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
