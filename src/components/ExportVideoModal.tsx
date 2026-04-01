@@ -1,5 +1,4 @@
 import {
-  Alert,
   Button,
   Modal,
   ModalBody,
@@ -15,13 +14,9 @@ import type { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { VIDEO_BITRATE_PRESETS } from "@/constants/presets";
-import { useEffectiveExportDuration } from "@/hooks/useEffectiveExportDuration";
 import { useExporter } from "@/hooks/useExporter";
-import { useBackgroundVideoStore } from "@/stores/backgroundVideoStore";
 import { useProjectVideoSettingsStore } from "@/stores/projectVideoSettingsStore";
-import { VideoBitrate, type VideoContainer } from "@/types/video";
-import { calculatePngMemoryUse } from "@/utils/calculations/calculatePngMemoryUse";
-import { formatFileWeight } from "@/utils/format/formatFileWeight";
+import { VideoBitrate } from "@/types/video";
 import { formatTime } from "@/utils/format/formatTime";
 
 export type ExportVideoModalProps = {
@@ -34,31 +29,14 @@ export const ExportVideoModal: FC<ExportVideoModalProps> = ({
   onClose,
 }) => {
   const { t } = useTranslation();
-  const backgroundVideoUrl = useBackgroundVideoStore(
-    (s) => s.backgroundVideoUrl,
+  const { bitrate, setBitrate } = useProjectVideoSettingsStore(
+    useShallow((s) => ({
+      bitrate: s.bitrate,
+      setBitrate: s.setBitrate,
+    })),
   );
-  const { fps, width, height, container, bitrate, setContainer, setBitrate } =
-    useProjectVideoSettingsStore(
-      useShallow((s) => ({
-        fps: s.fps,
-        width: s.width,
-        height: s.height,
-        container: s.container,
-        bitrate: s.bitrate,
-        setContainer: s.setContainer,
-        setBitrate: s.setBitrate,
-      })),
-    );
-  const { effectiveDurationSeconds } = useEffectiveExportDuration();
   const { isExporting, exportProgress, startExport, cancelExport } =
     useExporter();
-
-  const pngEstimatedMemoryUse = calculatePngMemoryUse(
-    fps,
-    effectiveDurationSeconds,
-    width,
-    height,
-  );
 
   const VIDEO_BITRATE_LABELS: Record<VideoBitrate, string> = {
     [VideoBitrate.VeryLow]: t("export.bitrates.veryLow"),
@@ -83,58 +61,19 @@ export const ExportVideoModal: FC<ExportVideoModalProps> = ({
           </ModalHeader>
           <ModalBody className="flex flex-col gap-4">
             <Select
-              label={t("export.containerLabel")}
-              selectedKeys={[container]}
+              label={t("export.bitrateLabel")}
+              selectedKeys={[bitrate]}
               onSelectionChange={(keys) => {
                 const key = Array.from(keys)[0];
-                if (key) setContainer(key as VideoContainer);
+                if (key) setBitrate(key as VideoBitrate);
               }}
             >
-              <SelectItem key="mp4" textValue={t("export.containerMp4")}>
-                {t("export.containerMp4")}
-              </SelectItem>
-              <SelectItem
-                key="png-sequence"
-                textValue={t("export.containerPng")}
-              >
-                {t("export.containerPng")}
-              </SelectItem>
+              {VIDEO_BITRATE_PRESETS.map((key) => (
+                <SelectItem key={key} textValue={VIDEO_BITRATE_LABELS[key]}>
+                  {VIDEO_BITRATE_LABELS[key]}
+                </SelectItem>
+              ))}
             </Select>
-
-            {container === "png-sequence" && backgroundVideoUrl && (
-              <Alert
-                color="primary"
-                variant="faded"
-                title={t("export.alertNoVideo")}
-              />
-            )}
-
-            {container === "png-sequence" && (
-              <Alert
-                color="warning"
-                variant="faded"
-                title={t("export.alertMemory", {
-                  size: formatFileWeight(pngEstimatedMemoryUse),
-                })}
-              />
-            )}
-
-            {container === "mp4" && (
-              <Select
-                label={t("export.bitrateLabel")}
-                selectedKeys={[bitrate]}
-                onSelectionChange={(keys) => {
-                  const key = Array.from(keys)[0];
-                  if (key) setBitrate(key as VideoBitrate);
-                }}
-              >
-                {VIDEO_BITRATE_PRESETS.map((key) => (
-                  <SelectItem key={key} textValue={VIDEO_BITRATE_LABELS[key]}>
-                    {VIDEO_BITRATE_LABELS[key]}
-                  </SelectItem>
-                ))}
-              </Select>
-            )}
           </ModalBody>
           <ModalFooter>
             <Button variant="flat" onPress={onClose}>

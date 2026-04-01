@@ -6,6 +6,12 @@
     "remove": "Eliminar"
   },
 
+  "errorBoundary": {
+    "title": "Algo salió mal",
+    "description": "La aplicación encontró un error inesperado. Recarga la página para intentarlo de nuevo.",
+    "reload": "Recargar página"
+  },
+
   "navbar": {
     "githubAriaLabel": "Repositorio de GitHub",
     "switchToLight": "Cambiar a modo claro",
@@ -84,11 +90,6 @@
 
   "export": {
     "title": "Opciones de exportación",
-    "containerLabel": "Formato",
-    "containerMp4": "Vídeo MP4",
-    "containerPng": "Secuencia PNG (con transparencia)",
-    "alertNoVideo": "El vídeo de fondo no se incluirá para conservar la transparencia",
-    "alertMemory": "Recomendado: reduce los FPS para evitar problemas de memoria. Se estima {{size}} para el archivo.",
     "bitrateLabel": "Tasa de bits",
     "cancel": "Cancelar",
     "accept": "Exportar",

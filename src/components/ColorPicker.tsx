@@ -9,7 +9,11 @@ interface ColorPickerProps {
   onChange: (color: string) => void;
 }
 
-export const ColorPicker: FC<ColorPickerProps> = ({ label, color, onChange }) => {
+export const ColorPicker: FC<ColorPickerProps> = ({
+  label,
+  color,
+  onChange,
+}) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 

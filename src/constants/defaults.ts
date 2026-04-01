@@ -6,11 +6,10 @@ import {
   MapTheme,
   MapViewportMode,
 } from "@/types/map";
-import { VideoBitrate, VideoContainer } from "@/types/video";
+import { VideoBitrate } from "@/types/video";
 
 export const DEFAULT_VIDEO_SETTINGS = {
   fps: 30,
-  container: VideoContainer.Mp4,
   bitrate: VideoBitrate.VeryHigh,
   width: RESOLUTION_PRESETS["1080p"].width,
   height: RESOLUTION_PRESETS["1080p"].height,

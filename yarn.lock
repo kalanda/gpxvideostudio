@@ -3138,7 +3138,6 @@ __metadata:
     husky: "npm:9.1.7"
     i18next: "npm:25.8.11"
     i18next-browser-languagedetector: "npm:^8.2.1"
-    jszip: "npm:3.10.1"
     linkedom: "npm:0.18.12"
     lucide-react: "npm:0.577.0"
     mapbox-gl: "npm:3.19.1"
@@ -8933,7 +8932,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jszip@npm:3.10.1, jszip@npm:^3.1.5":
+"jszip@npm:^3.1.5":
   version: 3.10.1
   resolution: "jszip@npm:3.10.1"
   dependencies:

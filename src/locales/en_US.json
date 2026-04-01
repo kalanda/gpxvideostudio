@@ -6,6 +6,12 @@
     "remove": "Remove"
   },
 
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "description": "The app hit an unexpected error. Reload the page to try again.",
+    "reload": "Reload page"
+  },
+
   "navbar": {
     "githubAriaLabel": "GitHub repository",
     "switchToLight": "Switch to light mode",
@@ -84,11 +90,6 @@
 
   "export": {
     "title": "Export options",
-    "containerLabel": "Container",
-    "containerMp4": "Video MP4",
-    "containerPng": "PNG sequence (with transparency)",
-    "alertNoVideo": "Background video will not be included to preserve transparency",
-    "alertMemory": "Recommended: reduce FPS to avoid memory issues. Estimated {{size}} for the file.",
     "bitrateLabel": "Bitrate",
     "cancel": "Cancel",
     "accept": "Export",

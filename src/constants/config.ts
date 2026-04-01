@@ -18,3 +18,6 @@ export const OVERLAY_REFERENCE_HEIGHT = 1080;
 
 /** Number of decimals for SVG paths to optimize rendering */
 export const SVG_PATH_PRECISION = 2;
+
+/** License key for `@remotion/web-renderer` in the browser (free tier). */
+export const REMOTION_WEB_RENDERER_LICENSE_KEY = "free-license";

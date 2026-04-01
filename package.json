@@ -42,7 +42,6 @@
     "geojson": "0.5.0",
     "i18next": "25.8.11",
     "i18next-browser-languagedetector": "^8.2.1",
-    "jszip": "3.10.1",
     "linkedom": "0.18.12",
     "lucide-react": "0.577.0",
     "mapbox-gl": "3.19.1",
