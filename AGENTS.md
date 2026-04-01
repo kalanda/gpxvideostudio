@@ -56,6 +56,14 @@ Use HeroUI as main UI framework. If there is one component to create, check befo
 
 For modals, use the HeroUI hook `useDisclosure()` always.
 
+## Project structure: `components` vs `compositions`
+
+- **`src/components/`** — Application UI: layout, HeroUI surfaces, timeline, modals, and reusable controls. Prefer keeping Remotion-specific APIs out of here; use only what the live preview needs (e.g. `<Player>` wiring from props or thin wrappers).
+- **`src/compositions/`** — Remotion compositions and overlay layouts rendered inside the Remotion `<Player>` and during export (`renderMediaOnWeb`). Map, deck.gl, and other heavy rendering that must match the exported frame belong here.
+- **Hooks** that orchestrate export or Remotion configuration may live in `src/hooks/` but should build on small **pure helpers** under `src/utils/` (one function per file) when logic is easy to test or reuse.
+
+This boundary keeps bundle concerns clear and avoids pulling map/export dependencies into generic UI by mistake.
+
 ## Zustand stores: always use selectors
 
 **Never call a store hook without a selector.** Calling `useStore()` without a selector subscribes the component to every state change in the store, causing unnecessary re-renders.
