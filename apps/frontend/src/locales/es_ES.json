@@ -44,8 +44,8 @@
     "titleWithFile": "Pista de vídeo de fondo ({{filename}})",
     "description": "Añade grabaciones de tu cámara o cámara de acción. Una vez cargado, puedes sincronizarlo con la pista de telemetría.",
     "syncWithTelemetry": "Sincronizar vídeo con telemetría",
-    "flipH": "Voltear H",
-    "flipV": "Voltear V",
+    "flipH": "Voltear horizontalmente",
+    "flipV": "Voltear verticalmente",
     "remove": "Eliminar",
     "addVideo": "Añadir vídeo",
     "trim": "Recortar",
@@ -140,7 +140,7 @@
       "none": "Ninguno",
       "light": "Claro",
       "dark": "Oscuro",
-      "colored": "De color",
+      "colored": "En color",
       "satellite": "Satélite"
     },
     "mapBearingModes": {
@@ -159,7 +159,7 @@
 
   "widgets": {
     "distance": "Distancia",
-    "elapsedTime": "Tiempo",
+    "elapsedTime": "Tiempo transcurrido",
     "heartRate": "Ritmo cardíaco",
     "cadence": "Cadencia",
     "power": "Potencia",
