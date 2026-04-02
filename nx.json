@@ -12,7 +12,7 @@
     "build": {
       "dependsOn": [],
       "inputs": ["default"],
-      "outputs": ["{projectRoot}/apps/{projectName}/dist"]
+      "outputs": ["{projectRoot}/dist"]
     },
     "test": {
       "inputs": ["default"],
