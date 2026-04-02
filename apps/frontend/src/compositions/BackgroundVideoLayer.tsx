@@ -47,7 +47,8 @@ export const BackgroundVideoLayer: FC<BackgroundVideoLayerProps> = (props) => {
     <AbsoluteFill>
       <Video
         src={backgroundVideoUrl}
-        className="h-full w-full object-cover"
+        className="h-full w-full"
+        objectFit="cover"
         style={transform != null ? { transform } : undefined}
         loop={false}
         trimBefore={trimBeforeFrames}
