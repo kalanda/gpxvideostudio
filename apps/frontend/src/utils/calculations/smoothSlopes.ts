@@ -1,5 +1,5 @@
+import { SLOPE_WINDOW_HALF_M } from "@kalanda/gpxvideostudio-app-frontend/src/constants/config";
 import type { Feature, Point } from "geojson";
-import { SLOPE_WINDOW_HALF_M } from "@/constants/config";
 import type { TelemetryPoint } from "@/types/telemetry";
 
 /**

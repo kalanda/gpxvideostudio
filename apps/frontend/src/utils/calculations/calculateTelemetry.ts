@@ -1,8 +1,8 @@
+import { SPEED_SMOOTHING_FACTOR } from "@kalanda/gpxvideostudio-app-frontend/src/constants/config";
 import bearing from "@turf/bearing";
 import distance from "@turf/distance";
 import { featureCollection, lineString, point } from "@turf/helpers";
 import type { Feature, Point } from "geojson";
-import { SPEED_SMOOTHING_FACTOR } from "@/constants/config";
 import type { GpxTrackPoint } from "@/types/gpx";
 import type {
   TelemetryFeatureCollection,
