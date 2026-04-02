@@ -12,15 +12,10 @@ import {
 } from "@heroui/react";
 import { Globe, Moon, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useShallow } from "zustand/react/shallow";
 import { GithubIcon } from "@/components/GithubIcon";
 import { Language } from "@/i18n";
-
-type Theme = "light" | "dark";
-
-type AppNavbarProps = {
-  theme: Theme;
-  onToggleTheme: () => void;
-};
+import { useUiPreferencesStore } from "@/stores/uiPreferencesStore";
 
 const LANGUAGE_LABELS: Record<Language, string> = {
   [Language.EnglishUS]: "English",
@@ -32,10 +27,12 @@ const LANGUAGE_SHORT: Record<Language, string> = {
   [Language.SpanishES]: "ES",
 };
 
-export const AppNavbar = ({ theme, onToggleTheme }: AppNavbarProps) => {
+export const AppNavbar = () => {
   const { t, i18n } = useTranslation();
+  const { theme, toggleTheme } = useUiPreferencesStore(
+    useShallow((s) => ({ theme: s.theme, toggleTheme: s.toggleTheme })),
+  );
   const isDark = theme === "dark";
-
   const currentLanguage = (i18n.language ?? Language.EnglishUS) as Language;
 
   return (
@@ -101,7 +98,7 @@ export const AppNavbar = ({ theme, onToggleTheme }: AppNavbarProps) => {
             aria-label={
               isDark ? t("navbar.switchToLight") : t("navbar.switchToDark")
             }
-            onPress={onToggleTheme}
+            onPress={toggleTheme}
           >
             {isDark ? <Sun size={20} /> : <Moon size={20} />}
           </Button>

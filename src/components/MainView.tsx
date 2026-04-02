@@ -2,15 +2,17 @@ import type { FC } from "react";
 import { BackgroundVideoTrack } from "@/components/BackgroundVideoTrack";
 import { TelemetryTrack } from "@/components/TelemetryTrack";
 import { VideoMonitor } from "@/components/VideoMonitor";
+import { AppNavbar } from "./AppNavbar";
 
 export const MainView: FC = () => {
   return (
-    <div className="flex h-full w-full min-w-0 flex-col gap-4 overflow-auto p-4">
-      <main className="flex w-full min-w-0 max-w-full flex-col items-center gap-4">
+    <div className="flex flex-col">
+      <AppNavbar />
+      <div className="flex flex-col gap-4 p-4 w-full min-w-0 max-w-full">
         <VideoMonitor />
         <TelemetryTrack />
         <BackgroundVideoTrack />
-      </main>
+      </div>
     </div>
   );
 };
