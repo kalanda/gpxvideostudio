@@ -1,15 +1,15 @@
-import { describe, expect, it } from 'vitest';
-import { extractUsedKeys } from './extractUsedKeys';
+import { describe, expect, it } from "vitest";
+import { extractUsedKeys } from "./extractUsedKeys";
 
-describe('extractUsedKeys', () => {
-  it('should extract translation keys from the content', () => {
+describe("extractUsedKeys", () => {
+  it("should extract translation keys from the content", () => {
     const content = `t('test')`;
     const usedKeys = new Set<string>();
     extractUsedKeys(content, usedKeys);
-    expect(usedKeys).toEqual(new Set(['test']));
+    expect(usedKeys).toEqual(new Set(["test"]));
   });
 
-  it('should extract translation keys from the content with t and values', () => {
+  it("should extract translation keys from the content with t and values", () => {
     const content = `
       label={t('test',
         { consentName },
@@ -17,10 +17,10 @@ describe('extractUsedKeys', () => {
     `;
     const usedKeys = new Set<string>();
     extractUsedKeys(content, usedKeys);
-    expect(usedKeys).toEqual(new Set(['test']));
+    expect(usedKeys).toEqual(new Set(["test"]));
   });
 
-  it('should extract translation keys from the content with t and values', () => {
+  it("should extract translation keys from the content with t and values", () => {
     const content = `
       label={t('test',
         { consentName }
@@ -28,10 +28,10 @@ describe('extractUsedKeys', () => {
     `;
     const usedKeys = new Set<string>();
     extractUsedKeys(content, usedKeys);
-    expect(usedKeys).toEqual(new Set(['test']));
+    expect(usedKeys).toEqual(new Set(["test"]));
   });
 
-  it('should extract translation keys from the content with i18nKey', () => {
+  it("should extract translation keys from the content with i18nKey", () => {
     const content = `
       <Trans
         i18nKey="explanationScreen.addresInfo"
@@ -39,10 +39,10 @@ describe('extractUsedKeys', () => {
       `;
     const usedKeys = new Set<string>();
     extractUsedKeys(content, usedKeys);
-    expect(usedKeys).toEqual(new Set(['explanationScreen.addresInfo']));
+    expect(usedKeys).toEqual(new Set(["explanationScreen.addresInfo"]));
   });
 
-  it('should extract translation keys from the content with t and values', () => {
+  it("should extract translation keys from the content with t and values", () => {
     const content = `
       <Trans
         i18nKey="explanationScreen.addresInfo"
@@ -53,10 +53,10 @@ describe('extractUsedKeys', () => {
       `;
     const usedKeys = new Set<string>();
     extractUsedKeys(content, usedKeys);
-    expect(usedKeys).toEqual(new Set(['explanationScreen.addresInfo']));
+    expect(usedKeys).toEqual(new Set(["explanationScreen.addresInfo"]));
   });
 
-  it('should extract translation keys from the content with t and values', () => {
+  it("should extract translation keys from the content with t and values", () => {
     const content = `
       <Trans
         i18nKey="explanationScreen.addresInfo"
@@ -66,6 +66,6 @@ describe('extractUsedKeys', () => {
       `;
     const usedKeys = new Set<string>();
     extractUsedKeys(content, usedKeys);
-    expect(usedKeys).toEqual(new Set(['explanationScreen.addresInfo']));
+    expect(usedKeys).toEqual(new Set(["explanationScreen.addresInfo"]));
   });
 });

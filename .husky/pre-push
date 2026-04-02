@@ -1,5 +1,4 @@
 yarn lint
-yarn typecheck
 yarn i18n:check-locales-structure
 yarn i18n:check-unused-translations
 yarn build

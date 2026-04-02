@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -7,8 +7,8 @@ export default defineConfig(({ command, mode }) => {
   return {
     test: {
       globals: true,
-      setupFiles: './setupTests.ts',
-      environment: 'jsdom',
+      setupFiles: "./setupTests.ts",
+      environment: "jsdom",
       dangerouslyIgnoreUnhandledErrors: true,
     },
   };

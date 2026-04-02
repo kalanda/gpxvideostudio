@@ -9,10 +9,7 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "./dist"),
   },
-  plugins: [
-    react(),
-    babel({ presets: [reactCompilerPreset()] }),
-  ],
+  plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
