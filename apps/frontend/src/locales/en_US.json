@@ -1,15 +1,7 @@
 {
   "common": {
     "cancel": "Cancel",
-    "confirm": "Confirm",
-    "save": "Save",
-    "remove": "Remove"
-  },
-
-  "errorBoundary": {
-    "title": "Something went wrong",
-    "description": "The app hit an unexpected error. Reload the page to try again.",
-    "reload": "Reload page"
+    "confirm": "Confirm"
   },
 
   "navbar": {

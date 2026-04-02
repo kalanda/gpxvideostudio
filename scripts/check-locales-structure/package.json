@@ -1,0 +1,18 @@
+{
+  "name": "@kalanda/scripts-check-locales-structure",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Check that all locale files in a directory have the same key structure as the reference locale",
+  "main": "src/index.ts",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "tsx": "4.16.2",
+    "typescript": "latest"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

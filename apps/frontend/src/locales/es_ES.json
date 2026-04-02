@@ -1,15 +1,7 @@
 {
   "common": {
     "cancel": "Cancelar",
-    "confirm": "Confirmar",
-    "save": "Guardar",
-    "remove": "Eliminar"
-  },
-
-  "errorBoundary": {
-    "title": "Algo salió mal",
-    "description": "La aplicación encontró un error inesperado. Recarga la página para intentarlo de nuevo.",
-    "reload": "Recargar página"
+    "confirm": "Confirmar"
   },
 
   "navbar": {

@@ -4,7 +4,8 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "scripts/*"
   ],
   "license": "MIT",
   "scripts": {
@@ -16,7 +17,9 @@
     "lint": "nx run-many --target=lint --all",
     "typecheck": "nx run-many --target=typecheck --all",
     "prepare": "husky",
-    "commitlint": "commitlint"
+    "commitlint": "commitlint",
+    "i18n:check-unused-translations": "tsx scripts/check-unused-translations/src/index.ts --srcPath ./apps/frontend/src --localeFile ./apps/frontend/src/locales/en_US.json && tsx scripts/check-unused-translations/src/index.ts --srcPath ./apps/frontend/src --localeFile ./apps/frontend/src/locales/es_ES.json",
+    "i18n:check-locales-structure": "tsx scripts/check-locales-structure/src/index.ts --localesDir ./apps/frontend/src/locales --referenceLocale en_US"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.0",
@@ -28,12 +31,13 @@
     "@types/node": "^22",
     "husky": "9.1.7",
     "nx": "^22.6.4",
+    "tsx": "4.16.2",
     "typescript": "latest",
     "vite": "7.3.1",
     "vitest": "4.0.18"
   },
   "engines": {
-    "node": ">=22.21.1"
+    "node": ">=22"
   },
   "packageManager": "yarn@4.3.1"
 }
