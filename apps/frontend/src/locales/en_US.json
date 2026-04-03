@@ -157,9 +157,9 @@
     }
   },
 
-  "widgets": {
+  "telemetryValues": {
     "distance": "Distance",
-    "elapsedTime": "Elapsed Time",
+    "elapsedTime": "Elapsed",
     "heartRate": "Heart Rate",
     "cadence": "Cadence",
     "power": "Power",

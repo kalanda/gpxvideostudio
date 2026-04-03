@@ -157,9 +157,9 @@
     }
   },
 
-  "widgets": {
+  "telemetryValues": {
     "distance": "Distancia",
-    "elapsedTime": "Tiempo transcurrido",
+    "elapsedTime": "Tiempo",
     "heartRate": "Ritmo cardíaco",
     "cadence": "Cadencia",
     "power": "Potencia",

@@ -33,14 +33,14 @@ export const DEFAULT_WIDGET_APPEARANCE = {
 } as const;
 
 /** ElevationChart SVG: viewBox, strokes and cursor in viewBox units. */
-export const ELEVATION_CHART = {
+export const LINE_CHART = {
   viewBoxWidth: 500,
   viewBoxHeight: 100,
   pad: 8,
   pathStrokeWidth: 2,
   cursorLineStrokeWidth: 0.5,
   cursorDotRadius: 4,
-  minElevationRange: 100, // Enforce a minimum vertical range (in meters) so flat routes don't look steep
+  minDataRange: 100, // Enforce a minimum vertical range (in meters) so flat routes don't look steep
   paddingFactor: 0.1, // Add 10% padding top and bottom so the path doesn't touch the SVG edges
 } as const;
 

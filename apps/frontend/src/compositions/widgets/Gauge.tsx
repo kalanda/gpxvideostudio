@@ -3,13 +3,13 @@ import { useShallow } from "zustand/react/shallow";
 import { DataItem } from "@/compositions/widgets/DataItem";
 import { SVG_PATH_PRECISION } from "@/constants/config";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
-import { formatSpeed } from "@/utils/format/formatSpeed";
 
-type SpeedGaugeProps = {
-  /** Speed in m/s */
-  speed: number;
-  /** Max speed in m/s for scale (needle at 100% when speed >= maxSpeed) */
-  maxSpeed: number;
+type GaugeProps = {
+  label: string;
+  value: number;
+  formattedValue: string;
+  unit: string;
+  maxValue: number;
 };
 
 /** ViewBox size; SVG scales to fill container (container should be square for correct aspect). */
@@ -17,16 +17,16 @@ const VIEWBOX_SIZE = 100;
 const NEEDLE_ANGLE_MIN = -180; // left side (0 km/h)
 const NEEDLE_ANGLE_MAX = 135; // right side (max)
 
-export const SpeedGauge: FC<SpeedGaugeProps> = (props) => {
-  const { speed, maxSpeed } = props;
+export const Gauge: FC<GaugeProps> = (props) => {
+  const { label, value, formattedValue, unit, maxValue } = props;
   const { accentColor, primaryColor } = useWidgetAppearanceStore(
     useShallow((s) => ({
       accentColor: s.accentColor,
       primaryColor: s.primaryColor,
     })),
   );
-  const effectiveMax = Math.max(maxSpeed, 1);
-  const t = Math.min(1, Math.max(0, speed / effectiveMax));
+  const effectiveMax = Math.max(maxValue, 1);
+  const t = Math.min(1, Math.max(0, value / effectiveMax));
   const angle = NEEDLE_ANGLE_MIN + t * (NEEDLE_ANGLE_MAX - NEEDLE_ANGLE_MIN);
 
   const r = VIEWBOX_SIZE / 2;
@@ -60,7 +60,7 @@ export const SpeedGauge: FC<SpeedGaugeProps> = (props) => {
           height="100%"
           preserveAspectRatio="xMidYMid meet"
           role="img"
-          aria-label={`Speed gauge: ${formatSpeed(speed)} km/h`}
+          aria-label={`${label}: ${value} ${unit}`}
         >
           {/* Background arc track */}
           <path
@@ -101,7 +101,7 @@ export const SpeedGauge: FC<SpeedGaugeProps> = (props) => {
           />
         </svg>
       </div>
-      <DataItem value={formatSpeed(speed)} unit="km/h" />
+      <DataItem value={formattedValue} unit={unit} />
     </div>
   );
 };

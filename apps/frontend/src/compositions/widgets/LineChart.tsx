@@ -1,19 +1,15 @@
 import type { FC } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { SVG_PATH_PRECISION } from "@/constants/config";
-import { ELEVATION_CHART } from "@/constants/defaults";
+import { LINE_CHART } from "@/constants/defaults";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 
-type ElevationChartProps = {
-  elevations: Array<number | null>;
-  /** Elapsed time (seconds) for each elevation sample, 1:1 with the elevations array. */
+type LineChartProps = {
+  label: string;
+  data: Array<number | null>;
   elapsedTimes: number[];
-  /** Elapsed time (seconds) at the start of the export segment. */
-  segmentStartElapsed: number;
-  /** Duration (seconds) of the export segment. */
-  segmentDuration: number;
-  /** Progress through the segment (0 to 1), derived from elapsed time. */
-  progress: number;
+  /** Current frame elapsed time (seconds), same scale as `elapsedTimes`. */
+  currentElapsed: number;
 };
 
 const {
@@ -23,18 +19,12 @@ const {
   pathStrokeWidth,
   cursorLineStrokeWidth,
   cursorDotRadius,
-  minElevationRange,
+  minDataRange,
   paddingFactor,
-} = ELEVATION_CHART;
+} = LINE_CHART;
 
-export const ElevationChart: FC<ElevationChartProps> = (props) => {
-  const {
-    elevations,
-    elapsedTimes,
-    segmentStartElapsed,
-    segmentDuration,
-    progress,
-  } = props;
+export const LineChart: FC<LineChartProps> = (props) => {
+  const { label, data, elapsedTimes, currentElapsed } = props;
   const { primaryColor, accentColor } = useWidgetAppearanceStore(
     useShallow((s) => ({
       primaryColor: s.primaryColor,
@@ -42,56 +32,59 @@ export const ElevationChart: FC<ElevationChartProps> = (props) => {
     })),
   );
 
-  const validElevations = elevations.filter((e): e is number => e !== null);
+  const validData = data.filter((e): e is number => e !== null);
 
-  const actualMinEle =
-    validElevations.length > 0 ? Math.min(...validElevations) : 0;
-  const actualMaxEle =
-    validElevations.length > 0 ? Math.max(...validElevations) : 100;
-  const actualRange = actualMaxEle - actualMinEle;
+  const actualMinData = validData.length > 0 ? Math.min(...validData) : 0;
+  const actualMaxData = validData.length > 0 ? Math.max(...validData) : 100;
+  const actualRange = actualMaxData - actualMinData;
 
-  let displayMinEle = actualMinEle;
-  let displayMaxEle = actualMaxEle;
+  let displayMinData = actualMinData;
+  let displayMaxData = actualMaxData;
 
-  if (actualRange < minElevationRange) {
-    const center = (actualMaxEle + actualMinEle) / 2;
-    displayMinEle = center - minElevationRange / 2;
-    displayMaxEle = center + minElevationRange / 2;
+  if (actualRange < minDataRange) {
+    const center = (actualMaxData + actualMinData) / 2;
+    displayMinData = center - minDataRange / 2;
+    displayMaxData = center + minDataRange / 2;
   } else {
     const padding = actualRange * paddingFactor;
-    displayMinEle -= padding;
-    displayMaxEle += padding;
+    displayMinData -= padding;
+    displayMaxData += padding;
   }
 
-  const range = displayMaxEle - displayMinEle || 1;
+  const range = displayMaxData - displayMinData || 1;
   const innerW = viewBoxWidth - pad * 2;
   const innerH = viewBoxHeight - pad * 2;
 
-  // X position derived from elapsed time so it uses the same scale as `progress`.
-  // Falls back to index-based if segmentDuration is zero.
+  const tMin = elapsedTimes.length > 0 ? Math.min(...elapsedTimes) : 0;
+  const tMax = elapsedTimes.length > 0 ? Math.max(...elapsedTimes) : 0;
+  const timeSpan = tMax - tMin;
+
+  const progressNorm =
+    timeSpan > 0
+      ? Math.min(1, Math.max(0, (currentElapsed - tMin) / timeSpan))
+      : 0;
+
+  // X position from elapsed time within the trimmed series; index-based if no time span.
   const toX = (i: number) => {
-    if (segmentDuration <= 0) {
-      return pad + (i / Math.max(1, elevations.length - 1)) * innerW;
+    if (timeSpan <= 0) {
+      return pad + (i / Math.max(1, data.length - 1)) * innerW;
     }
-    const t = Math.max(
-      0,
-      Math.min(1, (elapsedTimes[i] - segmentStartElapsed) / segmentDuration),
-    );
+    const t = Math.max(0, Math.min(1, (elapsedTimes[i] - tMin) / timeSpan));
     return pad + t * innerW;
   };
   const toY = (ele: number | null) => {
     if (ele === null) return pad + innerH / 2;
-    return pad + innerH - ((ele - displayMinEle) / range) * innerH;
+    return pad + innerH - ((ele - displayMinData) / range) * innerH;
   };
 
-  const pathD = elevations
+  const pathD = data
     .map(
       (e, i) =>
         `${i === 0 ? "M" : "L"} ${toX(i).toFixed(SVG_PATH_PRECISION)} ${toY(e).toFixed(SVG_PATH_PRECISION)}`,
     )
     .join(" ");
 
-  const cursorX = pad + progress * innerW;
+  const cursorX = pad + progressNorm * innerW;
 
   return (
     <div className="h-50">
@@ -101,9 +94,9 @@ export const ElevationChart: FC<ElevationChartProps> = (props) => {
         height="100%"
         preserveAspectRatio="xMidYMid meet"
         role="img"
-        aria-label={`Elevation profile at ${Math.round(progress * 100)}% of route`}
+        aria-label={label}
       >
-        {/* Elevation path */}
+        {/* Path */}
         <path
           d={pathD}
           fill="none"
@@ -124,10 +117,8 @@ export const ElevationChart: FC<ElevationChartProps> = (props) => {
           strokeWidth={cursorLineStrokeWidth}
         />
         {/* Cursor dot — Y interpolated between the two surrounding elapsed-time points */}
-        {elevations.length > 0 &&
+        {data.length > 0 &&
           (() => {
-            const currentElapsed =
-              segmentStartElapsed + progress * segmentDuration;
             // Binary search for the lower-bound index
             let lo = 0;
             let hi = elapsedTimes.length - 1;
@@ -136,12 +127,12 @@ export const ElevationChart: FC<ElevationChartProps> = (props) => {
               if ((elapsedTimes[mid] ?? 0) <= currentElapsed) lo = mid;
               else hi = mid;
             }
-            const hiIdx = Math.min(lo + 1, elevations.length - 1);
+            const hiIdx = Math.min(lo + 1, data.length - 1);
             const span = (elapsedTimes[hiIdx] ?? 0) - (elapsedTimes[lo] ?? 0);
             const t =
               span > 0 ? (currentElapsed - (elapsedTimes[lo] ?? 0)) / span : 0;
-            const e0 = elevations[lo];
-            const e1 = elevations[hiIdx];
+            const e0 = data[lo];
+            const e1 = data[hiIdx];
             const dotEle =
               e0 !== null && e1 !== null
                 ? e0 + t * (e1 - e0)
