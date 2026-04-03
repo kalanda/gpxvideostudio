@@ -6,7 +6,6 @@
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": false,
-    "ignoreDeprecations": "6.0",
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -21,7 +20,10 @@
     "sourceMap": true,
     "jsx": "react-jsx",
     "types": ["node", "vite/client", "vitest/globals"],
-    "preserveWatchOutput": true
+    "preserveWatchOutput": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "exclude": [
     "node_modules",
@@ -29,5 +31,6 @@
     "./.agents",
     "./.cursor",
     "./.nx/cache"
-  ]
+  ],
+  "include": ["src", "scripts", "vite.config.ts", "vite-env.d.ts"]
 }

@@ -1,13 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { getBaseKey } from "./getBaseKey";
+import { getBaseKey } from "./lib/getBaseKey";
 import {
   getTranslationKeysFromLocaleFile,
   type KeyLocation,
-} from "./getTranslationKeysFromLocaleFile";
-import { getTranslationKeysUsed } from "./getTranslationKeysUsed";
-import { parseCommandLineArguments } from "./parseCommandLineArguments";
+} from "./lib/getTranslationKeysFromLocaleFile";
+import { getTranslationKeysUsed } from "./lib/getTranslationKeysUsed";
+import { parseCommandLineArguments } from "./lib/parseCommandLineArguments";
 
 // Parse arguments
 const { srcPath, localeFile, whitelistFile } = parseCommandLineArguments<

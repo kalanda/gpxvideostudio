@@ -1,6 +1,6 @@
-import { SPEED_SMOOTHING_FACTOR } from "@kalanda/gpxvideostudio-app-frontend/src/constants/config";
 import { point } from "@turf/helpers";
 import type { Feature, Point } from "geojson";
+import { SPEED_SMOOTHING_FACTOR } from "@/constants/config";
 import type { TelemetryPoint } from "@/types/telemetry";
 
 /**
