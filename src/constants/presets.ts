@@ -16,7 +16,7 @@ export const VIDEO_BITRATE_PRESETS: VideoBitrate[] = [
   VideoBitrate.VeryHigh,
 ] as const;
 
-/** Subset of Google Fonts shown by default (legible, versatile). Use the "Show all" option to search the full catalog. */
+/** Google Fonts available in the app (bundled via @remotion/google-fonts). */
 export const PRESET_FONT_FAMILIES = [
   "Roboto",
   "Open Sans",

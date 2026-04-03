@@ -1,10 +1,10 @@
-import { AutocompleteItem } from "@heroui/react";
+import { SelectItem } from "@heroui/react";
 import type { Key } from "react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useWidgetAppearanceStore } from "@/stores/widgetAppearanceStore";
 import {
-  getFontsToShow,
+  getPresetFonts,
   loadFontByFamily,
   PRESET_FONT_FAMILIES,
 } from "@/utils/widgetAppearanceFonts";
@@ -16,7 +16,6 @@ export function useFontSelector() {
       setFontFamily: s.setFontFamily,
     })),
   );
-  const [showAllFonts, setShowAllFonts] = useState(false);
 
   useEffect(() => {
     void loadFontByFamily(fontFamily);
@@ -32,20 +31,18 @@ export function useFontSelector() {
     await loadFontByFamily(key);
   }
 
-  const fontsToShow = getFontsToShow(showAllFonts, fontFamily);
+  const fontsToShow = getPresetFonts();
   const fontItems = fontsToShow.map((f) => (
-    <AutocompleteItem key={f.fontFamily} textValue={f.fontFamily}>
+    <SelectItem key={f.fontFamily} textValue={f.fontFamily}>
       <span style={{ fontFamily: `${f.fontFamily}, sans-serif` }}>
         {f.fontFamily}
       </span>
-    </AutocompleteItem>
+    </SelectItem>
   ));
 
   return {
     fontFamily,
     fontItems,
     onSelectionChange,
-    showAllFonts,
-    setShowAllFonts,
   };
 }

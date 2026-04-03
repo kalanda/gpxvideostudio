@@ -1,5 +1,4 @@
 import {
-  Autocomplete,
   Button,
   Divider,
   Popover,
@@ -23,13 +22,7 @@ import {
 
 export const WidgetAppearanceDropdown = () => {
   const { t } = useTranslation();
-  const {
-    fontFamily,
-    fontItems,
-    onSelectionChange,
-    showAllFonts,
-    setShowAllFonts,
-  } = useFontSelector();
+  const { fontFamily, fontItems, onSelectionChange } = useFontSelector();
   const {
     accentColor,
     setAccentColor,
@@ -74,33 +67,18 @@ export const WidgetAppearanceDropdown = () => {
       <PopoverContent>
         <div className="flex flex-col gap-3 px-1 py-2">
           <div className="flex flex-col gap-1">
-            <Autocomplete
+            <Select
               label={t("appearance.fontLabel")}
-              placeholder={
-                showAllFonts
-                  ? t("appearance.fontSearchPlaceholder")
-                  : t("appearance.fontSelectPlaceholder")
-              }
-              selectedKey={fontFamily}
-              onSelectionChange={onSelectionChange}
+              selectedKeys={[fontFamily]}
+              onSelectionChange={(keys) => {
+                const v = Array.from(keys)[0];
+                if (typeof v === "string") void onSelectionChange(v);
+              }}
               size="sm"
               classNames={{ base: "w-full" }}
-              listboxProps={{ emptyContent: t("appearance.fontNoResults") }}
-              isVirtualized={showAllFonts}
-              scrollShadowProps={{ isEnabled: false }}
             >
               {fontItems}
-            </Autocomplete>
-            <Button
-              size="sm"
-              variant="light"
-              className="w-full justify-start text-foreground-500"
-              onPress={() => setShowAllFonts((v) => !v)}
-            >
-              {showAllFonts
-                ? t("appearance.showRecommendedFonts")
-                : t("appearance.showAllFonts")}
-            </Button>
+            </Select>
           </div>
           <ColorPicker
             label={t("appearance.primaryColorLabel")}
